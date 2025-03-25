@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { rewriteNote } = require('../controllers/aiController');
+const { rewriteNote, saveNote, createDoc } = require('../controllers/aiController');
 
 /**
  * Middleware to ensure user is authenticated
@@ -27,5 +27,19 @@ const requireAuth = (req, res, next) => {
  * @requires Authentication
  */
 router.post('/rewrite', requireAuth, rewriteNote);
+
+/**
+ * POST /api/ai/save
+ * Save a rewritten note to Google Docs
+ * @requires Authentication
+ */
+router.post('/save', requireAuth, saveNote);
+
+/**
+ * POST /api/ai/create
+ * Create a new Google Doc with the note
+ * @requires Authentication
+ */
+router.post('/create', requireAuth, createDoc);
 
 module.exports = router;

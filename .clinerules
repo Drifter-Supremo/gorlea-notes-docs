@@ -81,6 +81,22 @@
 
 ## Tool Usage Patterns
 
+### File Editing
+- Always use replace_in_file over write_to_file when possible
+- SEARCH blocks must match file content exactly:
+  - Include surrounding context (comments, blank lines)
+  - Match indentation precisely
+  - Use multiple lines for uniqueness
+  - Keep changes focused and minimal
+- Verify file content before editing:
+  - Read file first
+  - Copy exact content for SEARCH blocks
+  - Check final_file_content for auto-formatting
+- Handle errors gracefully:
+  - If replace_in_file fails twice, consider alternatives
+  - Never assume file content without verification
+  - Document any formatting changes
+
 ### Development
 - VSCode as primary editor
 - Chrome DevTools for debugging
