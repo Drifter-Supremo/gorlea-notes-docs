@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gorlea Notes</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <style>
+        .landing-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .welcome-logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--color-accent);
+        }
+
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: var(--color-text);
+            max-width: 600px;
+            line-height: 1.5;
+        }
+
+        .google-signin {
+            background-color: var(--color-accent);
+            color: var(--color-background);
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: transform 0.2s, background-color 0.2s;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .google-signin:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .error-message {
+            color: #ff4444;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: rgba(255, 68, 68, 0.1);
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+    </style>
+
+    <div class="landing-container">
+        <img src="gorlea-logo.png" alt="Gorlea" class="welcome-logo">
+        <h1 class="welcome-title">Welcome to Gorlea Notes</h1>
+        <p class="welcome-subtitle">
+            Your thoughts, organized naturally. Sign in to start capturing and organizing your ideas with AI assistance.
+        </p>
+        <a href="/auth/login" class="google-signin">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M12.545,12.151L12.545,12.151c0,1.054,0.855,1.909,1.909,1.909h3.536c-0.607,1.972-2.101,3.467-4.26,3.467c-2.624,0-4.747-2.124-4.747-4.747s2.124-4.747,4.747-4.747c1.123,0,2.148,0.391,2.957,1.037l1.728-1.728C16.693,6.357,14.746,5.603,12.545,5.603c-4.196,0-7.595,3.399-7.595,7.595s3.399,7.595,7.595,7.595c5.274,0,8.153-4.37,7.564-9.49h-5.464C12.545,11.303,12.545,12.151,12.545,12.151z"/>
+            </svg>
+            Sign in with Google
+        </a>
+        <div id="errorMessage" class="error-message"></div>
+    </div>
+
+    <script>
+        // Check for error message in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        if (error) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = decodeURIComponent(error);
+            errorMessage.classList.add('visible');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+# 🧠 Cline Rules: Gorlea Notes
+
+## Project Patterns
+
+### File Organization
+- Memory bank files use emoji prefixes for quick recognition
+- All documentation in Markdown format
+- Frontend: /src for source files
+- Backend: /functions for Firebase Functions
+- Utilities: /utils for shared code
+
+### Naming Conventions
+- Files: kebab-case.js
+- Components: PascalCase
+- Functions: camelCase
+- CSS Classes: kebab-case
+- Constants: UPPER_SNAKE_CASE
+
+### Code Style
+- Prefer const over let
+- Use template literals for string interpolation
+- Async/await over .then() chains
+- Early returns for cleaner logic
+- JSDoc comments for functions
+
+### Git Workflow
+- Feature branches from main
+- Branch naming: feature/description
+- Commit messages follow conventional commits
+- Squash merges into main
+
+## User Preferences
+
+### Documentation
+- Markdown for all documentation
+- Mermaid diagrams for visualizations
+- Emoji usage for visual categorization
+- Detailed comments for complex logic
+
+### Project Structure
+- Modular architecture
+- Clear separation of concerns
+- Minimal dependencies
+- Progressive enhancement
+
+### Development Focus
+- User experience first
+- Performance critical
+- Security by design
+- Accessibility required
+
+## Critical Paths
+
+### Note Creation Flow
+1. User enters note in chat
+2. AI processes and cleans note
+3. System suggests save locations
+4. Note saved to Google Docs
+5. Confirmation shown to user
+
+### Authentication Flow
+1. User clicks login
+2. Google OAuth popup
+3. Token validation
+4. Session creation
+5. Redirect to chat
+
+## Known Challenges
+
+### API Integration
+- Google API rate limits
+- Token refresh handling
+- Error recovery
+- Timeout management
+
+### AI Processing
+- Response time optimization
+- Error handling
+- Fallback mechanisms
+- Context preservation
+
+## Tool Usage Patterns
+
+### Development
+- VSCode as primary editor
+- Chrome DevTools for debugging
+- Firebase CLI for deployment
+- Git for version control
+
+### Testing
+- Manual testing for UI
+- Jest for unit tests
+- Cypress for E2E (future)
+- Postman for API testing
+
+## Project Intelligence
+
+### Performance Considerations
+- Minimize API calls
+- Optimize AI requests
+- Efficient doc operations
+- Smart caching strategy
+
+### Security Measures
+- Strict CSP headers
+- Input sanitization
+- Token validation
+- Error masking
+
+### UX Patterns
+- Minimal cognitive load
+- Clear feedback
+- Graceful degradation
+- Progressive disclosure
+
+## Evolution Notes
+
+### Initial Decisions
+- Vanilla JS for MVP
+- Firebase Functions backend
+- Google Gemini primary AI
+- Mobile-first design
+
+### Future Considerations
+- React migration path
+- Search implementation
+- Voice input addition
+- Smart categorization
+
+## Learning Points
+
+### Technical
+- Google API integration patterns
+- AI processing strategies
+- OAuth implementation
+- Doc management approaches
+
+### Process
+- Documentation first
+- Iterative development
+- Regular testing
+- Continuous learning
+
+---
+
+This file captures key project patterns and intelligence. Update as new patterns emerge or existing ones evolve.

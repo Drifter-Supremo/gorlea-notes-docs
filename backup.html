@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gorlea Notes</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div class="app">
+        <!-- Landing Page -->
+        <div class="landing-page" id="landingPage">
+            <div class="landing-content">
+                <img src="../gorlea-logo.png" alt="Gorlea" class="landing-logo">
+                <h1>Gorlea Notes</h1>
+                <p>Type your thoughts, I'll organize them.</p>
+            </div>
+        </div>
+
+        <!-- Chat Interface -->
+        <div class="chat-interface hidden" id="chatInterface">
+            <!-- Header -->
+            <header class="header">
+                <img src="../gorlea-logo.png" alt="Gorlea" class="logo">
+                <h1>Gorlea Notes</h1>
+            </header>
+
+        <!-- Main chat area -->
+        <main class="chat-container">
+            <div class="messages" id="messages">
+                <!-- Example user message -->
+                <div class="message user-message">
+                    <div class="message-content">
+                        Here's a quick note about the project meeting tomorrow at 10am.
+                    </div>
+                </div>
+
+                <!-- Example Gorlea response -->
+                <div class="message gorlea-message">
+                    <div class="message-content">
+                        <div class="gorlea-header">
+                            <img src="../gorlea-logo.png" alt="Gorlea" class="message-logo">
+                            <span>Gorlea</span>
+                        </div>
+                        I've saved your note about the project meeting. Would you like me to:
+                        <ul>
+                            <li>Create a new document titled "Project Meetings"</li>
+                            <li>Add it to your existing "Work Notes" document</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Another user message -->
+                <div class="message user-message">
+                    <div class="message-content">
+                        Add it to Work Notes please!
+                    </div>
+                </div>
+
+                <!-- Another Gorlea response -->
+                <div class="message gorlea-message">
+                    <div class="message-content">
+                        <div class="gorlea-header">
+                            <img src="../gorlea-logo.png" alt="Gorlea" class="message-logo">
+                            <span>Gorlea</span>
+                        </div>
+                        Done! I've added your note to "Work Notes" under today's date. Is there anything else you'd like to note down?
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Input area -->
+        <footer class="input-area">
+            <div class="input-container">
+                <textarea 
+                    id="messageInput" 
+                    placeholder="Type your note here..." 
+                    rows="1"
+                    autofocus
+                ></textarea>
+                <button id="sendButton" class="send-button">
+                    <svg viewBox="0 0 24 24" class="send-icon">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <script src="scripts/app.js"></script>
+</body>
+</html>
