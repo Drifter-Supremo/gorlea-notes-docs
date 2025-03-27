@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gorlea Docs Editor</title>
+    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="stylesheet" href="/docs/styles/editor.css"> <!-- Use absolute path -->
+</head>
+<body>
+    <header class="app-header">
+        <!-- Logo removed permanently -->
+        <h1>Document Editor</h1>
+    </header>
+    <div class="editor-container">
+        <div id="loading-message">Loading document...</div>
+        <div id="error-message" class="hidden"></div>
+
+        <!-- Wrapper for editor elements, hidden by default -->
+        <div id="editor-content-wrapper" class="hidden"> 
+            <div class="editor-header">
+                <input type="text" id="doc-title" placeholder="Document Title">
+                <button id="save-btn">Save</button>
+            </div>
+            <textarea id="doc-content" placeholder="Start typing your content here..."></textarea>
+        </div> <!-- Close editor-content-wrapper -->
+    </div>
+
+    <script src="/docs/scripts/editor.js"></script> <!-- Corrected path -->
+</body>
+</html>

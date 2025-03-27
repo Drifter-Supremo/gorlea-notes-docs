@@ -1,4 +1,4 @@
-# 🔧 Technical Context: Gorlea Notes
+# 🔧 Technical Context: Gorlea Notes & Docs
 
 ## Technology Stack
 
@@ -6,6 +6,7 @@
 - **Core**: HTML5, CSS3, JavaScript (ES6+)
 - **Styling**: CSS Custom Properties for theming
 - **Layout**: CSS Grid/Flexbox for responsive design
+- **Editor**: Tiptap/Quill (to be selected)
 - **Future Consideration**: React if complexity grows
 
 ### Backend
@@ -20,20 +21,20 @@
 - **Primary**: Google Gemini API
   - Pro tier for enhanced capabilities
   - Streaming API support
-- **Fallback**: OpenAI GPT-4
+  - Note rewriting capabilities
+- **Fallback**: OpenAI GPT-4 (future consideration)
   - Used if Gemini unavailable
   - Requires separate API key
 
-### Google Integration
-- **Required APIs**:
-  - Google Drive API v3
-  - Google Docs API v1
-  - Google OAuth 2.0
-- **Scopes**:
-  ```
-  https://www.googleapis.com/auth/drive.file
-  https://www.googleapis.com/auth/docs
-  ```
+### Storage
+- **Primary**: Firestore
+  - Document storage
+  - User data
+  - Metadata
+- **Binary Storage**: Firebase Storage
+  - Document attachments
+  - Large content
+  - Media files
 
 ### Security
 - **Authentication**: Google OAuth 2.0
@@ -48,10 +49,13 @@
 
 ### Environment Variables
 ```bash
-# Google API Configuration
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-GOOGLE_REDIRECT_URI=
+# Firebase Configuration
+FIREBASE_API_KEY=
+FIREBASE_AUTH_DOMAIN=
+FIREBASE_PROJECT_ID=
+FIREBASE_STORAGE_BUCKET=
+FIREBASE_MESSAGING_SENDER_ID=
+FIREBASE_APP_ID=
 
 # AI API Keys
 GEMINI_API_KEY=
@@ -68,31 +72,39 @@ PORT=3000
 
 ### Project Structure
 ```bash
-# Server
-/server/
-  ├── index.js              # Entry point
-  ├── routes/              # Route definitions
-  │   └── auth.js         # Auth routes
-  ├── controllers/        # Request handlers
-  │   └── authController.js
-  ├── config/            # Configuration
-  │   └── google.js     # OAuth config
-  └── package.json      # Dependencies
-
-# Frontend
 /client/
-  ├── index.html          # Main HTML with chat interface
+  ├── docs/                # Gorlea Docs frontend
+  │   ├── index.html      # Document list
+  │   ├── editor.html     # Document editor
+  │   ├── scripts/
+  │   │   ├── docList.js  # List functionality
+  │   │   └── editor.js   # Editor functionality
+  │   └── styles/
+  │       └── docs.css    # Docs-specific styles
   ├── styles/
-  │   └── main.css       # All styles (dark theme, messages, animations)
-  ├── scripts/
-  │   └── app.js         # Frontend logic (chat, input handling)
-  └── gorlea-logo.png    # App logo
+  │   └── main.css        # Shared styles
+  └── scripts/
+      └── app.js          # Notes functionality
+
+/server/
+  ├── index.js            # Entry point
+  ├── routes/             # Route definitions
+  │   ├── docs.js        # Document routes
+  │   └── auth.js        # Auth routes
+  ├── controllers/        # Request handlers
+  │   ├── docsController.js
+  │   └── authController.js
+  ├── utils/             # Utilities
+  │   └── firestore.js   # Firestore helpers
+  └── config/            # Configuration
+      └── firebase.js    # Firebase config
 ```
 
 ### Frontend Features
-- ChatGPT-style welcome screen
-- Auto-expanding message input
-- Smooth message animations
+- Document list view
+- Rich text editor (pending)
+- Auto-expanding inputs
+- Smooth animations
 - Dark theme with gold accents
 - Responsive mobile-first design
 
@@ -104,9 +116,9 @@ PORT=3000
   "dependencies": {
     "express": "^4.18.3",
     "express-session": "^1.18.0",
+    "firebase": "^10.8.0",
     "dotenv": "^16.4.5",
-    "axios": "^1.6.7",
-    "open": "^10.1.0"
+    "axios": "^1.6.7"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
@@ -118,8 +130,10 @@ PORT=3000
 ```json
 {
   "dependencies": {
-    "marked": "latest",     // Markdown rendering
-    "dompurify": "latest"   // XSS prevention
+    "@tiptap/core": "^2.2.4",    // If Tiptap selected
+    "quill": "^1.3.7",           // If Quill selected
+    "html-to-text": "^9.0.5",    // For export
+    "jspdf": "^2.5.1"            // For PDF export
   }
 }
 ```
@@ -135,7 +149,8 @@ PORT=3000
 - First Contentful Paint: < 1.5s
 - Time to Interactive: < 2s
 - API Response Time: < 500ms
-- AI Processing: < 3s
+- Editor Input Latency: < 50ms
+- Save Operation: < 1s
 
 ### Security Requirements
 - HTTPS only
@@ -184,8 +199,9 @@ PORT=3000
 - API response times
 - Error rates
 - AI processing duration
-- OAuth success rate
+- Editor performance
 - Document operations
+- Storage usage
 
 ### Logging Requirements
 - Structured JSON logging

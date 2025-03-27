@@ -1,7 +1,7 @@
-# 🎯 Active Context: Gorlea Notes
+# 🎯 Active Context: Gorlea Notes & Docs
 
 ## Current Sprint Focus
-Backend implementation and Google Docs integration
+Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 
 ## Active Decisions
 
@@ -15,13 +15,14 @@ Backend implementation and Google Docs integration
 - **Impact**: Affects initial project structure and development approach
 
 ### 2. Backend Architecture
-- **Decision**: Express.js server (changed from Firebase Functions)
+- **Decision**: Express.js server with Firestore
 - **Rationale**:
   - More direct control over implementation
   - Simpler local development
   - Better for learning/understanding the flow
+  - Native Firebase integration
 - **Status**: Implemented
-- **Impact**: Backend structure and deployment approach established
+- **Impact**: Backend structure and storage approach established
 
 ### 3. AI Provider
 - **Decision**: Gemini 2.0 Flash
@@ -29,9 +30,28 @@ Backend implementation and Google Docs integration
   - Latest model with enhanced performance
   - Optimized for real-time interactions
   - Cost-effective for MVP
-  - Native integration with Google ecosystem
 - **Status**: Implemented
 - **Impact**: Successfully handling note rewriting with good results
+
+### 4. Document Storage
+- **Decision**: Migrating from Google Docs to Firestore
+- **Rationale**:
+  - More control over document structure
+  - Simpler implementation
+  - Better integration with existing auth
+  - Reduced API complexity
+- **Status**: In Progress
+- **Impact**: Simplifies storage layer, removes Google API dependencies
+
+### 5. Editor Selection
+- **Decision**: Evaluating Tiptap vs Quill
+- **Rationale**:
+  - Both provide rich text editing
+  - Modern, maintained libraries
+  - Good documentation
+  - Active communities
+- **Status**: To be decided
+- **Impact**: Will affect editor implementation approach
 
 ## Current Work Threads
 
@@ -41,136 +61,111 @@ Backend implementation and Google Docs integration
 - [ ] Configure ESLint and Prettier
 - [✓] Create initial project structure
 - [✓] Set up Express server
+- [✓] Configure Firestore
 
 ### 2. Authentication Flow
 - [✓] Configure Google OAuth
 - [✓] Implement token management
 - [✓] Set up secure session handling
 - [✓] Create login/logout flow
+- [ ] Add token refresh mechanism
 
-### 3. Chat Interface
-- [✓] Design basic UI layout (ChatGPT-style minimal design)
-- [✓] Implement chat input (auto-expanding textarea)
-- [✓] Create message display (clean message boxes)
-- [✓] Add basic styling (dark theme with gold accents)
+### 3. Gorlea Notes Interface
+- [✓] Design basic UI layout
+- [✓] Implement chat input
+- [✓] Create message display
+- [✓] Add basic styling
+- [✓] Integrate AI processing
 
-### 4. AI Integration
-- [✓] Set up Gemini 2.0 Flash API connection
-- [✓] Implement note rewriting
-- [✓] Add loading states and error handling
-- [ ] Add GPT-4 fallback (future enhancement)
-
-### 5. Google Docs Integration
-- [✓] Configure Drive API scopes
-- [✓] Implement doc search functionality
-- [~] Implement doc creation (in progress)
-- [~] Set up append functionality (blocked)
-- [ ] Add doc suggestion system
+### 4. Gorlea Docs Phase 1
+- [✓] Create /docs route
+- [✓] Implement document list view
+- [✓] Add new document button
+- [✓] Set up Firestore document storage
+- [✓] Add loading/error states
+- [✓] Implement editor page (Phase 2 - Basic Load/Save)
 
 ## Technical Considerations
 
 ### Active Issues
-1. Google Docs API Integration Issue:
-   - Successfully finding docs in Drive API
-   - 404 error when accessing via Docs API
-   - Possible causes:
-     - Document type verification needed
-     - Need to request mimeType in Drive search
-     - Token scope verification needed
-   - Next steps:
-     - Update Drive search to include mimeType
-     - Verify documents are proper Google Docs
-     - Double-check token scopes
+1. Editor Selection:
+   - Evaluating Tiptap and Quill features
+   - Considering performance implications
+   - Assessing customization needs
+   - Reviewing community support
 
-2. Recent Changes (March 25):
-   - Switched from Drive API to Docs API for content operations
-   - Added proper OAuth client initialization
-   - Improved error logging for debugging
-   - Added token scope verification
+2. Recent Changes (March 26):
+   - Created document list view
+   - Implemented Firestore document storage
+   - Added document CRUD endpoints
+   - Set up protected routes
 
 3. Current Blockers:
-   - Document append functionality not working
-   - Need to verify document types during search
-   - May need to adjust token handling
+   - Editor implementation pending
+   - Export functionality not started
+   - Document content storage structure TBD
 
 ### Open Questions
-1. Best approach for doc suggestion algorithm
-2. Optimal way to handle long notes
-3. Strategy for handling API rate limits
-4. Approach to implementing search (future)
+1. Best approach for rich text storage in Firestore
+2. Export format preferences
+3. Editor customization requirements
+4. Future collaborative features
 
 ## Next Steps
 
 ### Immediate (Next 24-48 Hours)
-1. Fix Google Docs API integration:
-   - Add mimeType verification
-   - Update search fields
-   - Verify token scopes
-2. Implement proper error handling for doc operations
-3. Add comprehensive logging for debugging
+1. Test basic editor load/save functionality thoroughly.
+2. Implement auto-save feature for the editor.
+3. Add a delete button and functionality (soft delete via `isArchived`).
+4. Plan Gorlea Notes integration (saving notes to specific docs).
+5. Select and integrate rich text editor (Tiptap confirmed, implementation pending).
 
 ### Short Term (This Week)
-1. Complete Google Docs integration
-2. Add doc suggestion system
-3. Implement error recovery
-4. Add user feedback for failures
+1. Implement rich text editor (Tiptap).
+2. Refine editor UI/UX.
+3. Implement export functionality (if still desired).
 
 ### Medium Term (Next 2 Weeks)
-1. Complete MVP features
-2. Implement error handling
-3. Add comprehensive testing
-4. Begin user testing
-
-### 4. UI Design
-- **Decision**: ChatGPT-style minimal interface
-- **Rationale**:
-  - Clean, distraction-free design
-  - Familiar chat interface pattern
-  - Focus on content over decoration
-- **Status**: Implemented
-- **Impact**: Sets foundation for user experience
-
-### 5. Theme Design
-- **Decision**: Dark theme with consistent message styling
-- **Rationale**:
-  - Reduced eye strain
-  - Professional appearance
-  - Clear visual hierarchy
-- **Status**: Implemented
-- **Impact**: Establishes visual language for the app
+1. Complete Gorlea Docs MVP (including rich text).
+2. Add comprehensive testing.
+3. Begin user testing.
+4. Implement Gorlea Notes integration.
 
 ## Recent Changes
-- Implemented landing page with Google sign-in (March 24, 7:42 PM)
-- Added protected chat route with auth middleware
-- Integrated Gemini 2.0 Flash API for note rewriting
-- Added loading states during AI processing
-- Implemented comprehensive error handling
-- Fixed API authentication and request format
-- Added detailed server-side logging
-- Switched to Docs API for content operations (March 25, 4:15 PM)
-- Added proper OAuth client initialization (March 25, 4:22 PM)
+- **(March 27)** Debugged editor page visibility:
+    - Corrected HTML structure in `editor.html` (elements misplaced outside wrapper).
+    - Verified asset paths and server config.
+    - Added JS logging.
+    - Used systematic CSS debugging to isolate cause.
+    - Removed logo from `editor.html` as it was causing layout conflict.
+- **(March 27)** Refactored Firestore logic (`firestore.js`):
+    - Replaced `updatedAt` with `lastOpenedAt`.
+    - Added update `lastOpenedAt` on `getDocument`.
+    - Updated sorting in `listDocuments` to use `lastOpenedAt`.
+- **(March 27)** Simplified `docList.js` UI (removed date display).
+- Added document list view (March 26, 8:31 AM)
+- Implemented Firestore document storage (March 26, 8:32 AM)
+- Created document CRUD endpoints (March 26, 8:33 AM)
+- Added protected routes for docs (March 26, 8:31 AM)
 
-## Blocked Items
-- Document append functionality (404 error from Docs API)
-- Need to verify document types during search
 
 ## Risk Register
 
 ### Active Risks
-1. AI API costs could exceed budget
-2. Google API rate limits might affect scalability
-3. User experience might need refinement for ADHD users
-4. Session management in development vs production
-5. Google Docs API integration complexity
+1. Editor integration complexity
+2. Firestore document size limits
+3. Export functionality challenges
+4. Session management in production
+5. Rich text storage optimization
 
 ### Mitigation Strategies
-1. Implement usage monitoring and limits
-2. Design for efficient API usage
-3. Plan for early user testing and feedback
-4. Implement proper security measures
-5. Add comprehensive error handling and recovery
+1. Thorough editor evaluation
+2. Document size monitoring
+3. Export format testing
+4. Proper security measures
+5. Storage optimization planning
 
 ---
 
-Last Updated: 2025-03-25 4:31 PM PDT
-Next Review: 2025-03-26
+Last Updated: 2025-03-27 4:33 PM PDT
+Next Review: 2025-03-28

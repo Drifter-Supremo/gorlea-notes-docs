@@ -5,6 +5,7 @@ const path = require('path');
 const { default: open } = require('open');
 const authRoutes = require('./routes/auth');
 const aiRoutes = require('./routes/ai');
+const docsRoutes = require('./routes/docs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,6 +18,7 @@ app.use(session({
   cookie: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
+    sameSite: 'lax',
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
 }));
@@ -33,13 +35,15 @@ const requireAuth = (req, res, next) => {
   next();
 };
 
-// Serve static files from client directory
+// Serve static files
 app.use(express.static(path.join(__dirname, '../client')));
+app.use('/docs', express.static(path.join(__dirname, '../client/docs')));
 
 // Mount routes
 app.use('/auth', authRoutes);
 app.use('/api/auth', authRoutes); // Mount auth routes at /api/auth too for status endpoint
 app.use('/api/ai', aiRoutes);
+app.use('/api/docs', docsRoutes);
 
 // Landing page route
 app.get('/', (req, res) => {
@@ -52,6 +56,11 @@ app.get('/', (req, res) => {
 // Chat route (requires auth)
 app.get('/chat', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, '../client/chat.html'));
+});
+
+// Docs route (requires auth)
+app.get('/docs', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/docs/index.html'));
 });
 
 // Start server and open browser

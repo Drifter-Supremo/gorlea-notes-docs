@@ -1,0 +1,225 @@
+/* Inherit theme from main.css */
+
+/* Docs App General Styles */
+.docs-app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.docs-header {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+/* Re-use header-content style from main.css if needed, or define here */
+.docs-header .header-content {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.docs-header .logo {
+    width: 40px;
+    height: 40px;
+}
+
+.docs-main {
+    flex: 1;
+    max-width: var(--max-width);
+    margin: 2rem auto;
+    padding: 0 1rem; /* Add horizontal padding */
+    width: 100%;
+}
+
+.docs-actions {
+    margin-bottom: 1.5rem;
+}
+
+/* Style for the New Document Button */
+.new-doc-button {
+    background-color: var(--color-accent); /* Gold */
+    color: var(--color-secondary); /* Deep blue */
+    border: none;
+    border-radius: 24px;
+    padding: 0.75rem 1.5rem; /* Adjusted padding */
+    font-size: 1rem; /* Adjusted font size */
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: inline-flex; /* Align icon and text */
+    align-items: center;
+    gap: 0.5rem; /* Space between icon and text */
+}
+
+.new-doc-button span {
+    font-size: 1.2rem; /* Make '+' slightly larger */
+    line-height: 1;
+}
+
+.new-doc-button:hover {
+    background-color: color-mix(in srgb, var(--color-accent) 90%, white 10%);
+}
+
+/* Document List Styles */
+.docs-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.doc-card {
+    background-color: var(--color-input-bg); /* Use input background */
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+}
+
+.doc-card:hover {
+    background-color: color-mix(in srgb, var(--color-input-bg) 90%, white 5%);
+}
+
+.doc-content {
+    /* Styles for title container if needed */
+}
+
+.doc-title {
+    font-weight: 500;
+    color: var(--color-text);
+    margin-bottom: 0.25rem; /* Add space if date was present */
+}
+
+.doc-arrow {
+    font-size: 1.5rem;
+    color: var(--color-accent);
+    transition: transform 0.2s;
+}
+
+.doc-card:hover .doc-arrow {
+    transform: translateX(5px);
+}
+
+.empty-state {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 2rem;
+}
+
+/* --- Start Minimal Debug Overrides --- */
+#editor-content-wrapper {
+  /* All overrides removed */
+}
+
+/* No overrides left for #doc-content */
+
+/* --- End Minimal Debug Overrides --- */
+
+
+/* Editor Page Specific Styles */
+/* Restore original .editor-container styles */
+.editor-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    /* background: var(--color-background); Use main background */
+    /* No background needed if page bg is correct */
+    border-radius: 8px;
+    /* box-shadow: 0 2px 10px rgba(0,0,0,0.1); No shadow needed on dark bg */
+}
+
+.editor-header {
+    display: flex;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+    align-items: center;
+}
+
+#doc-title {
+    flex: 1;
+    padding: 0.75rem 1rem; /* Consistent padding */
+    font-size: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Use subtle border */
+    border-radius: 6px;
+    background: var(--color-input-bg); /* Use correct variable */
+    color: var(--color-text); /* Use correct variable */
+    outline: none; /* Remove default outline */
+}
+#doc-title:focus {
+    border-color: var(--color-primary); /* Highlight on focus */
+}
+
+
+#save-btn {
+    padding: 0.75rem 1.5rem;
+    background: var(--color-primary); /* Use correct variable */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+#save-btn:hover {
+    background: #8673DC; /* Use specific darker shade from main.css */
+}
+
+#doc-content {
+    width: 100%;
+    min-height: 60vh;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Use subtle border */
+    border-radius: 6px;
+    font-size: 1rem;
+    line-height: 1.6;
+    resize: vertical;
+    background: var(--color-input-bg); /* Use correct variable */
+    color: var(--color-text); /* Use correct variable */
+    outline: none; /* Remove default outline */
+    font-family: inherit; /* Ensure consistent font */
+}
+#doc-content:focus {
+    border-color: var(--color-primary); /* Highlight on focus */
+}
+
+
+#loading-message {
+    padding: 1rem;
+    /* background: var(--color-input-bg); Use input bg */
+    margin: 1rem 0;
+    border-radius: 4px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6); /* Use secondary text color */
+}
+
+#error-message {
+    padding: 1rem;
+    background: rgba(255, 68, 68, 0.1); /* Use a subtle error background */
+    color: #ff4444; /* Use a distinct error color */
+    margin: 1rem 0;
+    border-radius: 4px;
+    border-left: 4px solid #ff4444; /* Use error color for border */
+}
+
+/* Remove opacity change on error, hiding wrapper is enough */
+/* #error-message:not(.hidden) + #doc-content,
+#error-message:not(.hidden) ~ .editor-header {
+    opacity: 0.5;
+    pointer-events: none;
+} */
+
+/* Keep .hidden rule for error message logic */
+.hidden {
+    display: none;
+}
+
+/* Remove redundant dark mode query */
+/* @media (prefers-color-scheme: dark) {
+    .editor-container {
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+} */
