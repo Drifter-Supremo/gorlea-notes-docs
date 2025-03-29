@@ -147,6 +147,11 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 - Implemented Firestore document storage (March 26, 8:32 AM)
 - Created document CRUD endpoints (March 26, 8:33 AM)
 - Added protected routes for docs (March 26, 8:31 AM)
+- **(March 29)** Implemented Gorlea Docs editor flow enhancements:
+    - Added "Docs Home" button to `editor.html`.
+    - Ensured "New Document" button state resets correctly in `docList.js` using `finally`.
+    - Added title validation (defaulting to "Untitled Document") on frontend save (`editor.js`) and backend update (`docsController.js`).
+    - Refactored button styling in `editor.css` using a shared `.button-accent` class for "New Document" and "Docs Home" buttons.
 
 
 ## Risk Register

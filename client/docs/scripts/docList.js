@@ -51,9 +51,12 @@ async function createNewDocument() {
         window.location.href = `editor.html?id=${data.id}`;
     } catch (error) {
         console.error('Document creation error:', error);
+        // Error handling remains the same
+        alert('Failed to create document. Please try again.');
+    } finally {
+        // Always reset the button state after the attempt
         newDocButton.disabled = false;
         newDocButton.innerHTML = '<span>+</span> New Document';
-        alert('Failed to create document. Please try again.');
     }
 }
 

@@ -19,6 +19,8 @@
 - ✅ Document CRUD endpoints
 - ✅ Basic editor page implementation (load/save text)
 - ✅ Editor visibility debugging
+- ✅ Editor flow enhancements (Docs Home button, New Doc button reset, Title validation)
+- ✅ Refactored button styling (.button-accent class)
 
 ## In Progress
 🔨 Gorlea Docs Feature Enhancements
@@ -185,7 +187,9 @@ To be implemented:
 - 2025-03-26 8:33 AM: Created document CRUD endpoints
 - 2025-03-26 8:31 AM: Added protected routes for docs
 - 2025-03-26 8:37 AM: Updated memory bank documentation
+- **2025-03-29:** Implemented editor flow enhancements (Docs Home button, New Doc button reset, Title validation).
+- **2025-03-29:** Refactored button styling using shared `.button-accent` class.
 
 ---
 
-Last Updated: 2025-03-27 4:33 PM PDT
+Last Updated: 2025-03-29 9:15 AM PDT

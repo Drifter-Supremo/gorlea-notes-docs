@@ -45,15 +45,28 @@ const docsController = {
     }
   },
 
-  async updateDocument(req, res) {
-    try {
-      const { id } = req.params;
-      const { title, content } = req.body;
-      console.log('Updating document:', id);
-      await firestoreUtils.updateDocument(id, { title, content });
-      res.json({ success: true });
-    } catch (error) {
-      console.error('Error updating document:', error);
+    async updateDocument(req, res) {
+        try {
+            const { id } = req.params;
+            let { title, content } = req.body; // Use let for title
+
+            // Backend Title Validation
+            const trimmedTitle = title ? title.trim() : ''; // Handle potential null/undefined title
+            const finalTitle = trimmedTitle === '' ? 'Untitled Document' : trimmedTitle;
+
+            console.log('Updating document:', id, 'with title:', finalTitle); // Log the final title being used
+
+            // Prepare updates object
+            const updates = {
+                title: finalTitle,
+                content: content // Keep content as is (or add validation if needed later)
+                // Note: lastOpenedAt is updated by getDocument called within updateDocument
+            };
+
+            await firestoreUtils.updateDocument(id, updates);
+            res.json({ success: true });
+        } catch (error) {
+            console.error('Error updating document:', error.stack); // Log stack trace
       res.status(500).json({ error: 'Failed to update document' });
     }
   }

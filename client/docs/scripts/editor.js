@@ -69,6 +69,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Save handler
     saveBtn.addEventListener('click', async () => {
+        // Frontend Title Validation
+        const title = titleInput.value.trim();
+        const finalTitle = title === '' ? 'Untitled Document' : title;
+        // Update the input field visually as well
+        if (title === '') {
+            titleInput.value = finalTitle;
+        }
+
         try {
             const response = await fetch(`/api/docs/${docId}`, {
                 method: 'PUT',
@@ -76,7 +84,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    title: titleInput.value,
+                    title: finalTitle, // Send validated title
                     content: contentInput.value
                 })
             });
