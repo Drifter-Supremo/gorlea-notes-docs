@@ -109,6 +109,19 @@ const firestoreUtils = {
             console.error('Firestore delete document error:', error);
             throw error;
         }
+    },
+
+    // Permanently delete a document
+    async hardDeleteDocument(docId) {
+        try {
+            const docRef = db.collection(DOCS_COLLECTION).doc(docId);
+            await docRef.delete();
+            return true;
+        } catch (error) {
+            console.error('Firestore hard delete document error:', error);
+            // Check for specific errors if needed, e.g., not found
+            throw error;
+        }
     }
 };
 

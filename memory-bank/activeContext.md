@@ -152,6 +152,14 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
     - Ensured "New Document" button state resets correctly in `docList.js` using `finally`.
     - Added title validation (defaulting to "Untitled Document") on frontend save (`editor.js`) and backend update (`docsController.js`).
     - Refactored button styling in `editor.css` using a shared `.button-accent` class for "New Document" and "Docs Home" buttons.
+- **(March 29)** Added Archive (soft delete) and Delete (permanent) functionality to document list:
+    - Added Archive/Delete buttons to document cards in `docList.js`.
+    - Implemented backend routes (`PUT /api/docs/:id/archive`, `DELETE /api/docs/:id`) and corresponding controller/utility functions.
+    - Added frontend logic in `docList.js` to call APIs and update UI.
+    - Included confirmation dialog for permanent delete.
+- **(March 29)** Fixed document card icon alignment:
+    - Refactored card HTML structure in `docList.js` (`.doc-main`, `.doc-actions`).
+    - Adjusted CSS in `editor.css` (`.doc-card`, `.doc-actions`) for correct Flexbox layout.
 
 
 ## Risk Register

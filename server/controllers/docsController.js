@@ -69,6 +69,33 @@ const docsController = {
             console.error('Error updating document:', error.stack); // Log stack trace
       res.status(500).json({ error: 'Failed to update document' });
     }
+  },
+
+  // Archive document (soft delete)
+  async archiveDocument(req, res) {
+    try {
+      const { id } = req.params;
+      console.log('Archiving document:', id);
+      await firestoreUtils.deleteDocument(id); // Uses existing soft delete util
+      res.json({ success: true, message: 'Document archived successfully' });
+    } catch (error) {
+      console.error('Error archiving document:', error.stack);
+      res.status(500).json({ error: 'Failed to archive document' });
+    }
+  },
+
+  // Delete document permanently
+  async deleteDocumentPermanently(req, res) {
+    try {
+      const { id } = req.params;
+      console.log('Permanently deleting document:', id);
+      await firestoreUtils.hardDeleteDocument(id); // Use new hard delete util
+      res.json({ success: true, message: 'Document permanently deleted' });
+    } catch (error) {
+      console.error('Error permanently deleting document:', error.stack);
+      // Consider specific error handling, e.g., for not found
+      res.status(500).json({ error: 'Failed to permanently delete document' });
+    }
   }
 };
 

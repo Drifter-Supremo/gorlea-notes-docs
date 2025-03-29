@@ -79,7 +79,7 @@
     border-radius: 8px;
     padding: 1rem 1.5rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Keep this */
     align-items: center;
     cursor: pointer;
     transition: background-color 0.2s;
@@ -90,8 +90,9 @@
     background-color: color-mix(in srgb, var(--color-input-bg) 90%, white 5%);
 }
 
-.doc-content {
-    /* Styles for title container if needed */
+/* Renamed from .doc-content to match HTML */
+.doc-main { 
+    /* No flex-grow needed with space-between on parent */
 }
 
 .doc-title {
@@ -108,7 +109,39 @@
 
 .doc-card:hover .doc-arrow {
     transform: translateX(5px);
+    /* Ensure arrow doesn't prevent actions container alignment */
+    flex-shrink: 0; 
 }
+
+/* New Actions Container (replaces doc-actions-container) */
+.doc-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* Slightly increased gap */
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+/* Individual Action Buttons (styles remain largely the same) */
+.doc-action-archive,
+.doc-action-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem; /* Small padding for click area */
+    font-size: 1.1rem; /* Adjust icon size */
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.6); /* Default subtle color */
+    transition: color 0.2s;
+}
+
+.doc-action-archive:hover {
+    color: var(--color-accent); /* Gold on hover */
+}
+
+.doc-action-delete:hover {
+    color: #ff6b6b; /* Reddish color on hover */
+}
+
 
 .empty-state {
     text-align: center;

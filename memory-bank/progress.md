@@ -21,11 +21,13 @@
 - ✅ Editor visibility debugging
 - ✅ Editor flow enhancements (Docs Home button, New Doc button reset, Title validation)
 - ✅ Refactored button styling (.button-accent class)
+- ✅ Document list actions (Archive & Delete buttons, backend logic, frontend handlers)
+- ✅ Fixed document card icon alignment (HTML/CSS refactor)
 
 ## In Progress
 🔨 Gorlea Docs Feature Enhancements
 - [ ] Auto-save implementation
-- [ ] Delete button and functionality
+- [✓] Delete button and functionality (Now includes Archive) 
 - [ ] Rich text editor integration (Tiptap)
 - [ ] Gorlea Notes integration planning
 - [ ] Export functionality (lower priority)
@@ -189,7 +191,9 @@ To be implemented:
 - 2025-03-26 8:37 AM: Updated memory bank documentation
 - **2025-03-29:** Implemented editor flow enhancements (Docs Home button, New Doc button reset, Title validation).
 - **2025-03-29:** Refactored button styling using shared `.button-accent` class.
+- **2025-03-29:** Added Archive (soft delete) and Delete (permanent) buttons/functionality to document list.
+- **2025-03-29:** Fixed document card icon alignment using Flexbox refactor.
 
 ---
 
-Last Updated: 2025-03-29 9:15 AM PDT
+Last Updated: 2025-03-29 10:29 AM PDT

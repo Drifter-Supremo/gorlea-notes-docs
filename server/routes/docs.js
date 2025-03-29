@@ -14,4 +14,10 @@ router.get('/:id', docsController.getDocument);
 // Update document
 router.put('/:id', docsController.updateDocument);
 
+// Archive document (soft delete)
+router.put('/:id/archive', docsController.archiveDocument); // Added archive route
+
+// Delete document permanently
+router.delete('/:id', docsController.deleteDocumentPermanently); // Added delete route
+
 module.exports = router;
