@@ -208,6 +208,15 @@
     background: #8673DC; /* Use specific darker shade from main.css */
 }
 
+/* Autosave Status Styling */
+.autosave-status {
+    margin-left: 1rem; /* Space from save button */
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6); /* Muted color */
+    font-style: italic;
+}
+
+
 #doc-content {
     width: 100%;
     min-height: 60vh;

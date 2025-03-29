@@ -160,6 +160,13 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 - **(March 29)** Fixed document card icon alignment:
     - Refactored card HTML structure in `docList.js` (`.doc-main`, `.doc-actions`).
     - Adjusted CSS in `editor.css` (`.doc-card`, `.doc-actions`) for correct Flexbox layout.
+- **(March 29)** Implemented editor autosave functionality:
+    - Added debounce utility and `performAutosave` function in `editor.js`.
+    - Autosave triggers on title/content input (2s delay) and on "Docs Home" button click (immediate, awaits completion before navigation).
+    - Initially included visual feedback elements (`#autosave-status`).
+- **(March 29)** Cleaned up editor UI:
+    - Removed manual Save button (`#save-btn`) and visual autosave status (`#autosave-status`) from `editor.html`.
+    - Modified `editor.js` to remove related DOM manipulation and use `console.log`/`console.error` for autosave feedback instead.
 
 
 ## Risk Register

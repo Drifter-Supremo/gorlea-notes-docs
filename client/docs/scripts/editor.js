@@ -5,10 +5,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const docId = urlParams.get('id');
     const titleInput = document.getElementById('doc-title');
     const contentInput = document.getElementById('doc-content');
-    const saveBtn = document.getElementById('save-btn');
+    // const saveBtn = document.getElementById('save-btn'); // Removed
     const loadingMessage = document.getElementById('loading-message');
     const errorMessage = document.getElementById('error-message');
     const editorWrapper = document.getElementById('editor-content-wrapper'); // Get wrapper
+    // const autosaveStatus = document.getElementById('autosave-status'); // Removed
+    const homeButton = document.querySelector('.docs-home-button'); // Get home button
 
     // Hide editor initially
     editorWrapper.classList.add('hidden');
@@ -67,40 +69,94 @@ document.addEventListener('DOMContentLoaded', async () => {
         // No need to disable inputs explicitly if they are hidden by the wrapper
     }
 
-    // Save handler
-    saveBtn.addEventListener('click', async () => {
-        // Frontend Title Validation
+    // Manual Save handler removed
+
+    // --- Autosave Implementation ---
+
+    // Debounce utility function
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // Core autosave logic
+    async function performAutosave() {
+        // console.log("Autosave triggered..."); // Keep original trigger log if desired
+        console.log('Autosave: Saving...'); // Replaced UI update
+        // saveBtn.disabled = true; // Removed reference
+
+        // Reuse title validation from manual save
         const title = titleInput.value.trim();
         const finalTitle = title === '' ? 'Untitled Document' : title;
-        // Update the input field visually as well
         if (title === '') {
-            titleInput.value = finalTitle;
+            titleInput.value = finalTitle; // Update input visually
         }
 
         try {
             const response = await fetch(`/api/docs/${docId}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Credentials': 'include' // Ensure credentials are sent if needed by session
                 },
                 body: JSON.stringify({
-                    title: finalTitle, // Send validated title
+                    title: finalTitle,
                     content: contentInput.value
                 })
             });
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.error || 'Failed to save document');
+                throw new Error(errorData.error || 'Autosave failed');
             }
-            // Optionally provide better feedback than alert
-            saveBtn.textContent = 'Saved!';
-            setTimeout(() => { saveBtn.textContent = 'Save'; }, 2000); 
+
+            console.log('Autosave: All changes saved.'); // Replaced UI update
+            // setTimeout removed
+
         } catch (error) {
-            // Show error near save button or use a more prominent notification
-            alert(`Save failed: ${error.message}`); 
+            console.error('Autosave: Failed.', error); // Replaced UI update, log error object
+            // Optionally make error more prominent or persistent
+        } finally {
+             // saveBtn.disabled = false; // Removed reference
+        }
+        // Return the promise in case save-on-exit needs to await it
+        // (Implicitly returns promise from async function)
+    }
+
+    // Create debounced version
+    const debouncedAutosave = debounce(performAutosave, 2000); // 2-second delay
+
+    // Add input listeners
+    titleInput.addEventListener('input', debouncedAutosave);
+    contentInput.addEventListener('input', debouncedAutosave);
+
+    // Add save-on-exit listener
+    homeButton.addEventListener('click', async (event) => {
+        event.preventDefault(); // Prevent immediate navigation
+        console.log("Home button clicked, triggering final save...");
+        try {
+            // Perform one final save immediately, await its completion
+            await performAutosave(); 
+        } catch (saveError) {
+            console.error("Error during final save on exit:", saveError);
+            // Decide if navigation should still happen despite error
+            // Maybe ask user? For now, we'll navigate anyway.
+        } finally {
+             // Navigate after save attempt is complete
+            console.log("Navigating to /docs");
+            window.location.href = homeButton.href;
         }
     });
+
+    // --- End Autosave Implementation ---
+
 
     // Define showError function ONCE, correctly placed
     function showError(message) {

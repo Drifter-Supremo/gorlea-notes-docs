@@ -23,10 +23,11 @@
 - ✅ Refactored button styling (.button-accent class)
 - ✅ Document list actions (Archive & Delete buttons, backend logic, frontend handlers)
 - ✅ Fixed document card icon alignment (HTML/CSS refactor)
+- ✅ Editor autosave (debounced, save-on-exit, console feedback)
 
 ## In Progress
 🔨 Gorlea Docs Feature Enhancements
-- [ ] Auto-save implementation
+- [✓] Auto-save implementation (Completed, UI removed)
 - [✓] Delete button and functionality (Now includes Archive) 
 - [ ] Rich text editor integration (Tiptap)
 - [ ] Gorlea Notes integration planning
@@ -193,7 +194,9 @@ To be implemented:
 - **2025-03-29:** Refactored button styling using shared `.button-accent` class.
 - **2025-03-29:** Added Archive (soft delete) and Delete (permanent) buttons/functionality to document list.
 - **2025-03-29:** Fixed document card icon alignment using Flexbox refactor.
+- **2025-03-29:** Implemented debounced autosave and save-on-exit for editor.
+- **2025-03-29:** Removed manual save button and visual autosave status for cleaner editor UI (using console logs for feedback).
 
 ---
 
-Last Updated: 2025-03-29 10:29 AM PDT
+Last Updated: 2025-03-29 10:54 AM PDT
