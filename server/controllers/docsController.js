@@ -18,11 +18,14 @@ const docsController = {
 
   async createDocument(req, res) {
     try {
-      console.log('Creating new document...');
-      const docId = await firestoreUtils.createDocument();
-      console.log('Successfully created document:', docId);
+      // Extract optional title and content from body
+      const { title, content } = req.body; 
+      console.log('Creating new document with:', { title, content: content ? '[content provided]' : '[no content]' });
+      // Pass title and content to the updated utility function
+      const newDoc = await firestoreUtils.createDocument(title, content); 
+      console.log('Successfully created document:', newDoc.id);
       res.status(201).json({ 
-        data: docId
+        data: newDoc // Return the full new document object
       });
     } catch (error) {
       console.error('Error creating document:', error);
@@ -95,6 +98,32 @@ const docsController = {
       console.error('Error permanently deleting document:', error.stack);
       // Consider specific error handling, e.g., for not found
       res.status(500).json({ error: 'Failed to permanently delete document' });
+    }
+  },
+
+  // Append content to a document
+  async appendDocument(req, res) {
+    try {
+        const { id } = req.params;
+        const { content } = req.body;
+
+        if (!content) {
+             return res.status(400).json({ error: 'Content is required to append.' });
+        }
+
+        console.log(`Appending content to document: ${id}`);
+        await firestoreUtils.appendContent(id, content);
+        // Send a simple success response, maybe just status 200 or 204
+        // Or confirm with a message if preferred by the calling service (AI controller)
+        res.status(200).json({ success: true, message: 'Content appended successfully' }); 
+
+    } catch (error) {
+        console.error(`Error appending content to document ${req.params.id}:`, error.stack);
+        // Handle specific errors like 'Document not found'
+        if (error.message.includes('not found')) {
+            return res.status(404).json({ error: 'Document not found' });
+        }
+        res.status(500).json({ error: 'Failed to append content' });
     }
   }
 };

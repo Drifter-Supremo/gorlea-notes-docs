@@ -182,6 +182,30 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
     - Updated `editor.js` to import Tiptap, initialize the editor, set initial content from fetched data, and trigger autosave via `onUpdate`.
     - Modified `performAutosave` in `editor.js` to use `editor.getHTML()` for saving content.
     - Updated `docs.css` to style the Tiptap editor area (`#editor .ProseMirror`).
+- **(March 29)** Implemented case-insensitive document title search:
+    - Added `title_lowercase` field to Firestore documents on create/update (`firestore.js`).
+    - Modified `findDocumentByTitle` to query the lowercase field (`firestore.js`).
+- **(March 29)** Refined chatbot save/create logic (`chat.js`):
+    - Improved document name extraction from save commands.
+    - Added explicit patterns (`createPatterns`) to handle direct creation intent (e.g., "create new doc named X").
+    - Prioritized checking creation patterns before general save patterns in `handleSubmit`.
+- **(March 29)** Simplified AI rewrite prompt (`aiController.js`) after improving frontend intent handling.
+- **(March 29)** Diagnosed chat auto-scroll issue: `scrollToBottom` in `chat.js` targets `#messages` instead of the scrollable parent `.chat-container`.
+
+
+## Next Steps - Updated
+
+### Immediate Task
+1.  **Fix Chat Auto-Scrolling:**
+    *   **File:** `client-vite/src/chat.js`
+    *   **Action:** Get reference to `.chat-container`. Update `scrollToBottom` function to set `scrollTop` on the `.chat-container` element instead of `#messages`.
+
+### Subsequent Tasks (Post-Scrolling Fix)
+1.  **Refine Editor UI/UX:** (e.g., add Tiptap toolbar if desired).
+2.  **Gorlea Notes Integration:** Plan how notes from chat are saved/linked to specific docs.
+3.  **Authentication:** Re-implement proper authentication (e.g., Google OAuth) and update `requireAuth` middleware.
+4.  **Testing:** Add more comprehensive unit/integration/E2E tests.
+5.  **Other Features:** Export, Search, etc.
 
 
 ## Risk Register

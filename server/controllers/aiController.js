@@ -1,8 +1,10 @@
 const axios = require('axios');
-const { searchDocs, createNewDoc, appendToDoc } = require('../utils/googleDocs');
+// Remove Google Docs utils, import Firestore utils
+// const { searchDocs, createNewDoc, appendToDoc } = require('../utils/googleDocs'); 
+const firestoreUtils = require('../utils/firestore');
 
 /**
- * Rewrites a note using AI to improve clarity and structure
+ * Rewrites a note using AI to improve clarity and structure 
  * @param {Request} req - Express request object with note in body
  * @param {Response} res - Express response object
  * @returns {Promise<Response>} JSON response with cleaned note or error
@@ -27,6 +29,7 @@ const rewriteNote = async (req, res) => {
       {
         contents: [
           {
+            // Reverted to simpler prompt
             parts: [{ text: `You are Gorlea, a smart AI note assistant. Always respond in plain text without any formatting. Just rewrite this note in a clearer and more structured way. Then on a new line, ask "Would you like me to save this to an existing doc, or start a new one? Just tell me the name."\n\n"${note}"` }],
           },
         ],
@@ -81,12 +84,13 @@ const rewriteNote = async (req, res) => {
  * Save a rewritten note to Google Docs
  * @param {Request} req - Express request object
  * @param {Response} res - Express response object
- * @returns {Promise<Response>} JSON response with doc info or error
+ * @returns {Promise<Response>} JSON response with action status or error
  */
 const saveNote = async (req, res) => {
   try {
-    const { docName, content } = req.body;
-    const tokens = req.session.tokens;
+    // docName is the potential title the user mentioned
+    const { docName, content } = req.body; 
+    // const tokens = req.session.tokens; // No longer needed for Firestore interaction directly here
 
     if (!docName || !content) {
       return res.status(400).json({
@@ -98,34 +102,35 @@ const saveNote = async (req, res) => {
       });
     }
 
-    console.log('Save Note - Tokens present:', !!tokens);
-    console.log('Save Note - Doc name:', docName);
+    // console.log('Save Note - Tokens present:', !!tokens); // Removed token log
+    console.log('Save Note - Attempting to save to doc title:', docName);
 
-    // Search for existing docs with similar name
-    const docs = await searchDocs(tokens, docName);
-    console.log('Save Note - Search results:', docs);
+    // Search for existing doc in Firestore by title
+    const existingDoc = await firestoreUtils.findDocumentByTitle(docName);
+    console.log('Save Note - Firestore search result:', existingDoc ? `Found ID: ${existingDoc.id}` : 'Not Found');
 
-    if (docs.length > 0) {
-      // Use the first matching doc
-      const doc = docs[0];
-      const result = await appendToDoc(tokens, doc.id, content);
+    if (existingDoc) {
+      // Append to the existing doc
+      await firestoreUtils.appendContent(existingDoc.id, content);
       
+      // Return success indicating append action
       return res.json({
         success: true,
         data: {
-          docId: result.id,
-          title: result.title,
-          action: 'appended'
+          // docId: existingDoc.id, // Optionally return ID
+          title: existingDoc.title, // Return the actual title found
+          action: 'appended' // Indicate action taken
         }
       });
     } else {
-      // No matching doc found, ask for confirmation
+      // No matching doc found, ask for confirmation to create
+      // Use the user-provided docName as the suggested title
       return res.json({
         success: true,
         data: {
-          needsConfirmation: true,
-          suggestedTitle: docName
-        }
+          needsConfirmation: true, // Signal frontend to ask user
+          suggestedTitle: docName // Pass back the name user tried
+        } 
       });
     }
 
@@ -150,14 +155,15 @@ const saveNote = async (req, res) => {
  * Create a new Google Doc with the note
  * @param {Request} req - Express request object
  * @param {Response} res - Express response object
- * @returns {Promise<Response>} JSON response with doc info or error
+ * @returns {Promise<Response>} JSON response with new doc info or error
  */
 const createDoc = async (req, res) => {
   try {
     const { title, content } = req.body;
-    const tokens = req.session.tokens;
+    // const tokens = req.session.tokens; // No longer needed
 
-    if (!title || !content) {
+    // Title is optional here, Firestore util defaults it
+    if (!content) { // Content is required though
       return res.status(400).json({
         success: false,
         error: {
@@ -167,15 +173,17 @@ const createDoc = async (req, res) => {
       });
     }
 
-    const result = await createNewDoc(tokens, title, content);
+    // Call the modified Firestore utility to create the document
+    const newDoc = await firestoreUtils.createDocument(title, content); 
     
+    // Return success indicating creation and new doc details
     return res.json({
       success: true,
       data: {
-        docId: result.id,
-        title: result.title,
-        action: 'created'
-      }
+        docId: newDoc.id,
+        title: newDoc.title, // Return the actual title (might be defaulted)
+        action: 'created' // Indicate action taken
+      } 
     });
 
   } catch (error) {

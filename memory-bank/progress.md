@@ -27,6 +27,9 @@
 - ✅ Vite Setup (Phase A - Init, Migration, Config)
 - ✅ Debugged Vite/Proxy issues (document shadowing, 401 workaround, ReferenceError)
 - ✅ Tiptap Integration (Phase D - Install, JS/CSS Integration, Autosave Hook)
+- ✅ Implemented case-insensitive doc title search (Firestore)
+- ✅ Refined chatbot save/create logic (Intent handling)
+- ✅ Simplified AI prompt
 
 ## In Progress
 🔨 Gorlea Docs Feature Enhancements
@@ -108,6 +111,7 @@
 4. Rich text editor integration pending (Tiptap selected)
 5. Export functionality not implemented (lower priority)
 6. Firestore index creation required manual step (document this)
+7. Chat auto-scrolling not working correctly (Next Task)
 
 ## Technical Debt
 1. Add request validation
@@ -202,7 +206,9 @@ To be implemented:
 - **2025-03-29:** Completed Phase A of Vite migration (Init, File Migration, MPA/Proxy Config).
 - **2025-03-29:** Debugged Vite setup: Fixed `document` shadowing, temporarily removed `requireAuth` from AI routes to resolve `401`, fixed `loadingMessage` `ReferenceError`.
 - **2025-03-29:** Integrated Tiptap editor via npm into Vite setup, replacing textarea and hooking into autosave.
+- **2025-03-29:** Implemented case-insensitive title search in Firestore utils.
+- **2025-03-29:** Improved chatbot intent handling for create vs. save commands. Simplified AI prompt. Diagnosed chat scroll issue.
 
 ---
 
-Last Updated: 2025-03-29 6:44 PM PDT
+Last Updated: 2025-03-29 8:35 PM PDT

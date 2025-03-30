@@ -34,14 +34,46 @@ const firestoreUtils = {
         }
     },
 
-    // Create a new document
-    async createDocument(title = 'Untitled Document') {
+    // Find a document by title (case-insensitive)
+    async findDocumentByTitle(title) {
         try {
+            // Convert search title to lowercase
+            const lowercaseTitle = title.toLowerCase(); 
+            console.log(`Firestore: Searching for title_lowercase == "${lowercaseTitle}"`); // Debug log
+            
+            // Query using the dedicated lowercase field
+            const snapshot = await db.collection(DOCS_COLLECTION)
+                .where('title_lowercase', '==', lowercaseTitle) // Query lowercase field
+                .where('isArchived', '==', false)
+                .limit(1)
+                .get();
+
+            if (snapshot.empty) {
+                return null; // No matching document found
+            }
+            
+            // Return the first match
+            const doc = snapshot.docs[0];
+            return {
+                id: doc.id,
+                ...doc.data()
+            };
+        } catch (error) {
+            console.error('Firestore findDocumentByTitle error:', error);
+            throw error;
+        }
+    },
+
+    // Create a new document, now accepting initial content
+    async createDocument(title = 'Untitled Document', content = '<p></p>') { 
+        try {
+            const finalTitle = title.trim() === '' ? 'Untitled Document' : title; // Ensure title isn't empty
             const docData = {
-                title,
-                content: '',
+                title: finalTitle, // Store original case title
+                title_lowercase: finalTitle.toLowerCase(), // Store lowercase version for searching
+                content: content, 
                 createdAt: admin.firestore.Timestamp.now(),
-                lastOpenedAt: admin.firestore.Timestamp.now(), // Use lastOpenedAt
+                lastOpenedAt: admin.firestore.Timestamp.now(), 
                 isArchived: false
             };
 
@@ -56,7 +88,7 @@ const firestoreUtils = {
         }
     },
 
-    // Get a single document
+    // Get a single document (keeping existing logic)
     async getDocument(docId) {
         try {
             const docRef = db.collection(DOCS_COLLECTION).doc(docId);
@@ -81,14 +113,27 @@ const firestoreUtils = {
         }
     },
 
-    // Update a document
+    // Update a document (keeping existing logic)
     async updateDocument(docId, updates) {
         try {
             const docRef = db.collection(DOCS_COLLECTION).doc(docId);
-            // Only apply the specific updates provided
-            await docRef.update(updates); 
+            
+            // If the title is being updated, also update the lowercase version
+            if (updates.title !== undefined) {
+                const finalTitle = updates.title.trim() === '' ? 'Untitled Document' : updates.title;
+                updates.title = finalTitle; // Ensure title isn't empty in update
+                updates.title_lowercase = finalTitle.toLowerCase();
+            }
 
-            // Get and return the updated document
+            // Add/update lastOpenedAt timestamp on any update
+            updates.lastOpenedAt = admin.firestore.Timestamp.now();
+
+            // Apply the updates
+            await docRef.update(updates); 
+            console.log(`Firestore: Updated document ${docId} with fields:`, Object.keys(updates));
+
+            // Get and return the updated document data (excluding the lowercase title potentially)
+            // Note: getDocument also updates lastOpenedAt, which is slightly redundant here but harmless
             return await this.getDocument(docId);
         } catch (error) {
             console.error('Firestore update document error:', error);
@@ -96,7 +141,38 @@ const firestoreUtils = {
         }
     },
 
-    // Delete a document (soft delete by archiving)
+    // Append content to an existing document
+    async appendContent(docId, contentToAppend) {
+        try {
+            const docRef = db.collection(DOCS_COLLECTION).doc(docId);
+            const docSnap = await docRef.get();
+
+            if (!docSnap.exists) {
+                throw new Error(`Document with ID ${docId} not found for appending.`);
+            }
+
+            const existingContent = docSnap.data().content || '';
+            // Simple HTML concatenation, assuming contentToAppend is also HTML
+            // Add a separator if desired, e.g., '<hr>' or just ensure contentToAppend starts with <p>
+            const newContent = existingContent + contentToAppend; 
+
+            // Update content and lastOpenedAt timestamp
+            await docRef.update({ 
+                content: newContent,
+                lastOpenedAt: admin.firestore.Timestamp.now() 
+            });
+            
+            console.log(`Appended content to document ${docId}`);
+            return true; // Indicate success
+
+        } catch (error) {
+            console.error(`Firestore appendContent error for doc ${docId}:`, error);
+            throw error;
+        }
+    },
+
+
+    // Delete a document (soft delete by archiving - keeping existing logic)
     async deleteDocument(docId) {
         try {
             const docRef = db.collection(DOCS_COLLECTION).doc(docId);

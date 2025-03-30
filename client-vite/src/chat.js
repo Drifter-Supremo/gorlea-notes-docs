@@ -53,6 +53,19 @@ const confirmPatterns = [
   'please'
 ];
 
+// Patterns indicating user wants to create a new document
+const createPatterns = [
+  "create new doc named",
+  "create new doc called",
+  "start new doc called",
+  "save to new doc called",
+  "save to a new doc called",
+  "create a note called", // Treat note/doc interchangeably for creation
+  "save it to a new note called",
+  "create new doc" // Handle case where user doesn't provide title initially
+].map(p => p.toLowerCase()); // Ensure patterns are lowercase for matching
+
+
 // Track state
 let isFirstMessage = true;
 let lastRewrittenNote = null;
@@ -196,7 +209,12 @@ function addMessage(text, isUser = true, isLoading = false, isError = false) {
 
 // Scroll chat to bottom
 function scrollToBottom() {
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    // Defer scroll slightly to allow DOM to update heights
+    setTimeout(() => {
+        if (messagesContainer) { // Add null check just in case
+             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    }, 0); 
 }
 
 // Handle message submission
@@ -216,22 +234,99 @@ async function handleSubmit() {
         console.log('Processing message:', text);
         console.log('Current state:', { lastRewrittenNote: !!lastRewrittenNote, pendingDocTitle });
 
-        // Check if this is a confirmation to create a new doc
-        if (confirmPatterns.some(pattern => text.toLowerCase() === pattern) && lastRewrittenNote && pendingDocTitle) {
-            console.log('Handling confirmation to create doc:', pendingDocTitle);
+        // --- Check for Explicit Creation Command FIRST ---
+        const lowerText = text.toLowerCase();
+        const matchedCreatePattern = createPatterns.find(pattern => lowerText.startsWith(pattern));
+
+        if (matchedCreatePattern && lastRewrittenNote) {
+            let extractedTitle = '';
+            // Extract title if pattern allows for it (i.e., not just "create new doc")
+            if (matchedCreatePattern !== "create new doc") {
+                 extractedTitle = text.substring(matchedCreatePattern.length).trim();
+            }
+            
+            const finalTitle = extractedTitle || 'Untitled Document'; // Default if no title extracted
+
+            console.log(`Handling direct creation command. Matched: "${matchedCreatePattern}", Title: "${finalTitle}"`);
+            loadingMessage = addMessage(`Creating new document "${finalTitle}"...`, false, true);
+            
+            try {
+                // Directly call the create API endpoint
+                const response = await fetch('/api/ai/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include', 
+                    body: JSON.stringify({ title: finalTitle, content: lastRewrittenNote })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    console.error("API Create Doc Error Response:", errorData);
+                    throw new Error(errorData.error?.message || `HTTP error ${response.status}`);
+                }
+                
+                const resultData = await response.json();
+                
+                if (!resultData.success || !resultData.data) {
+                     console.error("API Create Doc Success Response but missing data:", resultData);
+                     throw new Error('API response missing expected data.');
+                }
+
+                const result = resultData.data; 
+                
+                if(loadingMessage) messagesContainer.removeChild(loadingMessage);
+                addMessage(`I've created a new document "${result.title}" and saved your note!`, false); 
+                lastRewrittenNote = null; 
+                pendingDocTitle = null; 
+            } catch (error) {
+                console.error('Direct create doc error:', error); 
+                if(loadingMessage) messagesContainer.removeChild(loadingMessage); 
+                addMessage(`Sorry, I had trouble creating the document. Please try again. Error: ${error.message}`, false, false, true);
+            }
+            return; // Exit after handling explicit create command
+        }
+
+        // --- Check if this is a confirmation to create a new doc (from previous prompt) ---
+        if (confirmPatterns.some(pattern => lowerText === pattern) && lastRewrittenNote && pendingDocTitle) {
+            console.log('Handling confirmation to create doc:', pendingDocTitle); // Keep this flow
             loadingMessage = addMessage('Creating new document...', false, true); // Assign to existing variable
             
             try {
-                const result = await createDoc(pendingDocTitle, lastRewrittenNote);
+                 // Make a fetch call to the backend API endpoint
+                const response = await fetch('/api/ai/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include', // Send session cookies if any
+                    body: JSON.stringify({ title: pendingDocTitle, content: lastRewrittenNote })
+                });
+
+                if (!response.ok) {
+                    // Handle failed API response
+                    const errorData = await response.json().catch(() => ({})); // Try to get error details
+                    console.error("API Create Doc Error Response:", errorData);
+                    throw new Error(errorData.error?.message || `HTTP error ${response.status}`);
+                }
+                
+                const resultData = await response.json();
+                
+                if (!resultData.success || !resultData.data) {
+                     console.error("API Create Doc Success Response but missing data:", resultData);
+                     throw new Error('API response missing expected data.');
+                }
+
+                const result = resultData.data; // Extract the actual data part (e.g., { docId, title, action })
+                
                 messagesContainer.removeChild(loadingMessage);
-                addMessage(`I've created a new document "${result.title}" and saved your note!`, false);
-                lastRewrittenNote = null; // Clear the stored note after saving
-                pendingDocTitle = null; // Clear the pending title
+                // Use the title returned by the API (might be defaulted)
+                addMessage(`I've created a new document "${result.title}" and saved your note!`, false); 
+                lastRewrittenNote = null; // Clear state
+                pendingDocTitle = null; // Clear state
             } catch (error) {
-                messagesContainer.removeChild(loadingMessage);
-                addMessage('Sorry, I had trouble creating the document. Please try again.', false, false, true);
+                console.error('Create doc error (in confirmation block):', error); // Log specific error
+                if(loadingMessage) messagesContainer.removeChild(loadingMessage); // Ensure loading removed on error
+                addMessage(`Sorry, I had trouble creating the document. Please try again. Error: ${error.message}`, false, false, true); // Show error message
             }
-            return;
+            return; // Exit handleSubmit after handling confirmation
         }
 
         // Check if this is a save command
@@ -245,19 +340,36 @@ async function handleSubmit() {
                 return;
             }
 
-            // Extract doc name by finding the first matching pattern and handling it appropriately
+            // --- Improved Doc Name Extraction ---
             const matchedPattern = savePatterns.find(pattern => text.toLowerCase().includes(pattern));
-            let docName;
-            
-            if (matchedPattern.includes('to')) {
-                // For patterns with 'to', extract everything after 'to'
-                docName = text.toLowerCase().split('to').pop().trim();
-            } else {
-                // For patterns without 'to', extract everything after the pattern
-                docName = text.toLowerCase().replace(matchedPattern, '').trim();
+            let docName = ''; // Initialize docName
+
+            if (matchedPattern) {
+                const patternIndex = text.toLowerCase().indexOf(matchedPattern);
+                if (patternIndex !== -1) {
+                    // Extract the substring AFTER the matched pattern
+                    docName = text.substring(patternIndex + matchedPattern.length).trim();
+                    
+                    // Basic cleanup: remove leading "called " or "named " if present, case-insensitive
+                    if (docName.toLowerCase().startsWith('called ')) {
+                        docName = docName.substring(7).trim();
+                    } else if (docName.toLowerCase().startsWith('named ')) {
+                         docName = docName.substring(6).trim();
+                    }
+                    // Optional: Remove leading "a new doc " - might be too aggressive? Let's skip for now.
+                }
             }
             
-            console.log('Matched pattern:', matchedPattern);
+            // If extraction failed or resulted in empty string, maybe default or error?
+            // For now, let's proceed even if docName might be empty or incorrect, 
+            // the backend search/confirmation will handle it.
+            if (!docName) {
+                 console.warn("Could not reliably extract document name from save command:", text);
+                 // Decide how to handle this - maybe ask user to clarify?
+                 // For now, let saveNote handle potentially empty/wrong docName
+            }
+
+            console.log('Matched pattern:', matchedPattern); // Keep logging
             console.log('Extracted doc name:', docName);
             
             // Show loading state

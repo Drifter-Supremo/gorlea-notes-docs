@@ -20,4 +20,7 @@ router.put('/:id/archive', docsController.archiveDocument); // Added archive rou
 // Delete document permanently
 router.delete('/:id', docsController.deleteDocumentPermanently); // Added delete route
 
+// Append content to a document
+router.post('/:id/append', docsController.appendDocument); // Added append route
+
 module.exports = router;
