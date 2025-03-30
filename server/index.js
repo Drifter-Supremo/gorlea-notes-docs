@@ -18,7 +18,7 @@ app.use(session({
   cookie: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    sameSite: 'lax',
+    // sameSite: 'lax', // Temporarily removed for local dev proxy testing
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
 }));

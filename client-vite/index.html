@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gorlea Notes</title>
+    <!-- CSS will be injected by Vite or imported in main.js -->
+    <!-- <link rel="stylesheet" href="styles/main.css"> --> 
+</head>
+<body>
+    <!-- Inline styles kept for simplicity, could be moved to main.css -->
+    <style>
+        .landing-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .welcome-logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--color-accent);
+        }
+
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: var(--color-text);
+            max-width: 600px;
+            line-height: 1.5;
+        }
+
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .nav-button {
+            background-color: var(--color-accent);
+            color: var(--color-secondary);
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 600px) {
+            .button-group {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .nav-button {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <div class="landing-container">
+        <!-- Logo path needs to be relative to public dir or imported -->
+        <img src="/gorlea-logo.png" alt="Gorlea" class="welcome-logo"> 
+        <h1 class="welcome-title">Welcome to Gorlea Notes</h1>
+        <p class="welcome-subtitle">
+            Your thoughts, organized naturally. Choose where to begin:
+        </p>
+        <div class="button-group">
+            <!-- Update links to be root-relative for Vite MPA -->
+            <a href="/chat.html" class="nav-button"> 
+                Gorlea Notes
+            </a>
+            <a href="/docs/index.html" class="nav-button"> 
+                Gorlea Docs
+            </a>
+        </div>
+    </div>
+
+    <!-- Vite entry point script -->
+    <script type="module" src="/src/main.js"></script> 
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gorlea Notes</title>
+    <!-- CSS will be imported in chat.js -->
+    <!-- <link rel="stylesheet" href="styles/main.css"> -->
+</head>
+<body>
+    <div class="app">
+        <!-- Header with navigation -->
+        <header class="chat-header">
+            <div class="header-content">
+                 <!-- Logo path needs to be relative to public dir or imported -->
+                <img src="/gorlea-logo.png" alt="Gorlea" class="logo">
+                <!-- Use root-relative path for docs link -->
+                <button class="docs-button" onclick="window.location.href='/docs/index.html'"> 
+                    Gorlea Docs
+                </button>
+            </div>
+        </header>
+
+        <!-- Main chat area -->
+        <main class="chat-container">
+            <div class="welcome-screen" id="welcomeScreen">
+                 <!-- Logo path needs to be relative to public dir or imported -->
+                <img src="/gorlea-logo.png" alt="Gorlea" class="welcome-logo">
+                <h1>Gorlea Notes</h1>
+            </div>
+            <div class="messages" id="messages"></div>
+        </main>
+
+        <!-- Input area -->
+        <footer class="input-area">
+            <div class="input-container">
+                <textarea 
+                    id="messageInput" 
+                    placeholder="Type your note here..." 
+                    rows="1"
+                    autofocus
+                ></textarea>
+                <button id="sendButton" class="send-button">
+                    <svg viewBox="0 0 24 24" class="send-icon">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Vite entry point script -->
+    <script type="module" src="/src/chat.js"></script> 
+</body>
+</html>

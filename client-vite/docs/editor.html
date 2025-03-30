@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gorlea Docs Editor</title>
+    <!-- CSS will be imported in editor.js -->
+    <!-- <link rel="stylesheet" href="/styles/main.css"> -->
+    <!-- <link rel="stylesheet" href="/docs/styles/editor.css"> --> 
+    <!-- Tiptap CDN Links (Placeholder - will use npm imports later) -->
+    <!-- <script src="https://unpkg.com/@tiptap/core@latest/dist/core.umd.js" defer></script> -->
+    <!-- <script src="https://unpkg.com/@tiptap/starter-kit@latest/dist/starter-kit.umd.js" defer></script> -->
+</head>
+<body>
+    <header class="app-header">
+        <!-- Logo removed permanently -->
+        <h1>Document Editor</h1>
+         <!-- Use root-relative path for home link -->
+        <a href="/docs/index.html" class="button-accent docs-home-button">Docs Home</a>
+    </header>
+    <div class="editor-container">
+        <div id="loading-message">Loading document...</div>
+        <div id="error-message" class="hidden"></div>
+
+        <!-- Wrapper for editor elements, hidden by default -->
+        <div id="editor-content-wrapper" class="hidden"> 
+            <div class="editor-header">
+                <input type="text" id="doc-title" placeholder="Document Title">
+                <!-- Save button removed -->
+                <!-- Autosave status span removed -->
+            </div>
+            <!-- Replaced textarea with div for Tiptap -->
+            <div id="editor"></div> 
+        </div> <!-- Close editor-content-wrapper -->
+    </div>
+
+    <!-- Vite entry point script -->
+    <script type="module" src="/src/docs/editor.js"></script> 
+</body>
+</html>

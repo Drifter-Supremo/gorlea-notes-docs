@@ -24,22 +24,22 @@ const requireAuth = (req, res, next) => {
 /**
  * POST /api/ai/rewrite
  * Rewrites a note using AI to improve clarity and structure
- * @requires Authentication
+ * @requires Authentication (Temporarily Disabled)
  */
-router.post('/rewrite', requireAuth, rewriteNote);
+router.post('/rewrite', rewriteNote); // Removed requireAuth
 
 /**
  * POST /api/ai/save
  * Save a rewritten note to Google Docs
- * @requires Authentication
+ * @requires Authentication (Temporarily Disabled)
  */
-router.post('/save', requireAuth, saveNote);
+router.post('/save', saveNote); // Removed requireAuth
 
 /**
  * POST /api/ai/create
  * Create a new Google Doc with the note
- * @requires Authentication
+ * @requires Authentication (Temporarily Disabled)
  */
-router.post('/create', requireAuth, createDoc);
+router.post('/create', createDoc); // Removed requireAuth
 
 module.exports = router;

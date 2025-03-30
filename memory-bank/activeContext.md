@@ -167,6 +167,15 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 - **(March 29)** Cleaned up editor UI:
     - Removed manual Save button (`#save-btn`) and visual autosave status (`#autosave-status`) from `editor.html`.
     - Modified `editor.js` to remove related DOM manipulation and use `console.log`/`console.error` for autosave feedback instead.
+- **(March 29)** Started Vite migration (Phase A):
+    - Initialized Vite project in `client-vite`.
+    - Migrated HTML, CSS, JS files from `client` to `client-vite/src`.
+    - Configured Vite for MPA and API proxy (`vite.config.js`).
+    - Updated HTML/JS for module loading and CSS imports.
+- **(March 29)** Debugged Vite setup issues:
+    - Fixed `document.getElementById is not a function` error in `editor.js` by renaming shadowed `document` variable to `docData`.
+    - Diagnosed `401 Unauthorized` on `/api/ai/*` routes: Caused by `requireAuth` middleware checking `req.session.tokens` which are no longer set. Temporarily removed `requireAuth` from `server/routes/ai.js` to unblock development.
+    - Fixed `ReferenceError: loadingMessage is not defined` in `chat.js`.
 
 
 ## Risk Register
