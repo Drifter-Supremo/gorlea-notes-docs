@@ -216,23 +216,66 @@
     font-style: italic;
 }
 
+/* Remove old textarea styles */
+/* #doc-content { ... } */
+/* #doc-content:focus { ... } */
 
-#doc-content {
-    width: 100%;
-    min-height: 60vh;
-    padding: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.1); /* Use subtle border */
-    border-radius: 6px;
-    font-size: 1rem;
-    line-height: 1.6;
-    resize: vertical;
-    background: var(--color-input-bg); /* Use correct variable */
-    color: var(--color-text); /* Use correct variable */
-    outline: none; /* Remove default outline */
-    font-family: inherit; /* Ensure consistent font */
+/* Add Tiptap Editor Styles */
+#editor .ProseMirror {
+  width: 100%;
+  min-height: 60vh; /* Match old textarea height */
+  padding: 1rem; /* Match old textarea padding */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Match old textarea border */
+  border-radius: 6px; /* Match old textarea border-radius */
+  font-size: 1rem; /* Match old textarea font-size */
+  line-height: 1.6; /* Match old textarea line-height */
+  background: var(--color-input-bg); /* Match old textarea background */
+  color: var(--color-text); /* Match old textarea color */
+  font-family: inherit; /* Match old textarea font-family */
+  outline: none; /* Match old textarea outline */
 }
-#doc-content:focus {
-    border-color: var(--color-primary); /* Highlight on focus */
+
+#editor .ProseMirror:focus {
+  border-color: var(--color-primary); /* Match old textarea focus */
+  outline: none; /* Ensure no extra browser outline */
+}
+
+/* Optional: Basic styling for Tiptap content */
+#editor .ProseMirror p {
+    margin-bottom: 0.75em; /* Add some space between paragraphs */
+}
+#editor .ProseMirror h1,
+#editor .ProseMirror h2,
+#editor .ProseMirror h3 {
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    line-height: 1.2;
+}
+#editor .ProseMirror ul,
+#editor .ProseMirror ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1em;
+}
+#editor .ProseMirror blockquote {
+    border-left: 3px solid rgba(255, 255, 255, 0.2);
+    margin-left: 1rem;
+    padding-left: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+#editor .ProseMirror pre {
+    background: rgba(0, 0, 0, 0.2);
+    color: #f1f1f1;
+    font-family: 'JetBrainsMono', monospace;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1em;
+    white-space: pre-wrap;
+}
+#editor .ProseMirror code {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 0.25em;
+    padding: 0.1em 0.3em;
+    font-size: 0.9em;
 }
 
 

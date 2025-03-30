@@ -176,6 +176,12 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
     - Fixed `document.getElementById is not a function` error in `editor.js` by renaming shadowed `document` variable to `docData`.
     - Diagnosed `401 Unauthorized` on `/api/ai/*` routes: Caused by `requireAuth` middleware checking `req.session.tokens` which are no longer set. Temporarily removed `requireAuth` from `server/routes/ai.js` to unblock development.
     - Fixed `ReferenceError: loadingMessage is not defined` in `chat.js`.
+- **(March 29)** Integrated Tiptap rich text editor (Phase D):
+    - Installed `@tiptap/core` and `@tiptap/starter-kit` via npm in `client-vite`.
+    - Updated `editor.html` to use `<div id="editor">` instead of `<textarea>`.
+    - Updated `editor.js` to import Tiptap, initialize the editor, set initial content from fetched data, and trigger autosave via `onUpdate`.
+    - Modified `performAutosave` in `editor.js` to use `editor.getHTML()` for saving content.
+    - Updated `docs.css` to style the Tiptap editor area (`#editor .ProseMirror`).
 
 
 ## Risk Register

@@ -1,3 +1,7 @@
+// Import Tiptap
+import { Editor } from '@tiptap/core';
+import StarterKit from '@tiptap/starter-kit';
+
 // Import styles
 import '../styles/main.css'; // Import shared styles
 import '../styles/docs.css'; // Import docs specific styles
@@ -9,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const docId = urlParams.get('id');
     const titleInput = document.getElementById('doc-title');
-    // const contentInput = document.getElementById('doc-content'); // Replaced by Tiptap editor
+    // const contentInput = document.getElementById('doc-content'); // Removed
     // const saveBtn = document.getElementById('save-btn'); // Removed
     const loadingMessage = document.getElementById('loading-message');
     const errorMessage = document.getElementById('error-message');
@@ -62,15 +66,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Code to populate fields and show wrapper - moved back inside the try block
         if (titleInput) titleInput.value = docData.title || 'Untitled Document'; // Use docData
-        // contentInput.value = docData.content || ''; // Use docData (Commented out - Replaced by Tiptap initialization)
+        // contentInput.value = docData.content || ''; // Removed
 
         // Initialize Tiptap Editor HERE, after fetching content
-        const editorElement = document.getElementById('editor'); // This uses the global document - should work now
+        const editorElement = document.getElementById('editor'); 
         if (editorElement) {
-             // Tiptap initialization will happen later, after imports are set up
-             console.log("Tiptap placeholder - initialization needed after imports");
+            editor = new Editor({
+                element: editorElement,
+                extensions: [
+                    StarterKit, // Use the basic starter kit
+                ],
+                // Use fetched content, default to empty paragraph if null/undefined/empty string
+                content: docData.content || '<p></p>', 
+                onUpdate: ({ editor }) => {
+                    // Trigger autosave on update
+                    debouncedAutosave(); 
+                },
+            });
+            console.log("Tiptap editor initialized.");
         } else {
              console.error("Editor element #editor not found!");
+             showError("Failed to initialize text editor."); // Show error if element missing
         }
         
         // Show editor content, hide loading message
@@ -122,7 +138,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // Get content from Tiptap
-        const content = editor.getHTML(); // Use getHTML()
+        const content = editor.getHTML(); // Get HTML content from Tiptap
 
         try {
             const response = await fetch(`/api/docs/${docId}`, {
@@ -158,9 +174,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Create debounced version
     const debouncedAutosave = debounce(performAutosave, 2000); // 2-second delay
 
-    // Add input listeners (Tiptap listener added during initialization)
+    // Add input listeners 
     if (titleInput) titleInput.addEventListener('input', debouncedAutosave); // Keep title listener
-    // contentInput.addEventListener('input', debouncedAutosave); // Removed
+    // Tiptap's onUpdate handles content changes, so no separate listener needed here
 
     // Add save-on-exit listener
     if (homeButton) { // Add null check
@@ -210,28 +226,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Initialize Tiptap here if needed
         });
     }
-    // Placeholder for Tiptap initialization logic using imports
-    // This will replace the console.log placeholder inside the fetch try block
-    // Example structure (actual implementation requires imports):
-    /*
-    import { Editor } from '@tiptap/core';
-    import StarterKit from '@tiptap/starter-kit';
-
-    // ... inside the fetch success block ...
-    const editorElement = document.getElementById('editor');
-    if (editorElement) {
-        editor = new Editor({
-            element: editorElement,
-            extensions: [StarterKit],
-            content: docData.content || '<p>Start typing...</p>', // Use docData here too
-            onUpdate: ({ editor }) => {
-                debouncedAutosave(); // Trigger autosave on update
-            },
-        });
-        console.log("Tiptap editor initialized.");
-    } else {
-        console.error("Editor element #editor not found!");
-    }
-    */
+    // Tiptap initialization is now handled within the main async flow after fetch
 
 });

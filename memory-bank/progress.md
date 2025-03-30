@@ -26,12 +26,13 @@
 - ✅ Editor autosave (debounced, save-on-exit, console feedback)
 - ✅ Vite Setup (Phase A - Init, Migration, Config)
 - ✅ Debugged Vite/Proxy issues (document shadowing, 401 workaround, ReferenceError)
+- ✅ Tiptap Integration (Phase D - Install, JS/CSS Integration, Autosave Hook)
 
 ## In Progress
 🔨 Gorlea Docs Feature Enhancements
 - [✓] Auto-save implementation (Completed, UI removed)
 - [✓] Delete button and functionality (Now includes Archive)
-- [ ] Rich text editor integration (Tiptap)
+- [✓] Rich text editor integration (Tiptap) (Basic integration complete)
 - [ ] Gorlea Notes integration planning
 - [ ] Export functionality (lower priority)
 - [ ] Error handling improvements
@@ -200,7 +201,8 @@ To be implemented:
 - **2025-03-29:** Removed manual save button and visual autosave status for cleaner editor UI (using console logs for feedback).
 - **2025-03-29:** Completed Phase A of Vite migration (Init, File Migration, MPA/Proxy Config).
 - **2025-03-29:** Debugged Vite setup: Fixed `document` shadowing, temporarily removed `requireAuth` from AI routes to resolve `401`, fixed `loadingMessage` `ReferenceError`.
+- **2025-03-29:** Integrated Tiptap editor via npm into Vite setup, replacing textarea and hooking into autosave.
 
 ---
 
-Last Updated: 2025-03-29 6:07 PM PDT
+Last Updated: 2025-03-29 6:44 PM PDT
