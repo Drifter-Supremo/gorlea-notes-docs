@@ -37,6 +37,7 @@
 - ✅ Improved AI rewrite formatting (updated prompt, added Markdown rendering in chat)
 - ✅ Fixed duplicate follow-up question after rewrite (removed from AI prompt)
 - ✅ Made navigation buttons ("Gorlea Docs", "Gorlea Notes") open in new tabs
+- ✅ Implemented Tiptap editor toolbar (basic formatting, headings, lists, history)
 
 ## In Progress
 🔨 Gorlea Docs Feature Enhancements
@@ -223,7 +224,9 @@ To be implemented:
 - **2025-04-01:** Fixed chat command logic loop (Attempt 3): Modified `createPatterns.find` call in `handleSubmit` (`chat.js`) to use `pattern.trim()` before `startsWith` check. Removed debug logs.
 - **2025-04-01:** Fixed chat command logic loop (Attempt 2): Added missing `return;` after successful explicit creation in `handleSubmit` (`chat.js`) to prevent fall-through.
 - **2025-04-01:** Fixed chat command logic loop (Attempt 1): Restructured `handleSubmit` in `chat.js` with `if/else if` blocks to correctly prioritize intents.
+- **2025-04-01:** Implemented Tiptap editor toolbar: Added HTML (with text labels), JS logic (`editor.js`), and CSS (`docs.css`) for basic formatting controls.
+- **2025-04-01:** Replaced text labels with Material Symbols SVGs in Tiptap toolbar (`editor.html`) and added SVG styling (`docs.css`).
 
 ---
 
-Last Updated: 2025-04-01 4:01 PM PDT
+Last Updated: 2025-04-01 4:23 PM PDT

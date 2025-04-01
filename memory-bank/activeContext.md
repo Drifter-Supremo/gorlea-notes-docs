@@ -132,6 +132,14 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 4. Implement Gorlea Notes integration.
 
 ## Recent Changes
+- **(April 1, 2025)** Replaced text labels with icons in Tiptap toolbar:
+    - Updated buttons in `docs/editor.html` to use Material Symbols SVGs.
+    - Added CSS in `styles/docs.css` to style the SVGs within buttons.
+- **(April 1, 2025)** Implemented Tiptap editor toolbar:
+    - Installed `@tiptap/extension-underline`.
+    - Added toolbar HTML structure (with text labels) to `docs/editor.html`.
+    - Added JavaScript logic in `docs/editor.js` to handle button clicks (using Tiptap commands) and update button active states.
+    - Added CSS styles for the toolbar and buttons in `styles/docs.css`.
 - **(April 1, 2025)** Made navigation buttons open in new tabs:
     - Modified "Gorlea Docs" button in `chat.html` (changed to `<a>` tag) and "Gorlea Notes" links in `docs/index.html` & `docs/editor.html` to include `target="_blank" rel="noopener noreferrer"`.
 - **(April 1, 2025)** Improved AI rewrite formatting & fixed duplicate prompt:
@@ -293,5 +301,5 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 
 ---
 
-Last Updated: 2025-04-01 4:01 PM PDT
+Last Updated: 2025-04-01 4:22 PM PDT
 Next Review: 2025-04-02

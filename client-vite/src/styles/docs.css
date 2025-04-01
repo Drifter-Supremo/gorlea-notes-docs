@@ -237,8 +237,58 @@
 
 #editor .ProseMirror:focus {
   border-color: var(--color-primary); /* Match old textarea focus */
-  outline: none; /* Ensure no extra browser outline */
+    outline: none; /* Ensure no extra browser outline */
 }
+
+/* --- Toolbar Styles --- */
+#editor-toolbar {
+    display: flex;
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    gap: 0.5rem; /* Space between buttons */
+    padding: 0.5rem 0.75rem; /* Padding around the toolbar */
+    margin-bottom: 1rem; /* Space below toolbar */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Match editor border */
+    border-radius: 6px; /* Match editor border-radius */
+    background-color: var(--color-input-bg); /* Match editor background */
+}
+
+.toolbar-button {
+    background: none;
+    border: 1px solid transparent; /* Transparent border for consistent size */
+    color: var(--color-text);
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    line-height: 1;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.toolbar-button:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.toolbar-button.is-active {
+    background-color: var(--color-primary); /* Use primary color for active state */
+    color: white; /* Ensure text is readable on primary bg */
+}
+
+.toolbar-button:disabled {
+    color: rgba(255, 255, 255, 0.3); /* Muted color for disabled */
+    cursor: not-allowed;
+    background-color: transparent; /* Ensure no hover effect */
+}
+
+/* Style SVGs within toolbar buttons */
+.toolbar-button svg {
+    width: 18px; /* Adjust size as needed */
+    height: 18px;
+    fill: currentColor; /* Make SVG inherit button text color */
+    vertical-align: middle; /* Align icon nicely if it ever sits beside text */
+    display: block; /* Ensure SVG takes block space for sizing */
+}
+
+/* --- End Toolbar Styles --- */
 
 /* Optional: Basic styling for Tiptap content */
 #editor .ProseMirror p {

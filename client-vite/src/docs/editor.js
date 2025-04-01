@@ -1,6 +1,7 @@
 // Import Tiptap
 import { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
+import Underline from '@tiptap/extension-underline'; // Import Underline
 
 // Import styles
 import '../styles/main.css'; // Import shared styles
@@ -29,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // --- Tiptap Editor Instance ---
+    // --- Tiptap Editor Instance & Toolbar Logic ---
     let editor = null; // To hold the Tiptap instance
 
     console.log(`Attempting to fetch document with ID: ${docId}`); // Log before fetch
@@ -74,7 +75,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             editor = new Editor({
                 element: editorElement,
                 extensions: [
-                    StarterKit, // Use the basic starter kit
+                    StarterKit,
+                    Underline, // Add Underline extension
                 ],
                 // Use fetched content, default to empty paragraph if null/undefined/empty string
                 content: docData.content || '<p></p>', 
@@ -87,8 +89,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
              console.error("Editor element #editor not found!");
              showError("Failed to initialize text editor."); // Show error if element missing
+             return; // Stop execution if editor didn't initialize
         }
-        
+
+        // --- Toolbar Setup ---
+        setupToolbar(editor); // Call function to setup toolbar listeners
+
         // Show editor content, hide loading message
         if (loadingMessage) loadingMessage.style.display = 'none'; // Add null check
         if (errorMessage) errorMessage.classList.add('hidden'); // Add null check
@@ -229,3 +235,57 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Tiptap initialization is now handled within the main async flow after fetch
 
 });
+
+// --- Toolbar Setup Function ---
+function setupToolbar(editor) {
+    const toolbarButtons = {
+        bold: document.getElementById('toolbar-bold'),
+        italic: document.getElementById('toolbar-italic'),
+        underline: document.getElementById('toolbar-underline'),
+        strike: document.getElementById('toolbar-strike'),
+        paragraph: document.getElementById('toolbar-paragraph'),
+        h1: document.getElementById('toolbar-h1'),
+        h2: document.getElementById('toolbar-h2'),
+        h3: document.getElementById('toolbar-h3'),
+        ul: document.getElementById('toolbar-ul'),
+        ol: document.getElementById('toolbar-ol'),
+        undo: document.getElementById('toolbar-undo'),
+        redo: document.getElementById('toolbar-redo'),
+    };
+
+    // Add click listeners
+    toolbarButtons.bold?.addEventListener('click', () => editor.chain().focus().toggleBold().run());
+    toolbarButtons.italic?.addEventListener('click', () => editor.chain().focus().toggleItalic().run());
+    toolbarButtons.underline?.addEventListener('click', () => editor.chain().focus().toggleUnderline().run());
+    toolbarButtons.strike?.addEventListener('click', () => editor.chain().focus().toggleStrike().run());
+    toolbarButtons.paragraph?.addEventListener('click', () => editor.chain().focus().setParagraph().run());
+    toolbarButtons.h1?.addEventListener('click', () => editor.chain().focus().toggleHeading({ level: 1 }).run());
+    toolbarButtons.h2?.addEventListener('click', () => editor.chain().focus().toggleHeading({ level: 2 }).run());
+    toolbarButtons.h3?.addEventListener('click', () => editor.chain().focus().toggleHeading({ level: 3 }).run());
+    toolbarButtons.ul?.addEventListener('click', () => editor.chain().focus().toggleBulletList().run());
+    toolbarButtons.ol?.addEventListener('click', () => editor.chain().focus().toggleOrderedList().run());
+    toolbarButtons.undo?.addEventListener('click', () => editor.chain().focus().undo().run());
+    toolbarButtons.redo?.addEventListener('click', () => editor.chain().focus().redo().run());
+
+    // Update button states on transaction
+    editor.on('transaction', () => {
+        toolbarButtons.bold?.classList.toggle('is-active', editor.isActive('bold'));
+        toolbarButtons.italic?.classList.toggle('is-active', editor.isActive('italic'));
+        toolbarButtons.underline?.classList.toggle('is-active', editor.isActive('underline'));
+        toolbarButtons.strike?.classList.toggle('is-active', editor.isActive('strike'));
+        toolbarButtons.paragraph?.classList.toggle('is-active', editor.isActive('paragraph'));
+        toolbarButtons.h1?.classList.toggle('is-active', editor.isActive('heading', { level: 1 }));
+        toolbarButtons.h2?.classList.toggle('is-active', editor.isActive('heading', { level: 2 }));
+        toolbarButtons.h3?.classList.toggle('is-active', editor.isActive('heading', { level: 3 }));
+        toolbarButtons.ul?.classList.toggle('is-active', editor.isActive('bulletList'));
+        toolbarButtons.ol?.classList.toggle('is-active', editor.isActive('orderedList'));
+        
+        // Disable/enable undo/redo buttons
+        if (toolbarButtons.undo) toolbarButtons.undo.disabled = !editor.can().undo();
+        if (toolbarButtons.redo) toolbarButtons.redo.disabled = !editor.can().redo();
+    });
+
+     // Initial state update
+     if (toolbarButtons.undo) toolbarButtons.undo.disabled = !editor.can().undo();
+     if (toolbarButtons.redo) toolbarButtons.redo.disabled = !editor.can().redo();
+}
