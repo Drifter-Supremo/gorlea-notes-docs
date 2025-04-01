@@ -3,8 +3,21 @@ const firestoreUtils = require('../utils/firestore');
 const docsController = {
   async listDocuments(req, res) {
     try {
-      console.log('Listing documents...');
-      const documents = await firestoreUtils.listDocuments();
+      // Check for limit query parameter
+      const limitParam = req.query.limit;
+      let limit = null;
+      if (limitParam) {
+        limit = parseInt(limitParam, 10);
+        if (isNaN(limit) || limit <= 0) {
+          return res.status(400).json({ error: 'Invalid limit parameter. Must be a positive number.' });
+        }
+        console.log(`Listing documents with limit: ${limit}`);
+      } else {
+        console.log('Listing all documents (no limit specified)...');
+      }
+
+      // Pass the parsed limit (or null) to the utility function
+      const documents = await firestoreUtils.listDocuments(limit); 
       console.log('Successfully listed', documents.length, 'documents');
       res.json({ data: documents });
     } catch (error) {

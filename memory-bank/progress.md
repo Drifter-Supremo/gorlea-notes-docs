@@ -31,6 +31,7 @@
 - ✅ Refined chatbot save/create logic (Intent handling)
 - ✅ Simplified AI prompt
 - ✅ Fixed chat auto-scrolling issue
+- ✅ Implemented "Show Recent Docs" feature in chat
 
 ## In Progress
 🔨 Gorlea Docs Feature Enhancements
@@ -209,7 +210,8 @@ To be implemented:
 - **2025-03-29:** Implemented case-insensitive title search in Firestore utils.
 - **2025-03-29:** Improved chatbot intent handling for create vs. save commands. Simplified AI prompt. Diagnosed chat scroll issue.
 - **2025-04-01:** Fixed chat auto-scrolling by targeting `.chat-container` in `scrollToBottom` (`client-vite/src/chat.js`).
+- **2025-04-01:** Added "Show Recent Docs" feature: Updated backend API (`/api/docs?limit=5`) and frontend chat logic (`chat.js`) to list and select recent documents for saving notes.
 
 ---
 
-Last Updated: 2025-04-01 1:13 PM PDT
+Last Updated: 2025-04-01 1:24 PM PDT

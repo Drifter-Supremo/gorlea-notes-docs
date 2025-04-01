@@ -16,13 +16,20 @@ const DOCS_COLLECTION = 'documents';
 
 // Firestore utility functions
 const firestoreUtils = {
-    // List all documents
-    async listDocuments() {
+    // List documents, optionally limited
+    async listDocuments(limit = null) { // Add optional limit parameter
         try {
-            const snapshot = await db.collection(DOCS_COLLECTION)
+            let query = db.collection(DOCS_COLLECTION)
                 .where('isArchived', '==', false)
-                .orderBy('lastOpenedAt', 'desc') // Sort by lastOpenedAt
-                .get();
+                .orderBy('lastOpenedAt', 'desc'); // Start query chain
+
+            // Apply limit if provided and valid
+            if (limit && typeof limit === 'number' && limit > 0) {
+                query = query.limit(limit);
+                console.log(`Firestore: Limiting listDocuments to ${limit} results.`); // Debug log
+            }
+
+            const snapshot = await query.get(); // Execute the query
             
             return snapshot.docs.map(doc => ({
                 id: doc.id,

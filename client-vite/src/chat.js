@@ -71,6 +71,17 @@ const createPatterns = [
 let isFirstMessage = true;
 let lastRewrittenNote = null;
 let pendingDocTitle = null;
+let isAwaitingRecentChoice = false; // New state: Are we waiting for user to pick from recent list?
+let recentDocList = []; // New state: Store the fetched recent docs
+
+// Command patterns for showing recent docs
+const showRecentPatterns = [
+    "show recent",
+    "list recent",
+    "show recent docs",
+    "list recent docs",
+    "recent docs"
+].map(p => p.toLowerCase());
 
 // API Integration
 async function createDoc(title, content) {
@@ -208,6 +219,40 @@ function addMessage(text, isUser = true, isLoading = false, isError = false) {
     return message;
 }
 
+// --- New Function: Fetch and Display Recent Docs ---
+async function fetchAndDisplayRecentDocs() {
+    const loadingMessage = addMessage('Fetching recent documents...', false, true);
+    try {
+        const response = await fetch('/api/docs?limit=5', { credentials: 'include' });
+        if (!response.ok) {
+            throw new Error(`HTTP error ${response.status}`);
+        }
+        const result = await response.json();
+        if (!result.data || result.data.length === 0) {
+            addMessage('You don\'t seem to have any documents yet.', false);
+            recentDocList = []; // Clear list
+        } else {
+            recentDocList = result.data; // Store the fetched docs
+            let messageText = "Here are your 5 most recently used documents:\n";
+            recentDocList.forEach((doc, index) => {
+                // Ensure title exists and is not empty before displaying
+                const displayTitle = doc.title && doc.title.trim() !== '' ? doc.title.trim() : 'Untitled Document';
+                messageText += `${index + 1}. ${displayTitle}\n`; 
+            });
+            messageText += "\nPlease reply with the number (1-5) to save, or type 'create new doc' or provide a different name.";
+            addMessage(messageText, false);
+            isAwaitingRecentChoice = true; // Set state to wait for user's numeric choice
+        }
+    } catch (error) {
+        console.error('Error fetching recent documents:', error);
+        addMessage('Sorry, I had trouble fetching your recent documents. Please try saving by name or creating a new one.', false, false, true);
+        isAwaitingRecentChoice = false; // Reset state on error
+        recentDocList = [];
+    } finally {
+        if (loadingMessage) messagesContainer.removeChild(loadingMessage);
+    }
+}
+
 // Scroll chat to bottom
 function scrollToBottom() {
     // Defer scroll slightly to allow DOM to update heights
@@ -288,10 +333,53 @@ async function handleSubmit() {
             return; // Exit after handling explicit create command
         }
 
+        // --- Check if user is replying with a number after being shown recent docs ---
+        if (isAwaitingRecentChoice && /^[1-5]$/.test(text) && lastRewrittenNote) {
+            const choiceIndex = parseInt(text, 10) - 1;
+            if (choiceIndex >= 0 && choiceIndex < recentDocList.length) {
+                const chosenDoc = recentDocList[choiceIndex];
+                const chosenTitle = chosenDoc.title; // Use the title from the stored list
+                console.log(`Handling recent doc choice: ${text} -> "${chosenTitle}"`);
+                
+                loadingMessage = addMessage(`Saving note to "${chosenTitle}"...`, false, true);
+                try {
+                    // Call saveNote directly with the chosen title
+                    const result = await saveNote(chosenTitle, lastRewrittenNote); 
+                    messagesContainer.removeChild(loadingMessage);
+
+                    // Should not need confirmation here as we selected an existing doc
+                    if (result.needsConfirmation) { 
+                         console.error("Unexpected 'needsConfirmation' after selecting recent doc.");
+                         addMessage(`Hmm, something unexpected happened trying to save to "${chosenTitle}". Please try again.`, false, false, true);
+                    } else {
+                        addMessage(`I've saved your note to "${result.title}"!`, false);
+                        lastRewrittenNote = null; // Clear state
+                    }
+                } catch (error) {
+                    console.error('Error saving note after recent choice:', error);
+                    if(loadingMessage) messagesContainer.removeChild(loadingMessage);
+                    addMessage(`Sorry, I had trouble saving your note to "${chosenTitle}". Please try again. Error: ${error.message}`, false, false, true);
+                } finally {
+                    // Reset state regardless of success/failure
+                    isAwaitingRecentChoice = false;
+                    recentDocList = [];
+                    pendingDocTitle = null; // Also clear pending title if any
+                }
+                return; // Exit after handling numeric choice
+            } else {
+                 // Invalid number choice (shouldn't happen with regex but good practice)
+                 addMessage("That wasn't a valid choice. Please enter a number from 1 to 5, or type 'create new doc'.", false, false, true);
+                 return; 
+            }
+        }
+
         // --- Check if this is a confirmation to create a new doc (from previous prompt) ---
+        // Reset recent choice state if user confirms creation instead of picking a number
         if (confirmPatterns.some(pattern => lowerText === pattern) && lastRewrittenNote && pendingDocTitle) {
-            console.log('Handling confirmation to create doc:', pendingDocTitle); // Keep this flow
-            loadingMessage = addMessage('Creating new document...', false, true); // Assign to existing variable
+            console.log('Handling confirmation to create doc:', pendingDocTitle); 
+            isAwaitingRecentChoice = false; // Reset recent choice state
+            recentDocList = [];
+            loadingMessage = addMessage('Creating new document...', false, true); 
             
             try {
                  // Make a fetch call to the backend API endpoint
@@ -331,7 +419,19 @@ async function handleSubmit() {
             return; // Exit handleSubmit after handling confirmation
         }
 
-        // Check if this is a save command
+        // --- Check if user wants to see recent docs ---
+        // This check should happen *before* the general save command check
+        const isShowRecentCommand = showRecentPatterns.some(pattern => lowerText === pattern);
+        if (isShowRecentCommand && lastRewrittenNote) {
+            console.log('Handling "show recent" command.');
+            isAwaitingRecentChoice = false; // Reset just in case
+            recentDocList = [];
+            pendingDocTitle = null; // Clear any pending creation title
+            await fetchAndDisplayRecentDocs(); // Fetch and show the list
+            return; // Exit after triggering recent docs display
+        }
+
+        // Check if this is a save command (and NOT a show recent command)
         const isSaveCommand = savePatterns.some(pattern => text.toLowerCase().includes(pattern));
         console.log('Is save command:', isSaveCommand, 'Patterns matched:', 
             savePatterns.filter(pattern => text.toLowerCase().includes(pattern)));
@@ -383,13 +483,21 @@ async function handleSubmit() {
                 
                 if (result.needsConfirmation) {
                     pendingDocTitle = result.suggestedTitle;
-                    addMessage(`I couldn't find a document named "${result.suggestedTitle}". Would you like me to create a new one with this name?`, false);
+                    addMessage(`I couldn't find a document named "${result.suggestedTitle}". Would you like me to create a new one with this name? (Or type 'show recent' to see recent documents)`, false); // Added hint
+                    isAwaitingRecentChoice = false; // Not waiting for numeric choice here
+                    recentDocList = [];
                 } else {
                     addMessage(`I've saved your note to "${result.title}"!`, false);
                     lastRewrittenNote = null; // Clear the stored note after saving
                     pendingDocTitle = null;
+                    isAwaitingRecentChoice = false; // Reset state
+                    recentDocList = [];
                 }
             } catch (error) {
+                // Reset state on error too
+                isAwaitingRecentChoice = false;
+                recentDocList = [];
+                pendingDocTitle = null;
                 messagesContainer.removeChild(loadingMessage);
                 addMessage('Sorry, I had trouble saving your note. Please try again.', false, false, true);
             }
@@ -409,7 +517,18 @@ async function handleSubmit() {
         // Store the rewritten note and update first message state
         lastRewrittenNote = cleanedNote;
         isFirstMessage = false;
+        // Reset recent choice state when a new note is processed
+        isAwaitingRecentChoice = false; 
+        recentDocList = [];
+        pendingDocTitle = null; // Also clear pending title
+        // Ask the user where to save
+        addMessage("Where would you like to save this note? (e.g., 'save to My Notes', 'create new doc called Project X', or 'show recent')", false);
+
     } catch (error) {
+        // Reset state on error
+        isAwaitingRecentChoice = false;
+        recentDocList = [];
+        pendingDocTitle = null;
         // Remove loading message and show error
         if (loadingMessage) {
             messagesContainer.removeChild(loadingMessage);

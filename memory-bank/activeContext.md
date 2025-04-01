@@ -132,6 +132,10 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 4. Implement Gorlea Notes integration.
 
 ## Recent Changes
+- **(April 1, 2025)** Implemented "Show Recent Docs" feature in chat:
+    - Modified `listDocuments` in `server/utils/firestore.js` to accept an optional `limit`.
+    - Updated `listDocuments` controller in `server/controllers/docsController.js` to handle `limit` query parameter.
+    - Added state, command patterns (`show recent`), API call (`fetchAndDisplayRecentDocs`), and logic to `client-vite/src/chat.js` to fetch, display, and handle selection of recent documents.
 - **(April 1, 2025)** Fixed chat auto-scrolling issue:
     - Added reference to `.chat-container` in `client-vite/src/chat.js`.
     - Updated `scrollToBottom` function to target `.chat-container` instead of `#messages`.
@@ -278,5 +282,5 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 
 ---
 
-Last Updated: 2025-04-01 1:12 PM PDT
+Last Updated: 2025-04-01 1:23 PM PDT
 Next Review: 2025-04-02
