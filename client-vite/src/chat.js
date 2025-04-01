@@ -1,5 +1,6 @@
 // Import styles
 import './styles/main.css';
+import { marked } from 'marked'; // Import marked library
 
 // DOM Elements
 const messageInput = document.getElementById('messageInput');
@@ -58,6 +59,7 @@ const confirmPatterns = [
 const createPatterns = [
   "create new doc named",
   "create new doc called",
+  "create a new doc called", // Added missing variation
   "start new doc called",
   "save to new doc called",
   "save to a new doc called",
@@ -205,7 +207,16 @@ function createMessage(text, isUser = true, isLoading = false, isError = false) 
         contentDiv.appendChild(headerDiv);
     }
     
-    contentDiv.appendChild(document.createTextNode(text));
+    // Render Markdown for Gorlea's messages, plain text for user's
+    if (!isUser && !isLoading && !isError) { 
+        // Basic sanitization (consider a more robust sanitizer if needed)
+        const sanitizedHtml = marked.parse(text, { breaks: true }); // breaks: true converts newlines to <br>
+        contentDiv.innerHTML = sanitizedHtml; 
+    } else {
+        // For user messages, loading, or errors, just use text node
+        contentDiv.appendChild(document.createTextNode(text));
+    }
+    
     messageDiv.appendChild(contentDiv);
     
     return messageDiv;
@@ -277,263 +288,230 @@ async function handleSubmit() {
     messageInput.value = '';
     messageInput.style.height = 'auto';
     
+    // --- Restructured Logic using if/else if ---
     try {
         console.log('Processing message:', text);
-        console.log('Current state:', { lastRewrittenNote: !!lastRewrittenNote, pendingDocTitle });
-
-        // --- Check for Explicit Creation Command FIRST ---
         const lowerText = text.toLowerCase();
-        const matchedCreatePattern = createPatterns.find(pattern => lowerText.startsWith(pattern));
+        console.log('Current state:', { 
+            lastRewrittenNote: !!lastRewrittenNote, 
+            pendingDocTitle, 
+            isAwaitingRecentChoice 
+        });
 
-        if (matchedCreatePattern && lastRewrittenNote) {
-            let extractedTitle = '';
-            // Extract title if pattern allows for it (i.e., not just "create new doc")
-            if (matchedCreatePattern !== "create new doc") {
-                 extractedTitle = text.substring(matchedCreatePattern.length).trim();
-            }
-            
-            const finalTitle = extractedTitle || 'Untitled Document'; // Default if no title extracted
-
-            console.log(`Handling direct creation command. Matched: "${matchedCreatePattern}", Title: "${finalTitle}"`);
-            loadingMessage = addMessage(`Creating new document "${finalTitle}"...`, false, true);
-            
-            try {
-                // Directly call the create API endpoint
-                const response = await fetch('/api/ai/create', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include', 
-                    body: JSON.stringify({ title: finalTitle, content: lastRewrittenNote })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    console.error("API Create Doc Error Response:", errorData);
-                    throw new Error(errorData.error?.message || `HTTP error ${response.status}`);
-                }
-                
-                const resultData = await response.json();
-                
-                if (!resultData.success || !resultData.data) {
-                     console.error("API Create Doc Success Response but missing data:", resultData);
-                     throw new Error('API response missing expected data.');
-                }
-
-                const result = resultData.data; 
-                
-                if(loadingMessage) messagesContainer.removeChild(loadingMessage);
-                addMessage(`I've created a new document "${result.title}" and saved your note!`, false); 
-                lastRewrittenNote = null; 
-                pendingDocTitle = null; 
-            } catch (error) {
-                console.error('Direct create doc error:', error); 
-                if(loadingMessage) messagesContainer.removeChild(loadingMessage); 
-                addMessage(`Sorry, I had trouble creating the document. Please try again. Error: ${error.message}`, false, false, true);
-            }
-            return; // Exit after handling explicit create command
-        }
-
-        // --- Check if user is replying with a number after being shown recent docs ---
-        if (isAwaitingRecentChoice && /^[1-5]$/.test(text) && lastRewrittenNote) {
-            const choiceIndex = parseInt(text, 10) - 1;
-            if (choiceIndex >= 0 && choiceIndex < recentDocList.length) {
-                const chosenDoc = recentDocList[choiceIndex];
-                const chosenTitle = chosenDoc.title; // Use the title from the stored list
-                console.log(`Handling recent doc choice: ${text} -> "${chosenTitle}"`);
-                
-                loadingMessage = addMessage(`Saving note to "${chosenTitle}"...`, false, true);
-                try {
-                    // Call saveNote directly with the chosen title
-                    const result = await saveNote(chosenTitle, lastRewrittenNote); 
-                    messagesContainer.removeChild(loadingMessage);
-
-                    // Should not need confirmation here as we selected an existing doc
-                    if (result.needsConfirmation) { 
-                         console.error("Unexpected 'needsConfirmation' after selecting recent doc.");
-                         addMessage(`Hmm, something unexpected happened trying to save to "${chosenTitle}". Please try again.`, false, false, true);
-                    } else {
-                        addMessage(`I've saved your note to "${result.title}"!`, false);
-                        lastRewrittenNote = null; // Clear state
-                    }
-                } catch (error) {
-                    console.error('Error saving note after recent choice:', error);
-                    if(loadingMessage) messagesContainer.removeChild(loadingMessage);
-                    addMessage(`Sorry, I had trouble saving your note to "${chosenTitle}". Please try again. Error: ${error.message}`, false, false, true);
-                } finally {
-                    // Reset state regardless of success/failure
-                    isAwaitingRecentChoice = false;
-                    recentDocList = [];
-                    pendingDocTitle = null; // Also clear pending title if any
-                }
-                return; // Exit after handling numeric choice
-            } else {
-                 // Invalid number choice (shouldn't happen with regex but good practice)
-                 addMessage("That wasn't a valid choice. Please enter a number from 1 to 5, or type 'create new doc'.", false, false, true);
-                 return; 
-            }
-        }
-
-        // --- Check if this is a confirmation to create a new doc (from previous prompt) ---
-        // Reset recent choice state if user confirms creation instead of picking a number
-        if (confirmPatterns.some(pattern => lowerText === pattern) && lastRewrittenNote && pendingDocTitle) {
-            console.log('Handling confirmation to create doc:', pendingDocTitle); 
-            isAwaitingRecentChoice = false; // Reset recent choice state
-            recentDocList = [];
-            loadingMessage = addMessage('Creating new document...', false, true); 
-            
-            try {
-                 // Make a fetch call to the backend API endpoint
-                const response = await fetch('/api/ai/create', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include', // Send session cookies if any
-                    body: JSON.stringify({ title: pendingDocTitle, content: lastRewrittenNote })
-                });
-
-                if (!response.ok) {
-                    // Handle failed API response
-                    const errorData = await response.json().catch(() => ({})); // Try to get error details
-                    console.error("API Create Doc Error Response:", errorData);
-                    throw new Error(errorData.error?.message || `HTTP error ${response.status}`);
-                }
-                
-                const resultData = await response.json();
-                
-                if (!resultData.success || !resultData.data) {
-                     console.error("API Create Doc Success Response but missing data:", resultData);
-                     throw new Error('API response missing expected data.');
-                }
-
-                const result = resultData.data; // Extract the actual data part (e.g., { docId, title, action })
-                
-                messagesContainer.removeChild(loadingMessage);
-                // Use the title returned by the API (might be defaulted)
-                addMessage(`I've created a new document "${result.title}" and saved your note!`, false); 
-                lastRewrittenNote = null; // Clear state
-                pendingDocTitle = null; // Clear state
-            } catch (error) {
-                console.error('Create doc error (in confirmation block):', error); // Log specific error
-                if(loadingMessage) messagesContainer.removeChild(loadingMessage); // Ensure loading removed on error
-                addMessage(`Sorry, I had trouble creating the document. Please try again. Error: ${error.message}`, false, false, true); // Show error message
-            }
-            return; // Exit handleSubmit after handling confirmation
-        }
-
-        // --- Check if user wants to see recent docs ---
-        // This check should happen *before* the general save command check
-        const isShowRecentCommand = showRecentPatterns.some(pattern => lowerText === pattern);
-        if (isShowRecentCommand && lastRewrittenNote) {
-            console.log('Handling "show recent" command.');
-            isAwaitingRecentChoice = false; // Reset just in case
-            recentDocList = [];
-            pendingDocTitle = null; // Clear any pending creation title
-            await fetchAndDisplayRecentDocs(); // Fetch and show the list
-            return; // Exit after triggering recent docs display
-        }
-
-        // Check if this is a save command (and NOT a show recent command)
-        const isSaveCommand = savePatterns.some(pattern => text.toLowerCase().includes(pattern));
-        console.log('Is save command:', isSaveCommand, 'Patterns matched:', 
-            savePatterns.filter(pattern => text.toLowerCase().includes(pattern)));
+        // --- Priority 1: Handle Explicit Create Command ---
         
-        if (isSaveCommand) {
+        // Use Regex to find matching create pattern (Removed temporary debug code)
+        let matchedCreatePattern = null; 
+        for (const pattern of createPatterns) {
+            const trimmedPattern = pattern.trim();
+            // Create a regex that matches the pattern at the beginning (^) of the string
+            const regex = new RegExp('^' + trimmedPattern, 'i'); // 'i' for case-insensitive (though lowerText is already lowercase)
+            if (regex.test(lowerText)) {
+                matchedCreatePattern = pattern; // Store the original pattern from the array
+                console.log(`DEBUG: Regex matched pattern: "${trimmedPattern}"`);
+                break; // Stop after finding the first match
+            }
+        }
+        
+        if (matchedCreatePattern) {
+            // Log the matched pattern (it's already trimmed from the loop)
+            console.log(`Intent: Explicit Create. Matched: "${matchedCreatePattern}"`); 
             if (!lastRewrittenNote) {
-                addMessage('Sorry, I don\'t have a note to save. Please write a note first.', false, false, true);
-                return;
-            }
-
-            // --- Improved Doc Name Extraction ---
-            const matchedPattern = savePatterns.find(pattern => text.toLowerCase().includes(pattern));
-            let docName = ''; // Initialize docName
-
-            if (matchedPattern) {
-                const patternIndex = text.toLowerCase().indexOf(matchedPattern);
-                if (patternIndex !== -1) {
-                    // Extract the substring AFTER the matched pattern
-                    docName = text.substring(patternIndex + matchedPattern.length).trim();
-                    
-                    // Basic cleanup: remove leading "called " or "named " if present, case-insensitive
-                    if (docName.toLowerCase().startsWith('called ')) {
-                        docName = docName.substring(7).trim();
-                    } else if (docName.toLowerCase().startsWith('named ')) {
-                         docName = docName.substring(6).trim();
-                    }
-                    // Optional: Remove leading "a new doc " - might be too aggressive? Let's skip for now.
+                addMessage('Please provide a note first before creating a document with it.', false, false, true);
+            } else {
+                let extractedTitle = '';
+                if (matchedCreatePattern !== "create new doc") {
+                    extractedTitle = text.substring(matchedCreatePattern.length).trim();
                 }
-            }
-            
-            // If extraction failed or resulted in empty string, maybe default or error?
-            // For now, let's proceed even if docName might be empty or incorrect, 
-            // the backend search/confirmation will handle it.
-            if (!docName) {
-                 console.warn("Could not reliably extract document name from save command:", text);
-                 // Decide how to handle this - maybe ask user to clarify?
-                 // For now, let saveNote handle potentially empty/wrong docName
-            }
-
-            console.log('Matched pattern:', matchedPattern); // Keep logging
-            console.log('Extracted doc name:', docName);
-            
-            // Show loading state
-            loadingMessage = addMessage('Saving your note...', false, true); // Assign to existing variable
-            
-            try {
-                const result = await saveNote(docName, lastRewrittenNote);
-                messagesContainer.removeChild(loadingMessage);
+                const finalTitle = extractedTitle || 'Untitled Document';
                 
-                if (result.needsConfirmation) {
-                    pendingDocTitle = result.suggestedTitle;
-                    addMessage(`I couldn't find a document named "${result.suggestedTitle}". Would you like me to create a new one with this name? (Or type 'show recent' to see recent documents)`, false); // Added hint
-                    isAwaitingRecentChoice = false; // Not waiting for numeric choice here
-                    recentDocList = [];
-                } else {
-                    addMessage(`I've saved your note to "${result.title}"!`, false);
-                    lastRewrittenNote = null; // Clear the stored note after saving
-                    pendingDocTitle = null;
+                loadingMessage = addMessage(`Creating new document "${finalTitle}"...`, false, true);
+                try {
+                    const result = await createDoc(finalTitle, lastRewrittenNote); // Use API function
+                    if(loadingMessage) messagesContainer.removeChild(loadingMessage);
+                    addMessage(`I've created a new document "${result.title}" and saved your note!`, false); 
+                    lastRewrittenNote = null; 
+                    pendingDocTitle = null; 
                     isAwaitingRecentChoice = false; // Reset state
                     recentDocList = [];
+                    return; // <<< ADD THIS RETURN STATEMENT >>>
+                } catch (error) {
+                    console.error('Direct create doc error:', error); 
+                    if(loadingMessage) messagesContainer.removeChild(loadingMessage); 
+                    addMessage(`Sorry, I had trouble creating the document. Please try again. Error: ${error.message}`, false, false, true);
                 }
-            } catch (error) {
-                // Reset state on error too
-                isAwaitingRecentChoice = false;
-                recentDocList = [];
-                pendingDocTitle = null;
-                messagesContainer.removeChild(loadingMessage);
-                addMessage('Sorry, I had trouble saving your note. Please try again.', false, false, true);
             }
-            return;
+        
+        // --- Priority 2: Handle Numeric Choice for Recent Docs ---
+        } else if (isAwaitingRecentChoice && /^[1-5]$/.test(text)) {
+            console.log(`Intent: Recent Doc Choice. Choice: ${text}`);
+            if (!lastRewrittenNote) {
+                 addMessage('Hmm, I seem to have lost the note. Please try again.', false, false, true);
+                 isAwaitingRecentChoice = false; // Reset state
+                 recentDocList = [];
+            } else {
+                const choiceIndex = parseInt(text, 10) - 1;
+                if (choiceIndex >= 0 && choiceIndex < recentDocList.length) {
+                    const chosenDoc = recentDocList[choiceIndex];
+                    const chosenTitle = chosenDoc.title; 
+                    loadingMessage = addMessage(`Saving note to "${chosenTitle}"...`, false, true);
+                    try {
+                        const result = await saveNote(chosenTitle, lastRewrittenNote); 
+                        if(loadingMessage) messagesContainer.removeChild(loadingMessage);
+                        if (result.needsConfirmation) { 
+                            console.error("Unexpected 'needsConfirmation' after selecting recent doc.");
+                            addMessage(`Hmm, something unexpected happened trying to save to "${chosenTitle}". Please try again.`, false, false, true);
+                        } else {
+                            addMessage(`I've saved your note to "${result.title}"!`, false);
+                            lastRewrittenNote = null; // Clear note state
+                        }
+                    } catch (error) {
+                        console.error('Error saving note after recent choice:', error);
+                        if(loadingMessage) messagesContainer.removeChild(loadingMessage);
+                        addMessage(`Sorry, I had trouble saving your note to "${chosenTitle}". Please try again. Error: ${error.message}`, false, false, true);
+                    } finally {
+                        isAwaitingRecentChoice = false; // Reset state
+                        recentDocList = [];
+                        pendingDocTitle = null; 
+                    }
+                } else {
+                    addMessage("That wasn't a valid choice. Please enter a number from 1 to 5, or type 'create new doc'.", false, false, true);
+                    // Keep isAwaitingRecentChoice = true
+                }
+            }
+
+        // --- Priority 3: Handle Confirmation to Create (after 'not found') ---
+        } else if (confirmPatterns.some(pattern => lowerText === pattern) && pendingDocTitle) {
+            console.log(`Intent: Confirm Create. Title: ${pendingDocTitle}`);
+             if (!lastRewrittenNote) {
+                 addMessage('Hmm, I seem to have lost the note to save. Please try again.', false, false, true);
+                 pendingDocTitle = null; // Reset state
+                 isAwaitingRecentChoice = false;
+                 recentDocList = [];
+             } else {
+                isAwaitingRecentChoice = false; // Reset recent choice state
+                recentDocList = [];
+                loadingMessage = addMessage('Creating new document...', false, true); 
+                try {
+                    const result = await createDoc(pendingDocTitle, lastRewrittenNote); // Use API function
+                    if(loadingMessage) messagesContainer.removeChild(loadingMessage);
+                    addMessage(`I've created a new document "${result.title}" and saved your note!`, false); 
+                    lastRewrittenNote = null; // Clear state
+                    pendingDocTitle = null; 
+                } catch (error) {
+                    console.error('Create doc error (in confirmation block):', error); 
+                    if(loadingMessage) messagesContainer.removeChild(loadingMessage); 
+                    addMessage(`Sorry, I had trouble creating the document. Please try again. Error: ${error.message}`, false, false, true);
+                }
+             }
+
+        // --- Priority 4: Handle Request to Show Recent Docs ---
+        } else if (showRecentPatterns.some(pattern => lowerText === pattern)) {
+             console.log('Intent: Show Recent Docs.');
+             if (!lastRewrittenNote) {
+                 addMessage('Please provide a note first before asking for recent docs to save to.', false, false, true);
+             } else {
+                isAwaitingRecentChoice = false; // Reset just in case
+                recentDocList = [];
+                pendingDocTitle = null; // Clear any pending creation title
+                await fetchAndDisplayRecentDocs(); // Fetch and show the list
+             }
+
+        // --- Priority 5: Handle General Save Command ---
+        } else if (savePatterns.some(pattern => lowerText.includes(pattern))) {
+            console.log('Intent: Save Command.');
+            if (!lastRewrittenNote) {
+                addMessage('Sorry, I don\'t have a note to save. Please write a note first.', false, false, true);
+            } else {
+                // --- Doc Name Extraction (same as before) ---
+                const matchedPattern = savePatterns.find(pattern => text.toLowerCase().includes(pattern));
+                let docName = ''; 
+                if (matchedPattern) {
+                    const patternIndex = text.toLowerCase().indexOf(matchedPattern);
+                    if (patternIndex !== -1) {
+                        docName = text.substring(patternIndex + matchedPattern.length).trim();
+                        if (docName.toLowerCase().startsWith('called ')) {
+                            docName = docName.substring(7).trim();
+                        } else if (docName.toLowerCase().startsWith('named ')) {
+                            docName = docName.substring(6).trim();
+                        }
+                    }
+                }
+                if (!docName) {
+                    console.warn("Could not reliably extract document name from save command:", text);
+                }
+                console.log('Extracted doc name:', docName);
+                
+                loadingMessage = addMessage('Saving your note...', false, true); 
+                try {
+                    const result = await saveNote(docName, lastRewrittenNote);
+                    if(loadingMessage) messagesContainer.removeChild(loadingMessage);
+                    
+                    if (result.needsConfirmation) {
+                        pendingDocTitle = result.suggestedTitle;
+                        addMessage(`I couldn't find a document named "${result.suggestedTitle}". Would you like me to create a new one with this name? (Or type 'show recent' to see recent documents)`, false); 
+                        isAwaitingRecentChoice = false; 
+                        recentDocList = [];
+                    } else {
+                        addMessage(`I've saved your note to "${result.title}"!`, false);
+                        lastRewrittenNote = null; 
+                        pendingDocTitle = null;
+                        isAwaitingRecentChoice = false; 
+                        recentDocList = [];
+                    }
+                } catch (error) {
+                    isAwaitingRecentChoice = false; // Reset state on error
+                    recentDocList = [];
+                    pendingDocTitle = null;
+                    if(loadingMessage) messagesContainer.removeChild(loadingMessage);
+                    addMessage('Sorry, I had trouble saving your note. Please try again.', false, false, true);
+                }
+            }
+
+        // --- Default: Treat as a new note to rewrite ---
+        } else {
+            console.log('Intent: Rewrite Note (Default).');
+            loadingMessage = addMessage('Processing your note...', false, true); 
+            try {
+                const cleanedNoteMarkdown = await rewriteNote(text); // Get Markdown from AI
+                if(loadingMessage) messagesContainer.removeChild(loadingMessage);
+                
+                // Display the formatted message (createMessage will handle parsing)
+                addMessage(cleanedNoteMarkdown, false); 
+                
+                // Store the HTML version for saving to the editor later
+                lastRewrittenNote = marked.parse(cleanedNoteMarkdown, { breaks: true }); 
+                
+                isFirstMessage = false;
+                // Reset other states
+                isAwaitingRecentChoice = false; 
+                recentDocList = [];
+                pendingDocTitle = null; 
+                // Ask where to save
+                addMessage("Where would you like to save this note? (e.g., 'save to My Notes', 'create new doc called Project X', or 'show recent')", false);
+            } catch (error) {
+                 if(loadingMessage) messagesContainer.removeChild(loadingMessage);
+                 addMessage('Sorry, I had trouble processing your note. Please try again.', false, false, true);
+                 // Don't clear lastRewrittenNote here, maybe the rewrite failed but the original text is still valid? Or clear it? Let's clear it for safety.
+                 lastRewrittenNote = null;
+                 isAwaitingRecentChoice = false; 
+                 recentDocList = [];
+                 pendingDocTitle = null; 
+            }
         }
 
-        // Otherwise, treat as new note
-        loadingMessage = addMessage('Processing your note...', false, true); // Assign to existing variable
-        
-        // Get AI response
-        const cleanedNote = await rewriteNote(text);
-        
-        // Remove loading message and show response
-        messagesContainer.removeChild(loadingMessage);
-        addMessage(cleanedNote, false);
-        
-        // Store the rewritten note and update first message state
-        lastRewrittenNote = cleanedNote;
-        isFirstMessage = false;
-        // Reset recent choice state when a new note is processed
-        isAwaitingRecentChoice = false; 
-        recentDocList = [];
-        pendingDocTitle = null; // Also clear pending title
-        // Ask the user where to save
-        addMessage("Where would you like to save this note? (e.g., 'save to My Notes', 'create new doc called Project X', or 'show recent')", false);
-
     } catch (error) {
-        // Reset state on error
+        // General catch block for unexpected errors in the try block itself
+        console.error("Unexpected error in handleSubmit:", error);
+        // Reset state on any major error
         isAwaitingRecentChoice = false;
         recentDocList = [];
         pendingDocTitle = null;
-        // Remove loading message and show error
+        lastRewrittenNote = null; // Clear note state too
         if (loadingMessage) {
             messagesContainer.removeChild(loadingMessage);
         }
-        addMessage('Sorry, I had trouble processing your note. Please try again.', false, false, true);
+        addMessage('Sorry, something went wrong. Please try again.', false, false, true);
     }
 }
 

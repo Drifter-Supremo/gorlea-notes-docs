@@ -32,6 +32,10 @@
 - ✅ Simplified AI prompt
 - ✅ Fixed chat auto-scrolling issue
 - ✅ Implemented "Show Recent Docs" feature in chat
+- ✅ Added "Gorlea Notes" navigation button to Docs list and editor pages
+- ✅ Fixed chat command logic loop (added missing pattern `create a new doc called`)
+- ✅ Improved AI rewrite formatting (updated prompt, added Markdown rendering in chat)
+- ✅ Fixed duplicate follow-up question after rewrite (removed from AI prompt)
 
 ## In Progress
 🔨 Gorlea Docs Feature Enhancements
@@ -211,7 +215,13 @@ To be implemented:
 - **2025-03-29:** Improved chatbot intent handling for create vs. save commands. Simplified AI prompt. Diagnosed chat scroll issue.
 - **2025-04-01:** Fixed chat auto-scrolling by targeting `.chat-container` in `scrollToBottom` (`client-vite/src/chat.js`).
 - **2025-04-01:** Added "Show Recent Docs" feature: Updated backend API (`/api/docs?limit=5`) and frontend chat logic (`chat.js`) to list and select recent documents for saving notes.
+- **2025-04-01:** Added "Gorlea Notes" navigation button to headers of `client-vite/docs/index.html` and `client-vite/docs/editor.html`.
+- **2025-04-01:** Fixed chat command logic loop (Final): Added missing `"create a new doc called"` pattern to `createPatterns` array in `chat.js`. Removed debug code.
+- **2025-04-01:** Improved AI rewrite formatting & fixed duplicate prompt: Updated AI prompt (`aiController.js`), installed `marked`, updated `chat.js` to render Markdown and store HTML.
+- **2025-04-01:** Fixed chat command logic loop (Attempt 3): Modified `createPatterns.find` call in `handleSubmit` (`chat.js`) to use `pattern.trim()` before `startsWith` check. Removed debug logs.
+- **2025-04-01:** Fixed chat command logic loop (Attempt 2): Added missing `return;` after successful explicit creation in `handleSubmit` (`chat.js`) to prevent fall-through.
+- **2025-04-01:** Fixed chat command logic loop (Attempt 1): Restructured `handleSubmit` in `chat.js` with `if/else if` blocks to correctly prioritize intents.
 
 ---
 
-Last Updated: 2025-04-01 1:24 PM PDT
+Last Updated: 2025-04-01 3:41 PM PDT

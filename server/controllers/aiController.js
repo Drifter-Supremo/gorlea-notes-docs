@@ -29,8 +29,8 @@ const rewriteNote = async (req, res) => {
       {
         contents: [
           {
-            // Reverted to simpler prompt
-            parts: [{ text: `You are Gorlea, a smart AI note assistant. Always respond in plain text without any formatting. Just rewrite this note in a clearer and more structured way. Then on a new line, ask "Would you like me to save this to an existing doc, or start a new one? Just tell me the name."\n\n"${note}"` }],
+            // New improved prompt (Removed rule #4 asking AI to add follow-up question)
+            parts: [{ text: `You are Gorlea, a smart AI note assistant. Your task is to rewrite the following note to improve clarity, structure, and formatting, while preserving specific content. Follow these rules strictly:\n\n1.  **Formatting:** Use Markdown for structure. Employ bullet points (using \`-\` or \`*\`) for lists, use double line breaks for paragraphs, and use bold text (\`**text**\`) for emphasis where appropriate. Do NOT use excessive separators like many asterisks.\n2.  **Preserve Quotes:** Identify any text enclosed in double quotation marks (\`"..."\`). Leave this quoted text completely unchanged in the rewritten output.\n3.  **Clarity & Structure:** Reorganize the content logically. If the note seems like a profile or has distinct sections, consider using simple headings (e.g., \`## Heading\`). Summarize or rephrase non-quoted text for better flow, but ensure the core meaning is retained.\n4.  **Output:** Provide *only* the rewritten note based on these rules.\n\nHere is the note to rewrite:\n"${note}"` }],
           },
         ],
       },

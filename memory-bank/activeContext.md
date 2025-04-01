@@ -132,6 +132,15 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 4. Implement Gorlea Notes integration.
 
 ## Recent Changes
+- **(April 1, 2025)** Improved AI rewrite formatting & fixed duplicate prompt:
+    - Updated AI prompt in `aiController.js` to request Markdown output, preserve quotes, and remove the redundant follow-up question.
+    - Installed `marked` library in `client-vite`.
+    - Updated `chat.js` (`createMessage`) to render Markdown in Gorlea's responses.
+    - Updated `chat.js` (`handleSubmit`) to store the rewritten note as HTML using `marked.parse()`.
+- **(April 1, 2025)** Fixed chat command logic loop (Attempt 3):
+    - Added missing `"create a new doc called"` pattern to `createPatterns` array in `chat.js`. (Previous attempts involving `trim()` and `return` were addressing symptoms, not the root cause identified by user).
+- **(April 1, 2025)** Added "Gorlea Notes" navigation button to Docs pages:
+    - Inserted styled link (`<a href="/chat.html" class="button button-accent">Gorlea Notes</a>`) into the headers of `client-vite/docs/index.html` and `client-vite/docs/editor.html`.
 - **(April 1, 2025)** Implemented "Show Recent Docs" feature in chat:
     - Modified `listDocuments` in `server/utils/firestore.js` to accept an optional `limit`.
     - Updated `listDocuments` controller in `server/controllers/docsController.js` to handle `limit` query parameter.
@@ -282,5 +291,5 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 
 ---
 
-Last Updated: 2025-04-01 1:23 PM PDT
+Last Updated: 2025-04-01 3:40 PM PDT
 Next Review: 2025-04-02
