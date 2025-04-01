@@ -132,6 +132,8 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 4. Implement Gorlea Notes integration.
 
 ## Recent Changes
+- **(April 1, 2025)** Made navigation buttons open in new tabs:
+    - Modified "Gorlea Docs" button in `chat.html` (changed to `<a>` tag) and "Gorlea Notes" links in `docs/index.html` & `docs/editor.html` to include `target="_blank" rel="noopener noreferrer"`.
 - **(April 1, 2025)** Improved AI rewrite formatting & fixed duplicate prompt:
     - Updated AI prompt in `aiController.js` to request Markdown output, preserve quotes, and remove the redundant follow-up question.
     - Installed `marked` library in `client-vite`.
@@ -291,5 +293,5 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 
 ---
 
-Last Updated: 2025-04-01 3:40 PM PDT
+Last Updated: 2025-04-01 4:01 PM PDT
 Next Review: 2025-04-02

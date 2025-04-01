@@ -36,6 +36,7 @@
 - ✅ Fixed chat command logic loop (added missing pattern `create a new doc called`)
 - ✅ Improved AI rewrite formatting (updated prompt, added Markdown rendering in chat)
 - ✅ Fixed duplicate follow-up question after rewrite (removed from AI prompt)
+- ✅ Made navigation buttons ("Gorlea Docs", "Gorlea Notes") open in new tabs
 
 ## In Progress
 🔨 Gorlea Docs Feature Enhancements
@@ -218,10 +219,11 @@ To be implemented:
 - **2025-04-01:** Added "Gorlea Notes" navigation button to headers of `client-vite/docs/index.html` and `client-vite/docs/editor.html`.
 - **2025-04-01:** Fixed chat command logic loop (Final): Added missing `"create a new doc called"` pattern to `createPatterns` array in `chat.js`. Removed debug code.
 - **2025-04-01:** Improved AI rewrite formatting & fixed duplicate prompt: Updated AI prompt (`aiController.js`), installed `marked`, updated `chat.js` to render Markdown and store HTML.
+- **2025-04-01:** Made navigation buttons open in new tabs by adding `target="_blank"` to relevant links in `chat.html`, `docs/index.html`, and `docs/editor.html`.
 - **2025-04-01:** Fixed chat command logic loop (Attempt 3): Modified `createPatterns.find` call in `handleSubmit` (`chat.js`) to use `pattern.trim()` before `startsWith` check. Removed debug logs.
 - **2025-04-01:** Fixed chat command logic loop (Attempt 2): Added missing `return;` after successful explicit creation in `handleSubmit` (`chat.js`) to prevent fall-through.
 - **2025-04-01:** Fixed chat command logic loop (Attempt 1): Restructured `handleSubmit` in `chat.js` with `if/else if` blocks to correctly prioritize intents.
 
 ---
 
-Last Updated: 2025-04-01 3:41 PM PDT
+Last Updated: 2025-04-01 4:01 PM PDT
