@@ -6,6 +6,7 @@ const messageInput = document.getElementById('messageInput');
 const sendButton = document.getElementById('sendButton');
 const messagesContainer = document.getElementById('messages');
 const welcomeScreen = document.getElementById('welcomeScreen');
+const chatContainer = document.querySelector('.chat-container'); // Added reference to the scrollable container
 
 // Save command patterns
 const savePatterns = [
@@ -211,8 +212,9 @@ function addMessage(text, isUser = true, isLoading = false, isError = false) {
 function scrollToBottom() {
     // Defer scroll slightly to allow DOM to update heights
     setTimeout(() => {
-        if (messagesContainer) { // Add null check just in case
-             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        // Target the chatContainer for scrolling, not the messagesContainer itself
+        if (chatContainer) { 
+             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
     }, 0); 
 }

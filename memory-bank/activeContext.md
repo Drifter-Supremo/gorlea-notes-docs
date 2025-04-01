@@ -132,6 +132,58 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 4. Implement Gorlea Notes integration.
 
 ## Recent Changes
+- **(April 1, 2025)** Fixed chat auto-scrolling issue:
+    - Added reference to `.chat-container` in `client-vite/src/chat.js`.
+    - Updated `scrollToBottom` function to target `.chat-container` instead of `#messages`.
+- **(March 29)** Diagnosed chat auto-scroll issue: `scrollToBottom` in `chat.js` targets `#messages` instead of the scrollable parent `.chat-container`.
+- **(March 29)** Simplified AI rewrite prompt (`aiController.js`) after improving frontend intent handling.
+- **(March 29)** Refined chatbot save/create logic (`chat.js`):
+    - Improved document name extraction from save commands.
+    - Added explicit patterns (`createPatterns`) to handle direct creation intent (e.g., "create new doc named X").
+    - Prioritized checking creation patterns before general save patterns in `handleSubmit`.
+- **(March 29)** Implemented case-insensitive document title search:
+    - Added `title_lowercase` field to Firestore documents on create/update (`firestore.js`).
+    - Modified `findDocumentByTitle` to query the lowercase field (`firestore.js`).
+- **(March 29)** Integrated Tiptap rich text editor (Phase D):
+    - Installed `@tiptap/core` and `@tiptap/starter-kit` via npm in `client-vite`.
+    - Updated `editor.html` to use `<div id="editor">` instead of `<textarea>`.
+    - Updated `editor.js` to import Tiptap, initialize the editor, set initial content from fetched data, and trigger autosave via `onUpdate`.
+    - Modified `performAutosave` in `editor.js` to use `editor.getHTML()` for saving content.
+    - Updated `docs.css` to style the Tiptap editor area (`#editor .ProseMirror`).
+- **(March 29)** Debugged Vite setup issues:
+    - Fixed `document.getElementById is not a function` error in `editor.js` by renaming shadowed `document` variable to `docData`.
+    - Diagnosed `401 Unauthorized` on `/api/ai/*` routes: Caused by `requireAuth` middleware checking `req.session.tokens` which are no longer set. Temporarily removed `requireAuth` from `server/routes/ai.js` to unblock development.
+    - Fixed `ReferenceError: loadingMessage is not defined` in `chat.js`.
+- **(March 29)** Started Vite migration (Phase A):
+    - Initialized Vite project in `client-vite`.
+    - Migrated HTML, CSS, JS files from `client` to `client-vite/src`.
+    - Configured Vite for MPA and API proxy (`vite.config.js`).
+    - Updated HTML/JS for module loading and CSS imports.
+- **(March 29)** Cleaned up editor UI:
+    - Removed manual Save button (`#save-btn`) and visual autosave status (`#autosave-status`) from `editor.html`.
+    - Modified `editor.js` to remove related DOM manipulation and use `console.log`/`console.error` for autosave feedback instead.
+- **(March 29)** Implemented editor autosave functionality:
+    - Added debounce utility and `performAutosave` function in `editor.js`.
+    - Autosave triggers on title/content input (2s delay) and on "Docs Home" button click (immediate, awaits completion before navigation).
+    - Initially included visual feedback elements (`#autosave-status`).
+- **(March 29)** Fixed document card icon alignment:
+    - Refactored card HTML structure in `docList.js` (`.doc-main`, `.doc-actions`).
+    - Adjusted CSS in `editor.css` (`.doc-card`, `.doc-actions`) for correct Flexbox layout.
+- **(March 29)** Added Archive (soft delete) and Delete (permanent) functionality to document list:
+    - Added Archive/Delete buttons to document cards in `docList.js`.
+    - Implemented backend routes (`PUT /api/docs/:id/archive`, `DELETE /api/docs/:id`) and corresponding controller/utility functions.
+    - Added frontend logic in `docList.js` to call APIs and update UI.
+    - Included confirmation dialog for permanent delete.
+- **(March 29)** Implemented Gorlea Docs editor flow enhancements:
+    - Added "Docs Home" button to `editor.html`.
+    - Ensured "New Document" button state resets correctly in `docList.js` using `finally`.
+    - Added title validation (defaulting to "Untitled Document") on frontend save (`editor.js`) and backend update (`docsController.js`).
+    - Refactored button styling in `editor.css` using a shared `.button-accent` class for "New Document" and "Docs Home" buttons.
+- **(March 27)** Simplified `docList.js` UI (removed date display).
+- **(March 27)** Refactored Firestore logic (`firestore.js`):
+    - Replaced `updatedAt` with `lastOpenedAt`.
+    - Added update `lastOpenedAt` on `getDocument`.
+    - Updated sorting in `listDocuments` to use `lastOpenedAt`.
 - **(March 27)** Debugged editor page visibility:
     - Corrected HTML structure in `editor.html` (elements misplaced outside wrapper).
     - Verified asset paths and server config.
@@ -196,12 +248,12 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 ## Next Steps - Updated
 
 ### Immediate Task
-1.  **Fix Chat Auto-Scrolling:**
-    *   **File:** `client-vite/src/chat.js`
-    *   **Action:** Get reference to `.chat-container`. Update `scrollToBottom` function to set `scrollTop` on the `.chat-container` element instead of `#messages`.
-
-### Subsequent Tasks (Post-Scrolling Fix)
 1.  **Refine Editor UI/UX:** (e.g., add Tiptap toolbar if desired).
+    *   **File:** `client-vite/src/editor.js`, `client-vite/docs/editor.html`, `client-vite/src/styles/docs.css`
+    *   **Action:** Evaluate need for toolbar, implement if desired. Consider other UI improvements for Tiptap editor.
+
+### Subsequent Tasks
+1.  **Gorlea Notes Integration:** Plan how notes from chat are saved/linked to specific docs.
 2.  **Gorlea Notes Integration:** Plan how notes from chat are saved/linked to specific docs.
 3.  **Authentication:** Re-implement proper authentication (e.g., Google OAuth) and update `requireAuth` middleware.
 4.  **Testing:** Add more comprehensive unit/integration/E2E tests.
@@ -226,5 +278,5 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 
 ---
 
-Last Updated: 2025-03-27 4:33 PM PDT
-Next Review: 2025-03-28
+Last Updated: 2025-04-01 1:12 PM PDT
+Next Review: 2025-04-02
