@@ -132,6 +132,24 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 4. Implement Gorlea Notes integration.
 
 ## Recent Changes
+- **(April 2, 2025)** Fixed chat scroll issue: Modified `revealMessageBlocks` in `chat.js` to call `scrollToBottom()` only after the entire animation completes.
+- **(April 2, 2025)** Implemented block-reveal animation for Gorlea messages:
+    - Removed character-typing effect (`typeMessageEffect` and cursor CSS).
+    - Added `revealMessageBlocks` function and associated CSS animation (`revealBlockFadeIn`).
+    - Updated `handleSubmit` in `chat.js` to use block-reveal for AI responses and follow-up prompts.
+- **(April 2, 2025)** Removed Gorlea message bubble background: Updated CSS in `main.css` for `.gorlea-message .message-content`.
+- **(April 2, 2025)** Moved "New Chat" button to header: Updated `chat.html` and `main.css`.
+- **(April 2, 2025)** Removed "Chat cleared" confirmation message from `chat.js`.
+- **(April 2, 2025)** Implemented "New Chat" button functionality:
+    - Added button element to `client-vite/chat.html`.
+    - Added styling in `client-vite/src/styles/main.css`.
+    - Added JS logic in `client-vite/src/chat.js` to clear `localStorage`, `chatHistory` array, and message display.
+- **(April 2, 2025)** Added timestamp separator when appending notes:
+    - Modified `appendContent` in `server/utils/firestore.js` to prepend `*Saved: [Date Time]*` before new content.
+- **(April 2, 2025)** Implemented chat persistence using `localStorage`:
+    - Added `chatHistory` array, `saveChatHistory`, and `loadChatHistory` functions to `client-vite/src/chat.js`.
+    - Modified `addMessage` to save non-loading messages.
+    - Called `loadChatHistory` on script load.
 - **(April 1, 2025)** Replaced text labels with icons in Tiptap toolbar:
     - Updated buttons in `docs/editor.html` to use Material Symbols SVGs.
     - Added CSS in `styles/docs.css` to style the SVGs within buttons.
@@ -301,5 +319,5 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 
 ---
 
-Last Updated: 2025-04-01 4:22 PM PDT
-Next Review: 2025-04-02
+Last Updated: 2025-04-02 12:44 PM PDT
+Next Review: 2025-04-03

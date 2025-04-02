@@ -3,11 +3,11 @@
 ## Project Patterns
 
 ### File Organization
-- Memory bank files use emoji prefixes for quick recognition
+- Memory bank files use emoji prefixes for quick recognition (`/memory-bank/`)
 - All documentation in Markdown format
-- Frontend: /src for source files
-- Backend: /functions for Firebase Functions
-- Utilities: /utils for shared code
+- Frontend: `/client-vite/src/` for source files (Vite project)
+- Backend: `/server/` for Express.js server code
+- Utilities: `/server/utils/` for shared backend code
 
 ### Naming Conventions
 - Files: kebab-case.js
@@ -54,8 +54,8 @@
 ### Note Creation Flow
 1. User enters note in chat
 2. AI processes and cleans note
-3. System suggests save locations
-4. Note saved to Google Docs
+3. System suggests save locations (existing Firestore doc or new)
+4. Note saved/appended to Firestore document (with timestamp separator)
 5. Confirmation shown to user
 
 ### Authentication Flow
@@ -68,10 +68,10 @@
 ## Known Challenges
 
 ### API Integration
-- Google API rate limits
-- Token refresh handling
-- Error recovery
-- Timeout management
+- Firestore write limits/costs (potential challenge)
+- Token refresh handling (Google OAuth)
+- Error recovery (Network, API)
+- Timeout management (AI, Firestore)
 
 ### AI Processing
 - Response time optimization
@@ -132,9 +132,10 @@
 ## Evolution Notes
 
 ### Initial Decisions
-- Vanilla JS for MVP
-- Firebase Functions backend
+- Vanilla JS for MVP (using Vite)
+- Express.js backend
 - Google Gemini primary AI
+- Firestore for storage
 - Mobile-first design
 
 ### Future Considerations
@@ -146,10 +147,13 @@
 ## Learning Points
 
 ### Technical
-- Google API integration patterns
-- AI processing strategies
-- OAuth implementation
-- Doc management approaches
+- Firestore data modeling and querying
+- AI processing strategies (Gemini)
+- Google OAuth implementation
+- Express.js middleware and routing
+- Vite build/proxy configuration
+- Tiptap editor integration
+- Frontend state management (localStorage for chat)
 
 ### Process
 - Documentation first

@@ -38,6 +38,13 @@
 - ✅ Fixed duplicate follow-up question after rewrite (removed from AI prompt)
 - ✅ Made navigation buttons ("Gorlea Docs", "Gorlea Notes") open in new tabs
 - ✅ Implemented Tiptap editor toolbar (basic formatting, headings, lists, history)
+- ✅ Implemented chat persistence using localStorage
+- ✅ Added timestamp separator when appending notes to Firestore docs
+- ✅ Added "New Chat" button and functionality
+- ✅ Moved "New Chat" button to header
+- ✅ Removed Gorlea message bubble background
+- ✅ Implemented block-reveal animation for Gorlea messages
+- ✅ Fixed chat scroll behavior during animation
 
 ## In Progress
 🔨 Gorlea Docs Feature Enhancements
@@ -226,7 +233,14 @@ To be implemented:
 - **2025-04-01:** Fixed chat command logic loop (Attempt 1): Restructured `handleSubmit` in `chat.js` with `if/else if` blocks to correctly prioritize intents.
 - **2025-04-01:** Implemented Tiptap editor toolbar: Added HTML (with text labels), JS logic (`editor.js`), and CSS (`docs.css`) for basic formatting controls.
 - **2025-04-01:** Replaced text labels with Material Symbols SVGs in Tiptap toolbar (`editor.html`) and added SVG styling (`docs.css`).
+- **2025-04-02:** Implemented chat persistence using localStorage (`chat.js`).
+- **2025-04-02:** Added timestamp separator to `appendContent` in Firestore utils (`firestore.js`).
+- **2025-04-02:** Added "New Chat" button (`chat.html`, `main.css`) and clearing logic (`chat.js`).
+- **2025-04-02:** Moved "New Chat" button to header (`chat.html`, `main.css`).
+- **2025-04-02:** Removed Gorlea message bubble background (`main.css`).
+- **2025-04-02:** Implemented block-reveal animation (`chat.js`, `main.css`).
+- **2025-04-02:** Fixed chat scroll during animation (`chat.js`).
 
 ---
 
-Last Updated: 2025-04-01 4:23 PM PDT
+Last Updated: 2025-04-02 12:45 PM PDT

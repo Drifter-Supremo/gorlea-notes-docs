@@ -18,8 +18,19 @@ flowchart TD
         Session[Session Store]
     end
 
+    subgraph Backend["Express.js Server"]
+        Router[Routes]
+        Controller[Controllers]
+        Services[Services / Utils]
+        Session[Session Store]
+    end
+    
+    subgraph Storage["Storage"]
+        FS[Firestore]
+    end
+
     subgraph External["External Services"]
-        Google[Google APIs]
+        GoogleAuth[Google OAuth]
         AIModel[AI Model]
     end
 
@@ -29,9 +40,10 @@ flowchart TD
     Auth --> Router
     Router --> Controller
     Controller --> Services
-    Controller --> Session
-    Services --> Google
+    Services --> FS
     Services --> AIModel
+    Services --> GoogleAuth
+    Controller --> Session
 ```
 
 ## Frontend Patterns
@@ -43,6 +55,7 @@ flowchart TD
         Welcome[Welcome Screen]
         Messages[Messages Container]
         Input[Input Area]
+        NewChatBtn["New Chat Button"]
     end
 
     subgraph MessageTypes
@@ -54,9 +67,14 @@ flowchart TD
     Messages --> User
     Messages --> Gorlea
     Messages --> Input
+    Input --> NewChatBtn
 ```
 
-### 2. Message Styling Pattern
+### 2. Frontend State Management
+- **Chat History:** Uses browser `localStorage` to persist the current chat message list across page refreshes. State is cleared via the "New Chat" button.
+- **Application State:** Other state (e.g., `lastRewrittenNote`) is currently ephemeral and resets on refresh.
+
+### 3. Message Styling Pattern
 - Consistent dark theme (#1E1E2E)
 - Gold accents for visual hierarchy
 - Right-aligned user messages
@@ -111,16 +129,15 @@ flowchart LR
 
 ## Component Organization
 
-### Server Structure
+### Server Structure (Example)
 ```
 server/
 ├── index.js                 # Entry point
-├── routes/                  # Route definitions
-│   └── auth.js             # Auth routes
-├── controllers/            # Request handlers
-│   └── authController.js   # Auth logic
-├── config/                # Configuration
-│   └── google.js         # OAuth config
+├── config/                  # Configuration (e.g., google.js)
+├── controllers/             # Request handlers (e.g., authController.js, aiController.js, docsController.js)
+├── routes/                  # Route definitions (e.g., auth.js, ai.js, docs.js)
+├── utils/                   # Utility functions (e.g., firestore.js)
+└── ...                      # Other files (e.g., .gitignore, package.json)
 ```
 
 ### Route Patterns

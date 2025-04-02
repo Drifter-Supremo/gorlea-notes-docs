@@ -10,11 +10,11 @@ People with ADHD often experience:
 
 ## Solution Approach
 Gorlea Notes provides:
-- A chat interface that feels natural and low-friction
+- A chat interface that feels natural and low-friction (with persistent history)
 - AI-powered note cleanup to reduce cognitive load
-- Smart organization through Google Docs integration
+- Smart organization through Firestore document storage within the app
 - Minimal user decisions to reduce executive function burden
-- Secure and reliable note storage in familiar tools
+- Secure and reliable note storage integrated with the app
 
 ## User Experience Goals
 
@@ -25,15 +25,15 @@ Gorlea Notes provides:
 - No formatting or structure required
 
 ### 2. Intelligent Organization
-- AI understands note content and suggests appropriate locations
-- Seamless integration with existing Google Docs
-- Smart categorization without user overhead
-- Maintains context across related notes
+- AI understands note content and suggests appropriate locations (existing or new documents)
+- Seamless integration with the app's Firestore document system (Gorlea Docs)
+- Smart categorization without user overhead (future goal)
+- Maintains context across related notes (future goal)
 
 ### 3. Trust & Reliability
-- Notes are never lost or misplaced
-- Easy to find previous notes through Google Docs
-- Secure and private note storage
+- Notes are never lost or misplaced (stored securely in Firestore)
+- Easy to find previous notes through the Gorlea Docs interface
+- Secure and private note storage (user-specific via authentication)
 - Consistent and predictable behavior
 
 ### 4. Reduced Cognitive Load
@@ -53,9 +53,9 @@ Gorlea Notes provides:
 "Gorlea Notes is your trusted thought-capture companion that turns scattered ideas into organized notes, without the mental overhead. Just type like you're chatting, and let AI handle the rest."
 
 ## Key Differentiators
-- Chat-first interface (vs. traditional note editors)
-- AI-powered cleanup and organization
-- Google Docs integration (vs. proprietary storage)
+- Chat-first interface with persistence (vs. traditional note editors)
+- AI-powered cleanup and organization suggestions
+- Integrated Firestore document storage and editor (Gorlea Docs)
 - ADHD-specific design considerations
 - Minimal cognitive overhead
 

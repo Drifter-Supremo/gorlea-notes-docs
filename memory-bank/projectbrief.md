@@ -1,38 +1,39 @@
 \# 🧠 Project Brief: Gorlea Notes
 
 \#\# Overview  
-Gorlea Notes is a custom chat-style note-taking app designed to help users with ADHD (and anyone with a fast-moving brain) quickly jot down thoughts, ideas, or reminders in natural language. The app uses AI to clean up the notes, then asks the user where to save them. Notes are appended to existing Google Docs or saved into new ones, based on user intent.
+Gorlea Notes is a custom chat-style note-taking app designed to help users with ADHD (and anyone with a fast-moving brain) quickly jot down thoughts, ideas, or reminders in natural language. The app uses AI to clean up the notes, then asks the user where to save them. Notes are appended to existing documents or saved into new ones within the app's storage system (Firestore).
 
-The app blends \*\*structured note organization\*\*, \*\*hands-off automation\*\*, and a \*\*natural chat interface\*\* to create a smarter, more intuitive way to manage scattered thoughts.
+The app blends \*\*structured note organization\*\*, \*\*hands-off automation\*\*, and a \*\*natural chat interface\*\* to create a smarter, more intuitive way to manage scattered thoughts. It also includes a basic document editor (Gorlea Docs) for viewing and managing saved notes.
 
 \#\# Core Features (MVP)  
-\- 📝 Chat-style interface for entering freeform notes.  
-\- 🤖 AI (Gemini or GPT-4) rewrites messy notes for clarity and structure.  
+\- 📝 Chat-style interface (Gorlea Notes) for entering freeform notes.
+  - Chat history persists in the browser (`localStorage`).
+  - "New Chat" button to clear history.
+\- 🤖 AI (Gemini) rewrites messy notes for clarity and structure.  
 \- 📂 AI asks user where the note should be saved (existing doc or new).  
-\- 📄 App connects to Google Docs via Google Drive/Docs API.  
-\- 🧩 Notes are appended to existing Google Docs or new Docs are created.  
+\- 📄 Notes are appended to existing Firestore documents or new documents are created.
+  - Timestamp separator added when appending notes.
 \- 🔐 Secure Google OAuth2 login (only for the user).  
-\- ☁️ Backend (Firebase Function or Express) handles all API calls to Google.
+\- ☁️ Backend (Express.js) handles AI calls and Firestore operations.
+\- 📑 Basic document editor (Gorlea Docs) to list, view, create, and manage notes stored in Firestore.
 
 \#\# Tech Stack  
-\- Frontend: HTML/CSS/JS (or React if needed later)  
-\- Backend: Firebase Functions (Node.js) or Express server  
-\- AI Model: Gemini API or OpenAI GPT-4 (via secure server call)  
-\- Cloud: Google Drive \+ Google Docs APIs (requires OAuth2)  
-\- Auth: Google OAuth2 (scoped for Docs/Drive access)  
-\- Storage: Firebase (optional, to store logs or note metadata)
+\- Frontend: HTML/CSS/JS with Vite build tool. Tiptap editor for Gorlea Docs.
+\- Backend: Express.js (Node.js)
+\- AI Model: Google Gemini API (via secure server call)
+\- Storage: Firestore (for document content, metadata)
+\- Auth: Google OAuth2 (for user login)
 
-\#\# Folders  
+\#\# Folders (Current Structure)
 \- \`/memory-bank/\`: Planning, notes, prompts, guides  
-\- \`/src/\`: Frontend code  
-\- \`/functions/\`: Firebase Functions (or \`/server/\` for Express backend)  
-\- \`/auth/\`: Google OAuth logic and tokens  
-\- \`/utils/\`: Shared helper functions (AI rewrite, doc creation, etc.)
+\- \`/client-vite/\`: Frontend code (Vite project)
+\- \`/server/\`: Backend code (Express.js project)
+\- \`/credentials/\`: Service account keys (ignored by Git)
 
 \#\# Key Goals  
 \- Prioritize simplicity and mental clarity — no clutter.  
 \- Minimize user decisions; AI should prompt with helpful options.  
-\- Handle Google API integration \*\*securely and cleanly\*\*.  
+\- Handle API integrations (AI, Firestore, Auth) \*\*securely and cleanly\*\*.  
 \- Make note entry feel frictionless, just like chatting with Gorlea.
 
 \#\# Stretch Goals (Post-MVP)  
@@ -45,4 +46,3 @@ The app blends \*\*structured note organization\*\*, \*\*hands-off automation\*\
 \---
 
 Let’s build something that makes your brain feel heard, not managed.
-

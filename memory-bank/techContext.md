@@ -4,9 +4,11 @@
 
 ### Frontend
 - **Core**: HTML5, CSS3, JavaScript (ES6+)
+- **Build Tool**: Vite
 - **Styling**: CSS Custom Properties for theming
 - **Layout**: CSS Grid/Flexbox for responsive design
-- **Editor**: Tiptap/Quill (to be selected)
+- **Editor**: Tiptap (Core, StarterKit, Underline)
+- **Markdown Rendering**: Marked
 - **Future Consideration**: React if complexity grows
 
 ### Backend
@@ -72,35 +74,40 @@ PORT=3000
 
 ### Project Structure
 ```bash
-/client/
-  ├── docs/                # Gorlea Docs frontend
-  │   ├── index.html      # Document list
-  │   ├── editor.html     # Document editor
-  │   ├── scripts/
-  │   │   ├── docList.js  # List functionality
-  │   │   └── editor.js   # Editor functionality
-  │   └── styles/
-  │       └── docs.css    # Docs-specific styles
-  ├── styles/
-  │   └── main.css        # Shared styles
-  └── scripts/
-      └── app.js          # Notes functionality
+/client-vite/             # Vite frontend root
+  ├── index.html          # Main entry (if needed, currently chat.html is primary)
+  ├── chat.html           # Gorlea Notes chat interface entry
+  ├── docs/               # Gorlea Docs specific HTML
+  │   ├── index.html      # Document list entry
+  │   └── editor.html     # Document editor entry
+  ├── public/             # Static assets (e.g., logos)
+  ├── src/                # Source files
+  │   ├── main.js         # Main JS entry (if using index.html)
+  │   ├── chat.js         # Gorlea Notes chat logic
+  │   ├── docs/           # Gorlea Docs specific JS
+  │   │   ├── docList.js
+  │   │   └── editor.js
+  │   ├── styles/         # CSS files
+  │   │   ├── main.css
+  │   │   └── docs.css
+  │   └── ...             # Other JS modules
+  ├── package.json
+  └── vite.config.js      # Vite configuration (MPA, proxy)
 
-/server/
+/server/                  # Express backend root
   ├── index.js            # Entry point
-  ├── routes/             # Route definitions
-  │   ├── docs.js        # Document routes
-  │   └── auth.js        # Auth routes
-  ├── controllers/        # Request handlers
-  │   ├── docsController.js
-  │   └── authController.js
-  ├── utils/             # Utilities
-  │   └── firestore.js   # Firestore helpers
-  └── config/            # Configuration
-      └── firebase.js    # Firebase config
+  ├── config/             # Configuration (e.g., google.js)
+  ├── controllers/        # Request handlers (e.g., authController.js, aiController.js, docsController.js)
+  ├── routes/             # Route definitions (e.g., auth.js, ai.js, docs.js)
+  ├── utils/              # Utility functions (e.g., firestore.js)
+  ├── package.json
+  └── ...                 # Other files
 ```
 
 ### Frontend Features
+- Chat interface (Gorlea Notes)
+  - Chat message persistence via `localStorage`
+  - "New Chat" button functionality
 - Document list view
 - Rich text editor (pending)
 - Auto-expanding inputs
@@ -126,17 +133,22 @@ PORT=3000
 }
 ```
 
-#### Frontend (Planned)
+#### Frontend (`client-vite/package.json`)
 ```json
 {
   "dependencies": {
-    "@tiptap/core": "^2.2.4",    // If Tiptap selected
-    "quill": "^1.3.7",           // If Quill selected
-    "html-to-text": "^9.0.5",    // For export
-    "jspdf": "^2.5.1"            // For PDF export
+    "@tiptap/core": "^2.2.4",
+    "@tiptap/starter-kit": "^2.2.4",
+    "@tiptap/extension-underline": "^2.2.4", // Example extension
+    "marked": "^12.0.1" // Or latest version used
+    // Other dependencies like html-to-text, jspdf if export is implemented
+  },
+  "devDependencies": {
+    "vite": "^5.1.6" // Or latest version used
   }
 }
 ```
+*Note: This reflects current known dependencies. Check `package.json` for the exact list.*
 
 ## Technical Requirements
 

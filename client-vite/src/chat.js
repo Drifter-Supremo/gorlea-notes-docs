@@ -230,7 +230,7 @@ function autoExpandTextarea() {
     messageInput.style.height = newHeight + 'px';
 }
 
-// Create a new message element
+// Create a new message element (Refined for typing effect)
 function createMessage(text, isUser = true, isLoading = false, isError = false) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${isUser ? 'user-message' : 'gorlea-message'}`;
@@ -250,17 +250,22 @@ function createMessage(text, isUser = true, isLoading = false, isError = false) 
         `;
         contentDiv.appendChild(headerDiv);
     }
-    
-    // Render Markdown for Gorlea's messages, plain text for user's
-    if (!isUser && !isLoading && !isError) { 
-        // Basic sanitization (consider a more robust sanitizer if needed)
-        const sanitizedHtml = marked.parse(text, { breaks: true }); // breaks: true converts newlines to <br>
-        contentDiv.innerHTML = sanitizedHtml; 
+
+    // Add a wrapper for the actual text content
+    const textWrapper = document.createElement('div');
+    textWrapper.className = 'text-content-wrapper'; // Use this class to target for typing/rendering
+
+    // Render Markdown for Gorlea's messages, plain text for user's (Initial render)
+    if (!isUser && !isLoading && !isError) {
+        // Initial render uses Markdown parser
+        const sanitizedHtml = marked.parse(text, { breaks: true });
+        textWrapper.innerHTML = sanitizedHtml;
     } else {
         // For user messages, loading, or errors, just use text node
-        contentDiv.appendChild(document.createTextNode(text));
+        textWrapper.appendChild(document.createTextNode(text));
     }
-    
+
+    contentDiv.appendChild(textWrapper); // Append the text wrapper to the main content div
     messageDiv.appendChild(contentDiv);
     
     return messageDiv;
@@ -280,6 +285,62 @@ function addMessage(text, isUser = true, isLoading = false, isError = false) {
     scrollToBottom();
     return messageElement; // Return the DOM element
 }
+
+// --- Block Reveal Effect Function (Restored) ---
+function revealMessageBlocks(targetWrapper, fullHtml, delay = 250, callback) { // Slower delay
+    // Create a temporary div to parse the HTML and get top-level blocks
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = fullHtml; // Parse the complete HTML
+    const blocks = Array.from(tempDiv.childNodes); // Get direct children (p, ul, ol, etc.)
+
+    targetWrapper.innerHTML = ''; // Clear the target wrapper initially
+    targetWrapper.style.opacity = 1; // Ensure wrapper is visible
+
+    let index = 0;
+
+    function revealNextBlock() {
+        if (index < blocks.length) {
+            const block = blocks[index];
+            // Clone the node to avoid issues if it's already attached elsewhere
+            const blockClone = block.cloneNode(true); 
+            
+            // Add animation class only to element nodes
+            if (blockClone.nodeType === Node.ELEMENT_NODE) { 
+                 blockClone.classList.add('reveal-block');
+            } else if (blockClone.nodeType === Node.TEXT_NODE && blockClone.textContent.trim() !== '') {
+                // Wrap non-empty text nodes in a span for animation
+                const span = document.createElement('span');
+                span.textContent = blockClone.textContent;
+                span.classList.add('reveal-block');
+                targetWrapper.appendChild(span);
+            } else {
+                 // Append other node types (like comments) directly without animation
+                 targetWrapper.appendChild(blockClone);
+            }
+            
+            // Only append elements with the class if they were created
+            if (blockClone.nodeType === Node.ELEMENT_NODE && blockClone.classList.contains('reveal-block')) {
+                 targetWrapper.appendChild(blockClone);
+             }
+
+
+            // scrollToBottom(); // Don't scroll as each block is added
+            index++;
+            setTimeout(revealNextBlock, delay); // Schedule next block reveal
+        } else {
+            // All blocks revealed
+            scrollToBottom(); // Scroll only once when all blocks are done
+            if (callback) {
+                callback(); // Execute original callback after scrolling
+            }
+        }
+    }
+
+    // Add a small initial delay before starting the first block reveal
+    setTimeout(revealNextBlock, 50); 
+}
+// --- End Block Reveal Effect Function ---
+
 
 // --- New Function: Fetch and Display Recent Docs ---
 async function fetchAndDisplayRecentDocs() {
@@ -524,25 +585,58 @@ async function handleSubmit() {
             console.log('Intent: Rewrite Note (Default).');
             loadingMessage = addMessage('Processing your note...', false, true); 
             try {
-                const cleanedNoteMarkdown = await rewriteNote(text); // Get Markdown from AI
+                const cleanedNoteMarkdown = await rewriteNote(text); // Get raw Markdown text from AI
                 if(loadingMessage) messagesContainer.removeChild(loadingMessage);
-                
-                // Display the formatted message (createMessage will handle parsing)
-                addMessage(cleanedNoteMarkdown, false); 
-                
-                // Store the HTML version for saving to the editor later
-                lastRewrittenNote = marked.parse(cleanedNoteMarkdown, { breaks: true }); 
+
+                // --- Implement Block Reveal Effect ---
+                // 1. Create the message structure with empty text content initially
+                const gorleaMessageElement = createMessage('', false); // Pass empty string
+                const textWrapperElement = gorleaMessageElement.querySelector('.text-content-wrapper'); // Target the wrapper
+
+                // Add the initially empty message structure to the DOM
+                messagesContainer.appendChild(gorleaMessageElement);
+                // textWrapperElement.style.opacity = 0; // Opacity handled by animation class now
+                scrollToBottom();
+
+                // 2. Parse the final HTML immediately
+                const finalHtml = marked.parse(cleanedNoteMarkdown, { breaks: true });
+
+                // 3. Start the block reveal effect
+                revealMessageBlocks(textWrapperElement, finalHtml, 250, () => { // Slower delay: 250ms
+                    // 4. Callback executed AFTER reveal finishes:
+                    
+                    // Save the *original Markdown* to history AFTER reveal
+                    chatHistory.push({ text: cleanedNoteMarkdown, isUser: false, isError: false });
+                    saveChatHistory();
+
+                    // Store the parsed HTML version for saving to the editor later
+                    lastRewrittenNote = finalHtml; 
+
+                    // Ask the follow-up question AFTER reveal is done
+                    // Apply reveal effect to follow-up message too? Let's do it.
+                    const followupMessageElement = createMessage('', false); // Create empty structure
+                    const followupTextWrapper = followupMessageElement.querySelector('.text-content-wrapper');
+                    messagesContainer.appendChild(followupMessageElement);
+                    scrollToBottom();
+                    const followupText = "Where would you like to save this note? (e.g., 'save to My Notes', 'create new doc called Project X', or 'show recent')";
+                    revealMessageBlocks(followupTextWrapper, `<p>${followupText}</p>`, 100, () => { // Faster reveal for short prompt
+                         // Save follow-up to history after it's revealed
+                         chatHistory.push({ text: followupText, isUser: false, isError: false });
+                         saveChatHistory();
+                    });
+                });
+                // --- End Block Reveal Effect Implementation ---
                 
                 isFirstMessage = false;
-                // Reset other states
+                // Reset other states immediately after initiating the rewrite/reveal
                 isAwaitingRecentChoice = false; 
                 recentDocList = [];
                 pendingDocTitle = null; 
-                // Ask where to save
-                addMessage("Where would you like to save this note? (e.g., 'save to My Notes', 'create new doc called Project X', or 'show recent')", false);
+                // Ask where to save - Handled within the revealMessageBlocks callback now
             } catch (error) {
                  if(loadingMessage) messagesContainer.removeChild(loadingMessage);
-                 addMessage('Sorry, I had trouble processing your note. Please try again.', false, false, true);
+                 // Ensure error messages are also saved to history via addMessage
+                 addMessage('Sorry, I had trouble processing your note. Please try again.', false, false, true); 
                  // Don't clear lastRewrittenNote here, maybe the rewrite failed but the original text is still valid? Or clear it? Let's clear it for safety.
                  lastRewrittenNote = null;
                  isAwaitingRecentChoice = false; 
@@ -607,7 +701,7 @@ newChatButton.addEventListener('click', () => {
     // welcomeScreen.style.opacity = '1';
     // welcomeScreen.style.transform = 'translateY(0)';
 
-    addMessage("Chat cleared. Ready for your next note!", false); // Add a confirmation message
+    // addMessage("Chat cleared. Ready for your next note!", false); // Remove confirmation message
 });
 // --- End New Chat Button Listener ---
 
