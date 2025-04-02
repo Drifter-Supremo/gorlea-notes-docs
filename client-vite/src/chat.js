@@ -5,6 +5,7 @@ import { marked } from 'marked'; // Import marked library
 // DOM Elements
 const messageInput = document.getElementById('messageInput');
 const sendButton = document.getElementById('sendButton');
+const newChatButton = document.getElementById('newChatButton'); // Get the new button
 const messagesContainer = document.getElementById('messages');
 const welcomeScreen = document.getElementById('welcomeScreen');
 const chatContainer = document.querySelector('.chat-container'); // Added reference to the scrollable container
@@ -75,6 +76,49 @@ let lastRewrittenNote = null;
 let pendingDocTitle = null;
 let isAwaitingRecentChoice = false; // New state: Are we waiting for user to pick from recent list?
 let recentDocList = []; // New state: Store the fetched recent docs
+let chatHistory = []; // Array to store chat messages for persistence
+
+// --- Chat History Persistence ---
+const CHAT_HISTORY_KEY = 'gorleaChatHistory';
+
+function saveChatHistory() {
+    try {
+        localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(chatHistory));
+    } catch (error) {
+        console.error("Error saving chat history to localStorage:", error);
+        // Optionally notify the user or handle the error
+    }
+}
+
+function loadChatHistory() {
+    const savedHistory = localStorage.getItem(CHAT_HISTORY_KEY);
+    if (savedHistory) {
+        try {
+            chatHistory = JSON.parse(savedHistory);
+            // Clear existing messages before loading history
+            messagesContainer.innerHTML = ''; 
+            // Render messages from history
+            chatHistory.forEach(msg => {
+                // Re-create message elements from stored data
+                const messageElement = createMessage(msg.text, msg.isUser, false, msg.isError); // Don't mark as loading
+                messagesContainer.appendChild(messageElement);
+            });
+            scrollToBottom();
+            // Check if the welcome screen should be hidden based on loaded history
+            if (chatHistory.length > 0 && welcomeScreen.style.display !== 'none') {
+                 welcomeScreen.style.opacity = '0';
+                 welcomeScreen.style.transform = 'translateY(-20px)';
+                 setTimeout(() => {
+                     welcomeScreen.style.display = 'none';
+                 }, 300);
+            }
+        } catch (error) {
+            console.error("Error loading chat history from localStorage:", error);
+            chatHistory = []; // Reset history on error
+            localStorage.removeItem(CHAT_HISTORY_KEY); // Clear corrupted data
+        }
+    }
+}
 
 // Command patterns for showing recent docs
 const showRecentPatterns = [
@@ -222,12 +266,19 @@ function createMessage(text, isUser = true, isLoading = false, isError = false) 
     return messageDiv;
 }
 
-// Add a new message to the chat
+// Add a new message to the chat and optionally save it
 function addMessage(text, isUser = true, isLoading = false, isError = false) {
-    const message = createMessage(text, isUser, isLoading, isError);
-    messagesContainer.appendChild(message);
+    const messageElement = createMessage(text, isUser, isLoading, isError);
+    messagesContainer.appendChild(messageElement);
+    
+    // Only save non-loading messages to history
+    if (!isLoading) {
+        chatHistory.push({ text, isUser, isError });
+        saveChatHistory();
+    }
+    
     scrollToBottom();
-    return message;
+    return messageElement; // Return the DOM element
 }
 
 // --- New Function: Fetch and Display Recent Docs ---
@@ -527,5 +578,40 @@ messageInput.addEventListener('keydown', (e) => {
 
 sendButton.addEventListener('click', handleSubmit);
 
-// Initial scroll to bottom
+// --- New Chat Button Listener ---
+newChatButton.addEventListener('click', () => {
+    // Optional: Add confirmation dialog? For now, clear directly.
+    // console.log('New Chat button clicked'); 
+    
+    // Clear localStorage
+    localStorage.removeItem(CHAT_HISTORY_KEY);
+    
+    // Clear the in-memory history array
+    chatHistory = [];
+    
+    // Clear the messages displayed on the screen
+    messagesContainer.innerHTML = '';
+    
+    // Reset relevant states for a clean slate
+    lastRewrittenNote = null;
+    pendingDocTitle = null;
+    isAwaitingRecentChoice = false;
+    recentDocList = [];
+    isFirstMessage = true; // Reset this if needed
+
+    // Optionally show welcome screen again, or just clear input
+    messageInput.value = '';
+    messageInput.style.height = 'auto'; // Reset height
+    // To show welcome screen again:
+    // welcomeScreen.style.display = 'flex'; // Or 'block' depending on original display
+    // welcomeScreen.style.opacity = '1';
+    // welcomeScreen.style.transform = 'translateY(0)';
+
+    addMessage("Chat cleared. Ready for your next note!", false); // Add a confirmation message
+});
+// --- End New Chat Button Listener ---
+
+
+// Initial load and scroll
+loadChatHistory(); // Load history before initial scroll
 scrollToBottom();

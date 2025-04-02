@@ -247,6 +247,32 @@ textarea {
     fill: white;
 }
 
+.new-chat-button {
+    background-color: var(--color-secondary); /* Use secondary color for distinction */
+    border: 1px solid var(--color-primary); /* Add border */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+    padding: 0; /* Remove default padding */
+}
+
+.new-chat-button:hover {
+    background-color: var(--color-input-bg); /* Slightly lighter on hover */
+    border-color: var(--color-accent);
+}
+
+.new-chat-button svg {
+    width: 20px; /* Slightly smaller icon */
+    height: 20px;
+    fill: var(--color-text); /* White icon */
+}
+
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
     width: 8px;

@@ -159,12 +159,28 @@ const firestoreUtils = {
             }
 
             const existingContent = docSnap.data().content || '';
-            // Simple HTML concatenation, assuming contentToAppend is also HTML
-            // Add a separator if desired, e.g., '<hr>' or just ensure contentToAppend starts with <p>
-            const newContent = existingContent + contentToAppend; 
+
+            // --- Add Timestamp Separator ---
+            const now = new Date();
+            // Format timestamp (e.g., "April 2, 2025, 11:19 AM") - Adjust locale/options as needed
+            const timestamp = now.toLocaleString('en-US', { 
+                month: 'long', 
+                day: 'numeric', 
+                year: 'numeric', 
+                hour: 'numeric', 
+                minute: '2-digit', 
+                hour12: true 
+            });
+            // Wrap in HTML with line breaks before/after
+            const separator = `<p><br></p><p><i>Saved: ${timestamp}</i></p><p><br></p>`; 
+            const contentWithSeparator = separator + contentToAppend;
+            // --- End Timestamp Separator ---
+
+            // Append the new content (with separator)
+            const newContent = existingContent + contentWithSeparator; 
 
             // Update content and lastOpenedAt timestamp
-            await docRef.update({ 
+            await docRef.update({
                 content: newContent,
                 lastOpenedAt: admin.firestore.Timestamp.now() 
             });
