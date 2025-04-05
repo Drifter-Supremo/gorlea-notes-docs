@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Gorlea Notes</title>
+    <link rel="stylesheet" href="/src/styles/main.css">
+    <!-- Link to auth specific styles if created later -->
+    <!-- <link rel="stylesheet" href="/src/styles/auth.css"> -->
+    <link rel="icon" href="/gorlea-logo.png" type="image/png">
+</head>
+<body>
+    <div class="auth-container">
+        <img src="/gorlea-logo.png" alt="Gorlea Notes Logo" class="auth-logo">
+        <h1>Login</h1>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+            <p id="error-message" class="error-message"></p>
+        </form>
+        <p class="auth-switch">Need an account? <a href="/register.html">Register here</a></p>
+    </div>
+    <script type="module" src="/src/auth.js"></script>
+</body>
+</html>

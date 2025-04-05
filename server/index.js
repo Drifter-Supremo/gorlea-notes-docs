@@ -1,17 +1,27 @@
 require('dotenv').config();
 const express = require('express');
-const session = require('express-session');
+const expressSession = require('express-session'); // Renamed module import
 const path = require('path');
 const { default: open } = require('open');
-const authRoutes = require('./routes/auth');
+const authRoutes = require('./routes/auth'); // Now for email/pass auth
 const aiRoutes = require('./routes/ai');
 const docsRoutes = require('./routes/docs');
+const userRoutes = require('./routes/user'); // Import user routes
+const { requireAuth } = require('./middleware/auth'); // Import new middleware
+// const { db } = require('./utils/firestore'); // Keep this import if db is used elsewhere, otherwise remove
+const { Firestore } = require('@google-cloud/firestore'); // Needed for FirestoreStore dataset
+const { FirestoreStore } = require('@google-cloud/connect-firestore'); // Import FirestoreStore directly
+const { firestoreClient } = require('./utils/firestore'); // Import the firestoreClient
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Session configuration
-app.use(session({
+// Session configuration with FirestoreStore
+app.use(expressSession({ // Use renamed module import to get middleware
+  store: new FirestoreStore({
+    dataset: firestoreClient, // Use the firestoreClient instance
+    kind: 'sessions' // Collection name in Firestore
+  }),
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
@@ -27,27 +37,21 @@ app.use(session({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Auth middleware
-const requireAuth = (req, res, next) => {
-  if (!req.session.tokens) {
-    return res.redirect('/?error=' + encodeURIComponent('Please sign in'));
-  }
-  next();
-};
-
+// Old inline auth middleware removed (now using middleware/auth.js)
 // Serve static files
 app.use(express.static(path.join(__dirname, '../client')));
 app.use('/docs', express.static(path.join(__dirname, '../client/docs')));
 
 // Mount routes
-app.use('/auth', authRoutes);
-app.use('/api/auth', authRoutes); // Mount auth routes at /api/auth too for status endpoint
-app.use('/api/ai', aiRoutes);
-app.use('/api/docs', docsRoutes);
-
+// Mount API routes
+app.use('/api/auth', authRoutes); // Email/Password auth routes
+app.use('/api/user', userRoutes); // User related routes (like /me)
+app.use('/api/ai', requireAuth, aiRoutes); // Protect AI routes
+app.use('/api/docs', requireAuth, docsRoutes); // Protect Docs API routes
 // Landing page route
 app.get('/', (req, res) => {
-  if (req.session.tokens) {
+  // Check for the new session user object
+  if (req.session.user) {
     return res.redirect('/chat');
   }
   res.sendFile(path.join(__dirname, '../client/index.html'));
@@ -68,11 +72,17 @@ app.listen(PORT, () => {
   const url = `http://localhost:${PORT}`;
   console.log(`Server running on ${url}`);
   console.log('Available routes:');
-  console.log('  GET  /              - Home page');
-  console.log('  GET  /auth/login    - Initiate Google OAuth');
-  console.log('  GET  /auth/callback - OAuth callback');
-  console.log('  GET  /auth/logout   - Logout');
-  
+  console.log('  GET  /                     - Home page');
+  console.log('  POST /api/auth/register    - Register new user {email, password}');
+  console.log('  POST /api/auth/login       - Login user {email, password}');
+  console.log('  POST /api/auth/logout      - Logout user');
+  console.log('  GET  /api/user/me          - Get current user info (requires auth)');
+  console.log('  GET  /chat                 - Chat page (requires auth)');
+  console.log('  GET  /docs                 - Docs page (requires auth)');
+  console.log('  GET  /api/docs             - List documents (requires auth)');
+  console.log('  POST /api/docs             - Create document (requires auth)');
+  // ... other /api/docs routes ...
+  console.log('  POST /api/ai/process       - Process AI request (requires auth)');
   // Open browser
   open(url);
 });

@@ -20,6 +20,10 @@
                 </button>
                 <!-- Changed button to styled link for new tab functionality -->
                 <a href="/docs/index.html" class="button docs-button header-button" target="_blank" rel="noopener noreferrer">Gorlea Docs</a>
+                <!-- Logged in user indicator -->
+                <span id="user-email" class="user-email-indicator"></span>
+                <!-- Logout Button - Styled like Docs button -->
+                <button id="logout-button" class="button docs-button header-button">Logout</button>
             </div>
         </header>
 
@@ -52,7 +56,9 @@
         </footer>
     </div>
 
-    <!-- Vite entry point script -->
-    <script type="module" src="/src/chat.js"></script> 
+    <!-- Auth check script (runs on load) -->
+    <script type="module" src="/src/auth.js"></script>
+    <!-- Vite entry point script for chat functionality -->
+    <script type="module" src="/src/chat.js"></script>
 </body>
 </html>

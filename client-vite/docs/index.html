@@ -16,6 +16,10 @@
                 <img src="/gorlea-logo.png" alt="Gorlea Logo" class="logo">
                 <h1>My Documents</h1>
                 <a href="/chat.html" class="button button-accent" target="_blank" rel="noopener noreferrer">Gorlea Notes</a> <!-- Added target blank -->
+                <!-- Logged in user indicator -->
+                <span id="user-email" class="user-email-indicator"></span>
+                <!-- Logout Button - Styled like Docs button -->
+                <button id="logout-button" class="button docs-button header-button">Logout</button>
             </div>
         </header>
 
@@ -34,7 +38,9 @@
             </div>
         </main>
     </div>
-    <!-- Vite entry point script -->
-    <script type="module" src="/src/docs/docList.js"></script> 
+    <!-- Auth check script (runs on load) -->
+    <script type="module" src="/src/auth.js"></script>
+    <!-- Vite entry point script for docs functionality -->
+    <script type="module" src="/src/docs/docList.js"></script>
 </body>
 </html>

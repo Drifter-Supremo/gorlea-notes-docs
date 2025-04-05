@@ -12,12 +12,18 @@
     <!-- <script src="https://unpkg.com/@tiptap/starter-kit@latest/dist/starter-kit.umd.js" defer></script> -->
 </head>
 <body>
-    <header class="app-header">
-        <!-- Logo removed permanently -->
-        <h1>Document Editor</h1>
-         <!-- Use root-relative path for home link -->
-        <a href="/docs/index.html" class="button-accent docs-home-button">Docs Home</a>
-        <a href="/chat.html" class="button button-accent" target="_blank" rel="noopener noreferrer">Gorlea Notes</a> <!-- Added target blank -->
+    <header class="docs-header"> <!-- Changed class for consistency -->
+        <div class="header-content"> <!-- Added container for consistency -->
+            <!-- Logo removed permanently -->
+            <h1>Document Editor</h1>
+            <!-- Use root-relative path for home link -->
+            <a href="/docs/index.html" class="button-accent docs-home-button">Docs Home</a>
+            <a href="/chat.html" class="button button-accent" target="_blank" rel="noopener noreferrer">Gorlea Notes</a> <!-- Added target blank -->
+            <!-- Logged in user indicator -->
+            <span id="user-email" class="user-email-indicator"></span>
+            <!-- Logout Button - Styled like Docs button -->
+            <button id="logout-button" class="button docs-button header-button">Logout</button>
+        </div>
     </header>
     <div class="editor-container">
         <!-- Toolbar Container -->
@@ -50,7 +56,9 @@
         </div> <!-- Close editor-content-wrapper -->
     </div>
 
+    <!-- Auth check script (runs on load) -->
+    <script type="module" src="/src/auth.js"></script>
     <!-- Vite entry point script -->
-    <script type="module" src="/src/docs/editor.js"></script> 
+    <script type="module" src="/src/docs/editor.js"></script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 const admin = require('firebase-admin');
+const { Firestore } = require('@google-cloud/firestore'); // Import the Firestore client library
 const path = require('path');
 
 // Initialize Firebase Admin with service account
@@ -9,11 +10,17 @@ admin.initializeApp({
   projectId: 'gorlea-tasks'
 });
 
-const db = admin.firestore();
+const db = admin.firestore(); // Existing Firestore instance from Firebase Admin SDK
+
+// Create a separate Firestore client instance specifically for @google-cloud/firestore interactions
+const firestoreClient = new Firestore({
+  projectId: 'gorlea-tasks',
+  keyFilename: path.join(__dirname, '../../credentials/gorlea-tasks-firebase-adminsdk-fbsvc-d160951b11.json')
+});
 
 // Collection reference
 const DOCS_COLLECTION = 'documents';
-
+const USERS_COLLECTION = 'users'; // Added for users
 // Firestore utility functions
 const firestoreUtils = {
     // List documents, optionally limited
@@ -221,7 +228,68 @@ const firestoreUtils = {
             // Check for specific errors if needed, e.g., not found
             throw error;
         }
+    },
+
+    // --- User Management Functions ---
+
+    // Find a user by email
+    async findUserByEmail(email) {
+        try {
+            const snapshot = await db.collection(USERS_COLLECTION)
+                .where('email', '==', email.toLowerCase()) // Ensure case-insensitive search
+                .limit(1)
+                .get();
+
+            if (snapshot.empty) {
+                return null; // No user found
+            }
+
+            const userDoc = snapshot.docs[0];
+            return {
+                id: userDoc.id,
+                ...userDoc.data()
+            };
+        } catch (error) {
+            console.error('Firestore findUserByEmail error:', error);
+            throw error;
+        }
+    },
+
+    // Create a new user
+    async createUser(email, hashedPassword) {
+        try {
+            // Check if user already exists (optional, but good practice)
+            const existingUser = await this.findUserByEmail(email);
+            if (existingUser) {
+                const error = new Error('User with this email already exists.');
+                error.code = 'auth/email-already-in-use'; // Custom error code
+                throw error;
+            }
+
+            const userData = {
+                email: email.toLowerCase(), // Store email in lowercase
+                password: hashedPassword, // Store the hashed password
+                createdAt: admin.firestore.Timestamp.now()
+            };
+
+            const userRef = await db.collection(USERS_COLLECTION).add(userData);
+            return {
+                id: userRef.id,
+                email: userData.email // Return only necessary info
+            };
+        } catch (error) {
+            // Re-throw specific errors or handle generally
+            if (error.code !== 'auth/email-already-in-use') {
+                console.error('Firestore createUser error:', error);
+            }
+            throw error; // Propagate the error
+        }
     }
 };
 
-module.exports = firestoreUtils;
+module.exports = {
+    ...firestoreUtils, // Export existing functions
+    // Export the Firestore client instance separately for session store usage
+    firestoreClient: firestoreClient,
+    db: db // Keep exporting the original db instance if needed elsewhere
+};

@@ -1,17 +1,17 @@
 const express = require('express');
-const router = express.Router();
 const authController = require('../controllers/authController');
 
-// Check auth status
-router.get('/status', authController.status);
+const router = express.Router();
 
-// Route to initiate Google OAuth login
-router.get('/login', authController.login);
+// POST /auth/register - User registration
+router.post('/register', authController.register);
 
-// OAuth callback route
-router.get('/callback', authController.callback);
+// POST /auth/login - User login
+router.post('/login', authController.login);
 
-// Logout route
-router.get('/logout', authController.logout);
+// POST /auth/logout - User logout
+// Note: Often logout is POST to prevent CSRF if it changes state,
+// even though it feels like a GET. Sticking with POST for consistency.
+router.post('/logout', authController.logout);
 
 module.exports = router;
