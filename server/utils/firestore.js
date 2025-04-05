@@ -167,21 +167,10 @@ const firestoreUtils = {
 
             const existingContent = docSnap.data().content || '';
 
-            // --- Add Timestamp Separator ---
-            const now = new Date();
-            // Format timestamp (e.g., "April 2, 2025, 11:19 AM") - Adjust locale/options as needed
-            const timestamp = now.toLocaleString('en-US', { 
-                month: 'long', 
-                day: 'numeric', 
-                year: 'numeric', 
-                hour: 'numeric', 
-                minute: '2-digit', 
-                hour12: true 
-            });
-            // Wrap in HTML with line breaks before/after
-            const separator = `<p><br></p><p><i>Saved: ${timestamp}</i></p><p><br></p>`; 
+            // --- Add simple spacing separator ---
+            const separator = `<p><br></p>`; 
             const contentWithSeparator = separator + contentToAppend;
-            // --- End Timestamp Separator ---
+            // --- End simple separator ---
 
             // Append the new content (with separator)
             const newContent = existingContent + contentWithSeparator; 

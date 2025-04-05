@@ -1,8 +1,8 @@
-/* Inherit theme from main.css */
-
-/* Docs App General Styles */
-.docs-app {
-    min-height: 100vh;
+/* Timestamp separator styling */
+.timestamp-separator {
+  margin-top: 1em;        /* subtle space above timestamp */
+  margin-bottom: 0.2em;   /* minimal space below timestamp */
+  font-style: italic;
     display: flex;
     flex-direction: column;
 }

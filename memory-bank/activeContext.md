@@ -112,6 +112,11 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 4. Future collaborative features
 
 ## Recent Changes
+- **(April 5, 2025)** Removed timestamp insertion when appending notes:
+    - Updated `appendContent` in `server/utils/firestore.js` to no longer add a timestamp separator.
+    - Now, new notes are appended with a simple paragraph break for clean separation.
+    - This change improves document readability and minimalism.
+
 - **(April 5, 2025)** Implemented Email/Password Authentication:
     - Added backend routes (`/api/auth/register`, `/api/auth/login`, `/api/auth/logout`) and controller (`authController.js`).
     - Added user route (`/api/user/me`) and controller (`userController.js`) to fetch user data.

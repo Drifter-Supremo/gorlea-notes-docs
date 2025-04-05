@@ -3,6 +3,10 @@
 ## Project Status: Gorlea Docs Phase 2 (Basic Editor Working)
 
 ## Completed Features
+- ✅ Removed timestamp insertion when appending notes (April 5, 2025)
+  - Updated backend `appendContent` to no longer add timestamp separators.
+  - Now appends new notes with a simple paragraph break for a cleaner, minimalist look.
+
 - ✅ Project planning
 - ✅ Architecture design
 - ✅ Technology stack selection
