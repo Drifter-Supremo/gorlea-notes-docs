@@ -66,8 +66,8 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 ### 2. Authentication Flow
 - [✓] Configure Google OAuth
 - [✓] Implement token management
-- [✓] Set up secure session handling
-- [✓] Create login/logout flow
+- [✓] Set up secure session handling (Now using persistent Firestore store via `@google-cloud/connect-firestore`)
+- [✓] Create login/logout flow (Email/Password implemented)
 - [ ] Add token refresh mechanism
 
 ### 3. Gorlea Notes Interface
@@ -111,27 +111,18 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 3. Editor customization requirements
 4. Future collaborative features
 
-## Next Steps
-
-### Immediate (Next 24-48 Hours)
-1. Test basic editor load/save functionality thoroughly.
-2. Implement auto-save feature for the editor.
-3. Add a delete button and functionality (soft delete via `isArchived`).
-4. Plan Gorlea Notes integration (saving notes to specific docs).
-5. Select and integrate rich text editor (Tiptap confirmed, implementation pending).
-
-### Short Term (This Week)
-1. Implement rich text editor (Tiptap).
-2. Refine editor UI/UX.
-3. Implement export functionality (if still desired).
-
-### Medium Term (Next 2 Weeks)
-1. Complete Gorlea Docs MVP (including rich text).
-2. Add comprehensive testing.
-3. Begin user testing.
-4. Implement Gorlea Notes integration.
-
 ## Recent Changes
+- **(April 5, 2025)** Implemented Email/Password Authentication:
+    - Added backend routes (`/api/auth/register`, `/api/auth/login`, `/api/auth/logout`) and controller (`authController.js`).
+    - Added user route (`/api/user/me`) and controller (`userController.js`) to fetch user data.
+    - Implemented password hashing using `bcrypt`.
+    - Added `requireAuth` middleware to protect routes.
+    - Created frontend pages (`login.html`, `register.html`) and logic (`auth.js`).
+- **(April 5, 2025)** Configured Persistent Session Store:
+    - Integrated `@google-cloud/connect-firestore` with `express-session` to store sessions in Firestore.
+    - Updated server setup (`index.js`) with Firestore session store configuration.
+- **(April 5, 2025)** Fixed User Email Display in Headers:
+    - Updated `chat.js`, `docList.js`, and `editor.js` to fetch user email from `/api/user/me` and display it in the header if logged in.
 - **(April 2, 2025)** Fixed chat scroll issue: Modified `revealMessageBlocks` in `chat.js` to call `scrollToBottom()` only after the entire animation completes.
 - **(April 2, 2025)** Implemented block-reveal animation for Gorlea messages:
     - Removed character-typing effect (`typeMessageEffect` and cursor CSS).
@@ -296,7 +287,7 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 ### Subsequent Tasks
 1.  **Gorlea Notes Integration:** Plan how notes from chat are saved/linked to specific docs.
 2.  **Gorlea Notes Integration:** Plan how notes from chat are saved/linked to specific docs.
-3.  **Authentication:** Re-implement proper authentication (e.g., Google OAuth) and update `requireAuth` middleware.
+3.  **Authentication:** Basic Email/Password auth is implemented. Review `requireAuth` middleware. Plan next steps for OAuth if still needed.
 4.  **Testing:** Add more comprehensive unit/integration/E2E tests.
 5.  **Other Features:** Export, Search, etc.
 
@@ -319,5 +310,5 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 
 ---
 
-Last Updated: 2025-04-02 12:44 PM PDT
-Next Review: 2025-04-03
+Last Updated: 2025-04-05 12:26 PM PDT
+Next Review: 2025-04-08

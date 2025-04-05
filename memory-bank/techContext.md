@@ -18,6 +18,8 @@
   - Route handling
   - Middleware support
 - **API Style**: RESTful with JSON
+- **Password Hashing**: `bcrypt`
+- **Session Store**: `@google-cloud/connect-firestore` (Connects `express-session` to Firestore)
 
 ### AI Integration
 - **Primary**: Google Gemini API
@@ -39,8 +41,8 @@
   - Media files
 
 ### Security
-- **Authentication**: Google OAuth 2.0
-- **Session Management**: express-session
+- **Authentication**: Email/Password (using `bcrypt` for hashing), Google OAuth 2.0 (kept for reference)
+- **Session Management**: `express-session` with `@google-cloud/connect-firestore` for persistent storage in Firestore.
 - **Token Storage**: Secure HTTP-only cookies
 - **API Security**: 
   - CORS configuration
@@ -97,8 +99,9 @@ PORT=3000
 /server/                  # Express backend root
   ├── index.js            # Entry point
   ├── config/             # Configuration (e.g., google.js)
-  ├── controllers/        # Request handlers (e.g., authController.js, aiController.js, docsController.js)
-  ├── routes/             # Route definitions (e.g., auth.js, ai.js, docs.js)
+  ├── controllers/        # Request handlers (e.g., authController.js, userController.js, aiController.js, docsController.js)
+  ├── middleware/         # Custom middleware (e.g., requireAuth.js)
+  ├── routes/             # Route definitions (e.g., auth.js, user.js, ai.js, docs.js)
   ├── utils/              # Utility functions (e.g., firestore.js)
   ├── package.json
   └── ...                 # Other files
@@ -125,7 +128,9 @@ PORT=3000
     "express-session": "^1.18.0",
     "firebase": "^10.8.0",
     "dotenv": "^16.4.5",
-    "axios": "^1.6.7"
+    "axios": "^1.6.7",
+    "bcrypt": "^5.1.1", // Added for password hashing
+    "@google-cloud/connect-firestore": "^3.0.0" // Added for persistent sessions
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
@@ -224,17 +229,35 @@ PORT=3000
 
 ## Documentation
 
+### API Endpoints (Key Examples)
+- **Authentication:**
+  - `POST /api/auth/register`
+  - `POST /api/auth/login`
+  - `POST /api/auth/logout`
+- **User:**
+  - `GET /api/user/me`
+- **Documents:**
+  - `GET /api/docs`
+  - `POST /api/docs`
+  - `GET /api/docs/:id`
+  - `PUT /api/docs/:id`
+  - `PUT /api/docs/:id/archive`
+  - `DELETE /api/docs/:id`
+- **AI:**
+  - `POST /api/ai/rewrite`
+  - `POST /api/ai/suggest-save`
+
 ### API Documentation
-- OpenAPI/Swagger spec
-- Endpoint documentation
-- Authentication flows
-- Error codes and handling
+- OpenAPI/Swagger spec (Planned)
+- Endpoint documentation (In progress via Memory Bank)
+- Authentication flows (See System Patterns)
+- Error codes and handling (Standardized format)
 
 ### Code Documentation
 - README files
 - JSDoc comments
-- Architecture diagrams
-- Setup instructions
+- Architecture diagrams (Mermaid in Memory Bank)
+- Setup instructions (In Memory Bank)
 
 ---
 

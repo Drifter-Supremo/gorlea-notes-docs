@@ -24,6 +24,10 @@ async function checkAuthStatus() {
             const userEmailElement = document.getElementById('user-email');
             if (userEmailElement && userData && userData.email) {
                 userEmailElement.textContent = userData.email; // Display the email
+                userEmailElement.style.display = ''; // Ensure display is not none if previously hidden
+            } else if (userEmailElement) {
+                 // If user data or email is missing, hide the element
+                 userEmailElement.style.display = 'none';
             }
 
             if (isAuthPage) {
@@ -45,17 +49,22 @@ async function checkAuthStatus() {
             }
         } else {
             // Handle other potential errors (e.g., server error)
-            console.error('Error checking auth status:', response.statusText);
+            // Handle other potential errors (e.g., server error)
+            console.error('Error checking auth status:', response.status, response.statusText);
             // Optionally display a generic error message to the user
+             const userEmailElementOnError = document.getElementById('user-email');
+            if (userEmailElementOnError) {
+                userEmailElementOnError.style.display = 'none'; // Hide on error
+            }
         }
     } catch (error) {
         console.error('Network error checking auth status:', error);
         // Handle network errors, maybe show a message
         // If the backend is down, we might want to prevent access to protected pages
         // Also hide user email element on network error
-        const userEmailElement = document.getElementById('user-email');
-        if (userEmailElement) {
-            userEmailElement.style.display = 'none';
+        const userEmailElementOnNetworkError = document.getElementById('user-email');
+        if (userEmailElementOnNetworkError) {
+            userEmailElementOnNetworkError.style.display = 'none'; // Hide on network error
         }
         if (isProtectedPage) {
              console.warn('Network error, cannot verify auth. Redirecting to login as a precaution.');

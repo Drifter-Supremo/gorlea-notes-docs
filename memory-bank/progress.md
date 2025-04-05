@@ -45,6 +45,9 @@
 - ✅ Removed Gorlea message bubble background
 - ✅ Implemented block-reveal animation for Gorlea messages
 - ✅ Fixed chat scroll behavior during animation
+- ✅ Implemented Email/Password Authentication (Register, Login, Logout)
+- ✅ Configured Persistent Session Store (Firestore using `@google-cloud/connect-firestore`)
+- ✅ Fixed User Email Display in Headers (Chat, Docs List, Docs Editor)
 
 ## In Progress
 🔨 Gorlea Docs Feature Enhancements
@@ -68,8 +71,8 @@
 
 2. 🔐 Authentication
    - [✓] Google OAuth setup
-   - [✓] Login flow
-   - [✓] Session management
+   - [✓] Login flow (Email/Password Implemented)
+   - [✓] Session management (Persistent Firestore Store Implemented)
    - [ ] Token refresh
    - [ ] Error handling
 
@@ -121,7 +124,6 @@
 
 ## Known Issues
 1. Token refresh mechanism needed
-2. Session handling needs production configuration
 3. Error handling needs further improvement (e.g., UI feedback beyond alerts)
 4. Rich text editor integration pending (Tiptap selected)
 5. Export functionality not implemented (lower priority)
@@ -174,7 +176,7 @@ To be implemented:
 
 ## Security Checklist
 - [✓] Basic OAuth implementation
-- [✓] Session configuration
+- [✓] Session configuration (Now using persistent Firestore store)
 - [ ] CORS configuration
 - [✓] Environment variables
 - [ ] Input sanitization
@@ -203,6 +205,9 @@ To be implemented:
 - Critical Path: Auto-save → Delete → Tiptap Integration
 
 ## Recent Updates
+- **2025-04-05:** Implemented Email/Password Authentication: Added Register, Login, Logout functionality with backend routes (`/api/auth/*`), controllers (`authController`), middleware (`requireAuth`), and frontend pages/logic (`login.html`, `register.html`, `auth.js`).
+- **2025-04-05:** Configured Persistent Sessions: Switched `express-session` to use `@google-cloud/connect-firestore` for storing sessions in Firestore, enhancing robustness. Added `bcrypt` for password hashing.
+- **2025-04-05:** Fixed User Email Display: Updated headers across `chat.html`, `docs/index.html`, and `docs/editor.html` to correctly display the logged-in user's email via the `/api/user/me` endpoint.
 - **2025-03-27:** Fixed editor visibility issue (HTML structure, logo conflict).
 - **2025-03-27:** Refactored Firestore logic to use `lastOpenedAt`.
 - **2025-03-27:** Simplified doc list UI.
@@ -243,4 +248,4 @@ To be implemented:
 
 ---
 
-Last Updated: 2025-04-02 12:45 PM PDT
+Last Updated: 2025-04-05 12:25 PM PDT

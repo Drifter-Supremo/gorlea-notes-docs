@@ -89,7 +89,59 @@ flowchart TD
 
 ## Core Design Patterns
 
-### 1. Authentication Pattern
+### 1. Authentication Patterns
+
+#### Email/Password Flow (Current Implementation)
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant Backend
+    participant SessionStore as Firestore Session Store
+    participant DB as Firestore DB (Users)
+
+    User->>+Frontend: Enters Email/Password (Register/Login)
+    Frontend->>+Backend: POST /api/auth/(register or login) with credentials
+    
+    alt Register
+        Backend->>+DB: Check if user exists
+        DB->>-Backend: User does not exist
+        Backend->>Backend: Hash password (bcrypt)
+        Backend->>+DB: Create new user record
+        DB->>-Backend: User created
+    else Login
+        Backend->>+DB: Find user by email
+        DB->>-Backend: User record (with hashed password)
+        Backend->>Backend: Compare provided password with hash (bcrypt.compare)
+        Note over Backend: If match fails, return 401 Error
+    end
+    
+    Backend->>+SessionStore: Create/Update Session
+    SessionStore->>-Backend: Session ID
+    Backend->>-Frontend: Success response with session cookie
+    Frontend->>Frontend: Store session cookie
+    Frontend->>-User: Show Authenticated State / Redirect
+
+    User->>+Frontend: Subsequent Request (e.g., GET /api/user/me)
+    Frontend->>+Backend: Request with session cookie
+    Backend->>+SessionStore: Validate session ID from cookie
+    SessionStore->>-Backend: Session data (contains user ID)
+    Backend->>+DB: Fetch user details using user ID
+    DB->>-Backend: User details (e.g., email)
+    Backend->>-Frontend: User details
+    Frontend->>-User: Display user details (e.g., email in header)
+
+    User->>+Frontend: Click Logout
+    Frontend->>+Backend: POST /api/auth/logout
+    Backend->>+SessionStore: Destroy session
+    SessionStore->>-Backend: Session destroyed
+    Backend->>-Frontend: Success response, clear cookie
+    Frontend->>-User: Show Logged Out State / Redirect
+```
+
+#### Google OAuth Flow (Previous/Future Reference)
+
 ```mermaid
 sequenceDiagram
     User->>+Frontend: Click Login
@@ -116,10 +168,10 @@ flowchart LR
 ```
 
 ### 3. Session Management Pattern
-- Express session middleware
-- In-memory session store (dev)
-- Secure cookie configuration
-- Token storage in session
+- `express-session` middleware
+- Persistent session store using `@google-cloud/connect-firestore` connected to Firestore.
+- Secure cookie configuration (HTTPOnly, Secure in production, SameSite).
+- Session data includes user ID upon successful login.
 
 ### 4. Security Pattern
 - OAuth2 flow with PKCE
@@ -134,8 +186,9 @@ flowchart LR
 server/
 ├── index.js                 # Entry point
 ├── config/                  # Configuration (e.g., google.js)
-├── controllers/             # Request handlers (e.g., authController.js, aiController.js, docsController.js)
-├── routes/                  # Route definitions (e.g., auth.js, ai.js, docs.js)
+├── controllers/             # Request handlers (e.g., authController.js, userController.js, aiController.js, docsController.js)
+├── middleware/              # Custom middleware (e.g., requireAuth.js)
+├── routes/                  # Route definitions (e.g., auth.js, user.js, ai.js, docs.js)
 ├── utils/                   # Utility functions (e.g., firestore.js)
 └── ...                      # Other files (e.g., .gitignore, package.json)
 ```
@@ -205,9 +258,12 @@ flowchart TD
 ## API Patterns
 
 ### Authentication Endpoints
-- GET /auth/login
-- GET /auth/callback
-- GET /auth/logout
+- `POST /api/auth/register` (Email/Password)
+- `POST /api/auth/login` (Email/Password)
+- `POST /api/auth/logout`
+- `GET /api/user/me` (Get current user info)
+- `GET /auth/login` (Initiates Google OAuth - Kept for reference)
+- `GET /auth/callback` (Google OAuth Callback - Kept for reference)
 
 ### Response Format
 ```json

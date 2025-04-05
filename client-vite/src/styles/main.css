@@ -516,7 +516,6 @@ textarea {
     font-size: 0.9em; /* Slightly smaller font */
     align-self: center; /* Vertically align with buttons */
 }
-
 .auth-switch a:hover {
     text-decoration: underline;
 }
