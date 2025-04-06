@@ -6,6 +6,7 @@ import Underline from '@tiptap/extension-underline'; // Import Underline
 // Import styles
 import '../styles/main.css'; // Import shared styles
 import '../styles/docs.css'; // Import docs specific styles
+import '../styles/editor-enhancements.css'; // Import editor-specific enhancements
 
 console.log("Top level document:", document); // DEBUG: Check document object
 console.log("editor.js loaded"); // Debug log
@@ -94,6 +95,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // --- Toolbar Setup ---
         setupToolbar(editor); // Call function to setup toolbar listeners
+        
+        // Setup floating toolbar behavior when scrolling
+        setupFloatingToolbar();
 
         // Show editor content, hide loading message
         if (loadingMessage) loadingMessage.style.display = 'none'; // Add null check
@@ -288,4 +292,68 @@ function setupToolbar(editor) {
      // Initial state update
      if (toolbarButtons.undo) toolbarButtons.undo.disabled = !editor.can().undo();
      if (toolbarButtons.redo) toolbarButtons.redo.disabled = !editor.can().redo();
+}
+
+// Function to setup floating toolbar that follows the scroll
+function setupFloatingToolbar() {
+    const toolbar = document.getElementById('editor-toolbar');
+    const editorContainer = document.querySelector('.editor-container');
+    const header = document.querySelector('.docs-header');
+    
+    if (!toolbar || !editorContainer || !header) {
+        console.error("Missing required elements for floating toolbar");
+        return;
+    }
+    
+    // Make the toolbar fixed and positioned properly
+    toolbar.style.position = 'sticky';
+    toolbar.style.top = '10px';
+    toolbar.style.zIndex = '1000';
+    toolbar.style.marginBottom = '20px';
+    
+    // Make sure the toolbar has a proper width
+    toolbar.style.width = 'calc(100% - 40px)';
+    
+    // Add a background that stands out when scrolling
+    toolbar.style.backgroundColor = 'rgba(30, 30, 46, 0.95)';
+    toolbar.style.backdropFilter = 'blur(10px)';
+    
+    // Add a transition effect for smooth visual changes when scrolling
+    toolbar.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease';
+    
+    // Listen for scroll events to enhance the floating effect
+    window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        const headerHeight = header.offsetHeight;
+        
+        if (scrollY > headerHeight) {
+            toolbar.classList.add('floating');
+            toolbar.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.3)';
+            toolbar.style.borderColor = 'rgba(255, 215, 0, 0.2)';
+        } else {
+            toolbar.classList.remove('floating');
+            toolbar.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+            toolbar.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+        }
+    });
+    
+    // Add animation effect when toolbar buttons are clicked
+    const toolbarButtons = toolbar.querySelectorAll('.toolbar-button');
+    toolbarButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Add a visual feedback effect
+            this.classList.add('button-clicked');
+            
+            // Show ripple effect
+            const ripple = document.createElement('span');
+            ripple.classList.add('button-ripple');
+            this.appendChild(ripple);
+            
+            // Remove effects after animation completes
+            setTimeout(() => {
+                this.classList.remove('button-clicked');
+                ripple.remove();
+            }, 500);
+        });
+    });
 }

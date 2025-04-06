@@ -78,32 +78,87 @@ function renderDocumentList(documents) {
 
     emptyState.style.display = 'none';
     docsList.innerHTML = '';
-
     documents.forEach(doc => {
         const docCard = document.createElement('div');
         docCard.className = 'doc-card';
         
-        // Removed date display logic
-
-        // New Structure: doc-main for title, doc-actions for buttons + arrow
+        // Format dates with clear states for different scenarios
+        let createdDate = 'New document';
+        let updatedDate = 'Not yet edited';
+        
+        // Different states for dates:
+        // 1. Valid date - shows formatted date
+        // 2. New document - for missing creation date
+        // 3. Not yet edited - for missing update date
+        // 4. Date in future - "Recently created/updated"
+        // 5. Invalid date - "Unknown date"
+        
+        try {
+            const now = new Date();
+            
+            if (doc.createdAt) {
+                const date = new Date(doc.createdAt);
+                if (!isNaN(date.getTime())) {
+                    // Check for future dates (possible server time mismatch)
+                    if (date > now) {
+                        createdDate = 'Recently created';
+                    } else {
+                        // Format date with both date and time for better context
+                        createdDate = date.toLocaleDateString(undefined, {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                        });
+                    }
+                } else {
+                    createdDate = 'Unknown date';
+                }
+            }
+            
+            if (doc.updatedAt) {
+                const date = new Date(doc.updatedAt);
+                if (!isNaN(date.getTime())) {
+                    // Check for future dates
+                    if (date > now) {
+                        updatedDate = 'Recently updated';
+                    } else {
+                        updatedDate = date.toLocaleDateString(undefined, {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                        });
+                    }
+                } else {
+                    updatedDate = 'Unknown date';
+                }
+            }
+        } catch (e) {
+            console.log("Date parsing error:", e);
+        }
+    
+        // Enhanced Structure: doc-main for title and dates, doc-actions for buttons + arrow (removed doc-type)
         docCard.innerHTML = `
-            <div class="doc-main"> 
+            <div class="doc-main">
                 <div class="doc-title">${doc.title || 'Untitled Document'}</div>
+                <div class="doc-meta">
+                    <span>Created: ${createdDate}</span>
+                    <span>Updated: ${updatedDate}</span>
+                </div>
             </div>
-            <div class="doc-actions"> 
-                 <button class="doc-action-archive" data-id="${doc.id}" title="Archive">💾</button> 
-                 <button class="doc-action-delete" data-id="${doc.id}" title="Delete">🗑️</button> 
-                 <div class="doc-arrow">→</div> 
+            <div class="doc-actions">
+                <button class="doc-action-archive" data-id="${doc.id}" title="Archive">💾</button>
+                <button class="doc-action-delete" data-id="${doc.id}" title="Delete">🗑️</button>
+                <div class="doc-arrow">→</div>
             </div>
         `;
 
         // Navigate to editor when clicking the main card area (excluding action buttons)
         docCard.addEventListener('click', (event) => {
             // Prevent navigation if an action button OR the arrow inside doc-actions is clicked
-            if (event.target.closest('.doc-action-archive') || 
+            if (event.target.closest('.doc-action-archive') ||
                 event.target.closest('.doc-action-delete') ||
-                event.target.closest('.doc-arrow')) { 
-                return; 
+                event.target.closest('.doc-arrow')) {
+                return;
             }
             // Navigate if clicking anywhere else on the card (like the title area)
             window.location.href = `editor.html?id=${doc.id}`; // Relative path
@@ -113,29 +168,28 @@ function renderDocumentList(documents) {
         const archiveBtn = docCard.querySelector('.doc-action-archive');
         const deleteBtn = docCard.querySelector('.doc-action-delete');
         // Add listener to the arrow for navigation (now it's inside doc-actions)
-        const arrowDiv = docCard.querySelector('.doc-arrow'); 
+        const arrowDiv = docCard.querySelector('.doc-arrow');
 
         if (archiveBtn) {
             archiveBtn.addEventListener('click', (event) => {
                 // event.stopPropagation(); // Not strictly needed if main listener checks target
-                handleArchive(doc.id, docCard); 
+                handleArchive(doc.id, docCard);
             });
         }
 
         if (deleteBtn) {
             deleteBtn.addEventListener('click', (event) => {
                 // event.stopPropagation(); // Not strictly needed if main listener checks target
-                handleDelete(doc.id, docCard); 
+                handleDelete(doc.id, docCard);
             });
         }
 
-       if (arrowDiv) {
+        if (arrowDiv) {
             arrowDiv.addEventListener('click', (event) => {
-                 // event.stopPropagation(); // Not strictly needed if main listener checks target
-                 window.location.href = `editor.html?id=${doc.id}`; // Relative path
+                // event.stopPropagation(); // Not strictly needed if main listener checks target
+                window.location.href = `editor.html?id=${doc.id}`; // Relative path
             });
         }
-
 
         docsList.appendChild(docCard);
     });
