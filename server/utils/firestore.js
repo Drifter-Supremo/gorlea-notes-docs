@@ -2,20 +2,30 @@ const admin = require('firebase-admin');
 const { Firestore } = require('@google-cloud/firestore'); // Import the Firestore client library
 const path = require('path');
 
-// Initialize Firebase Admin with service account
-const serviceAccount = require(path.join(__dirname, '../../credentials/gorlea-tasks-firebase-adminsdk-fbsvc-d160951b11.json'));
+// Get the service account key path from environment variable
+const serviceAccountPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+if (!serviceAccountPath) {
+  throw new Error('GOOGLE_APPLICATION_CREDENTIALS environment variable is not set.');
+}
 
+// Verify the path exists before attempting to initialize (optional but good practice)
+// const fs = require('fs');
+// if (!fs.existsSync(serviceAccountPath)) {
+//   throw new Error(`Service account key file not found at path: ${serviceAccountPath}`);
+// }
+
+// Initialize Firebase Admin SDK using the path from the environment variable
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  projectId: 'gorlea-tasks'
+  credential: admin.credential.cert(serviceAccountPath),
+  projectId: 'gorlea-tasks' // Make sure this matches your Firebase project ID
 });
 
 const db = admin.firestore(); // Existing Firestore instance from Firebase Admin SDK
 
-// Create a separate Firestore client instance specifically for @google-cloud/firestore interactions
+// Create a separate Firestore client instance using the same path
 const firestoreClient = new Firestore({
-  projectId: 'gorlea-tasks',
-  keyFilename: path.join(__dirname, '../../credentials/gorlea-tasks-firebase-adminsdk-fbsvc-d160951b11.json')
+  projectId: 'gorlea-tasks', // Make sure this matches your Firebase project ID
+  keyFilename: serviceAccountPath
 });
 
 // Collection reference
