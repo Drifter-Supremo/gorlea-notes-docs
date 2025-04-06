@@ -303,3 +303,19 @@ flowchart TD
 ---
 
 These patterns form the foundation of Gorlea Notes' technical implementation, ensuring a robust and maintainable system that delivers on the product's user experience goals.
+
+---
+
+### Update: April 5, 2025 - Chat Scroll Pattern Fixes
+
+- Diagnosed a scroll bug caused by:
+  - Async message timing (confirmation messages added after API calls).
+  - Removed padding/margin from Gorlea messages.
+  - Overly complex scroll logic relying on `.last-message` and animation frames.
+- Fixed by:
+  - Adding **extra bottom padding** to `.chat-container`.
+  - Adding **margin-bottom** to `.gorlea-message`.
+  - Reverting to a **simple container scroll**: `chatContainer.scrollTop = chatContainer.scrollHeight`.
+- **Pattern:** After any new message (sync or async), **force container scroll to bottom** for reliability.
+- **Lesson:** Async UI updates require scroll logic that accounts for layout changes and timing.
+- **Design tip:** Maintain sufficient padding/margin to avoid clipping and ensure smooth UX.

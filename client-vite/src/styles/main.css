@@ -119,7 +119,7 @@ body {
 .chat-container {
     flex: 1;
     overflow-y: auto;
-    padding: 1rem 1rem var(--footer-height);
+    padding: 1rem 1rem calc(var(--footer-height) + 20px); /* Add extra bottom padding */
     max-width: var(--max-width);
     margin: 0 auto;
     width: 100%;
@@ -155,6 +155,7 @@ body {
 /* Gorlea messages */
 .gorlea-message {
     align-self: flex-start;
+    margin-bottom: 1rem; /* Add extra space below Gorlea messages */
 }
 
 /* Remove bubble styling for Gorlea messages */

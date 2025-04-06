@@ -69,3 +69,12 @@ Gorlea Notes provides:
 ---
 
 Remember: The goal is to make the user's brain feel heard, not managed. Every feature should reduce friction and cognitive load while maintaining trust and reliability.
+
+---
+
+### Update: April 5, 2025 - Chat Scroll UX Enhancements
+
+- Fixed a scroll issue where Gorlea's confirmation messages were not fully visible or auto-scrolling.
+- This improvement **reduces friction** and **keeps the user focused** on their thoughts, not the interface.
+- Ensures a **smooth, continuous chat flow** that supports ADHD users' need for quick, distraction-free note capture.
+- Reinforces the product's core value: **minimize cognitive load, maximize mental clarity**.

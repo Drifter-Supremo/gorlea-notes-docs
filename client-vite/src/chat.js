@@ -273,7 +273,12 @@ function createMessage(text, isUser = true, isLoading = false, isError = false) 
 
 // Add a new message to the chat and optionally save it
 function addMessage(text, isUser = true, isLoading = false, isError = false) {
+    // Remove existing last-message class
+    const prevLast = messagesContainer.querySelector('.last-message');
+    if (prevLast) prevLast.classList.remove('last-message');
+
     const messageElement = createMessage(text, isUser, isLoading, isError);
+    messageElement.classList.add('last-message');
     messagesContainer.appendChild(messageElement);
     
     // Only save non-loading messages to history
@@ -378,13 +383,9 @@ async function fetchAndDisplayRecentDocs() {
 
 // Scroll chat to bottom
 function scrollToBottom() {
-    // Defer scroll slightly to allow DOM to update heights
-    setTimeout(() => {
-        // Target the chatContainer for scrolling, not the messagesContainer itself
-        if (chatContainer) { 
-             chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-    }, 0); 
+    if (chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
 }
 
 // Handle message submission
@@ -442,6 +443,11 @@ async function handleSubmit() {
                     const result = await createDoc(finalTitle, lastRewrittenNote); // Use API function
                     if(loadingMessage) messagesContainer.removeChild(loadingMessage);
                     addMessage(`I've created a new document "${result.title}" and saved your note!`, false); 
+                    requestAnimationFrame(() => {
+                      requestAnimationFrame(() => {
+                        scrollToBottom();
+                      });
+                    });
                     lastRewrittenNote = null; 
                     pendingDocTitle = null; 
                     isAwaitingRecentChoice = false; // Reset state

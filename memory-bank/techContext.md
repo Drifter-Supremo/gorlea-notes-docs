@@ -262,3 +262,15 @@ PORT=3000
 ---
 
 This technical context serves as the foundation for development decisions and ensures consistency across the project implementation.
+
+---
+
+### Update: April 5, 2025 - Chat Scroll Technical Fixes
+
+- Fixed a scroll bug by:
+  - Adding **extra bottom padding** to `.chat-container` (`calc(var(--footer-height) + 20px)`).
+  - Adding **`margin-bottom: 1rem`** to `.gorlea-message`.
+  - Reverting scroll logic to **`chatContainer.scrollTop = chatContainer.scrollHeight`** for reliability.
+- Async UI updates (e.g., API confirmations) require **scroll logic that accounts for timing and layout changes**.
+- Avoided complex scroll timing (animation frames, element targeting) in favor of **simple, robust container scroll**.
+- Ensures a **smooth, distraction-free chat experience** aligned with ADHD-friendly design.

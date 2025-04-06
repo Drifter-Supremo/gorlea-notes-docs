@@ -253,3 +253,19 @@ To be implemented:
 ---
 
 Last Updated: 2025-04-05 12:25 PM PDT
+
+---
+
+### Update: April 5, 2025 - Chat Scroll Bug Fixed
+
+- **Issue:** Gorlea's confirmation messages were sometimes cut off or not auto-scrolling.
+- **Fixes Applied:**
+  - Added **extra bottom padding** to `.chat-container`.
+  - Added **margin-bottom** to `.gorlea-message`.
+  - Reverted to **simple container scroll** (`scrollTop = scrollHeight`).
+- **Result:** Chat now **auto-scrolls smoothly** for all messages, including async confirmations.
+- **Lessons Learned:**
+  - Async UI updates require scroll logic that accounts for timing and layout.
+  - Sufficient padding/margin is critical for reliable scrolling.
+  - Simpler scroll methods can be more robust.
+- **Status:** Issue resolved and documented in Memory Bank.

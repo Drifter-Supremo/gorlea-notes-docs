@@ -46,3 +46,16 @@ The app blends \*\*structured note organization\*\*, \*\*hands-off automation\*\
 \---
 
 Let’s build something that makes your brain feel heard, not managed.
+
+---
+
+### Update: April 5, 2025 - Chat Scroll Improvements
+
+- Ensured the chat interface provides a **smooth, frictionless experience** by fixing scroll issues.
+- Diagnosed a bug where Gorlea's confirmation messages were **not auto-scrolling or were cut off**.
+- Fixed by:
+  - Adding **extra bottom padding** to the chat container.
+  - Adding **margin below Gorlea's messages**.
+  - Reverting to a **simple container scroll** method for reliability.
+- This maintains the goal of **minimal cognitive load** and **natural chat flow** for ADHD users.
+- Reinforces the product vision: **"make your brain feel heard, not managed."**
