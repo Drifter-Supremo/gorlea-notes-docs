@@ -8,6 +8,9 @@ import '../styles/main.css'; // Import shared styles
 import '../styles/docs.css'; // Import docs specific styles
 import '../styles/editor-enhancements.css'; // Import editor-specific enhancements
 
+// API Base URL - Read from environment variable, fallback for local dev
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '';
+
 console.log("Top level document:", document); // DEBUG: Check document object
 console.log("editor.js loaded"); // Debug log
 
@@ -37,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log(`Attempting to fetch document with ID: ${docId}`); // Log before fetch
     try {
         // Fetch document from Firestore via API
-        const response = await fetch(`/api/docs/${docId}`, {
+        const response = await fetch(`${apiBaseUrl}/api/docs/${docId}`, {
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
@@ -151,7 +154,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const content = editor.getHTML(); // Get HTML content from Tiptap
 
         try {
-            const response = await fetch(`/api/docs/${docId}`, {
+            const response = await fetch(`${apiBaseUrl}/api/docs/${docId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

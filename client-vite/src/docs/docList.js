@@ -3,6 +3,9 @@ import '../styles/main.css'; // Import shared styles
 import '../styles/docs.css'; // Import docs specific styles
 import '../styles/doclist-enhancements.css'; // Import document list enhancements
 
+// API Base URL - Read from environment variable, fallback for local dev
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || ''; // Use empty string for relative paths locally or set to 'http://localhost:3000' if needed
+
 // DOM Elements
 const docsList = document.querySelector('.docs-list');
 const newDocButton = document.querySelector('.new-doc-button');
@@ -14,7 +17,7 @@ async function fetchDocuments() {
         // Show loading state
         emptyState.textContent = 'Loading documents...';
         
-        const response = await fetch('/api/docs', {
+        const response = await fetch(`${apiBaseUrl}/api/docs`, { // Updated
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
@@ -40,7 +43,7 @@ async function createNewDocument() {
         newDocButton.disabled = true;
         newDocButton.innerHTML = 'Creating...';
 
-        const response = await fetch('/api/docs', {
+        const response = await fetch(`${apiBaseUrl}/api/docs`, { // Updated
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -53,7 +56,8 @@ async function createNewDocument() {
         }
 
         const { data } = await response.json();
-        window.location.href = `editor.html?id=${data.id}`; // Relative path should still work within /docs/
+        // The editor path is relative to the current /docs/ path, so no change needed here
+        window.location.href = `editor.html?id=${data.id}`; 
     } catch (error) {
         console.error('Document creation error:', error);
         // Error handling remains the same
@@ -83,74 +87,6 @@ function renderDocumentList(documents) {
         const docCard = document.createElement('div');
         docCard.className = 'doc-card';
         
-        // Format dates - REMOVED as per user request
-        // let createdDate = 'Unknown date'; 
-        // let updatedDate = 'Not yet edited'; 
-
-        // try {
-        //     // --- Created Date ---
-        //     if (doc.createdAt && typeof doc.createdAt.toDate === 'function') {
-        //         const date = doc.createdAt.toDate();
-        //         if (!isNaN(date.getTime())) {
-        //             createdDate = date.toLocaleDateString(undefined, {
-        //                 year: 'numeric',
-        //                 month: 'short',
-        //                 day: 'numeric'
-        //             });
-        //         }
-        //     } else if (doc.createdAt) {
-        //         const date = new Date(doc.createdAt);
-        //          if (!isNaN(date.getTime())) {
-        //             createdDate = date.toLocaleDateString(undefined, {
-        //                 year: 'numeric',
-        //                 month: 'short',
-        //                 day: 'numeric'
-        //             });
-        //         }
-        //     }
-
-        //     // --- Updated Date ---
-        //      if (doc.updatedAt && typeof doc.updatedAt.toDate === 'function') {
-        //         const date = doc.updatedAt.toDate();
-        //          if (!isNaN(date.getTime())) {
-        //             let createdTimestamp = doc.createdAt?.toDate ? doc.createdAt.toDate().getTime() : new Date(doc.createdAt).getTime();
-        //             if (Math.abs(date.getTime() - createdTimestamp) > 1000 * 5) { // More than 5 seconds difference
-        //                  updatedDate = date.toLocaleDateString(undefined, {
-        //                     year: 'numeric',
-        //                     month: 'short',
-        //                     day: 'numeric',
-        //                     hour: 'numeric',
-        //                     minute: '2-digit',
-        //                     hour12: true // Use AM/PM
-        //                 });
-        //             } else {
-        //                  updatedDate = 'Created'; // Indicate it hasn't been edited since creation
-        //             }
-        //         }
-        //     } else if (doc.updatedAt) {
-        //          const date = new Date(doc.updatedAt);
-        //          if (!isNaN(date.getTime())) {
-        //              let createdTimestamp = doc.createdAt?.toDate ? doc.createdAt.toDate().getTime() : new Date(doc.createdAt).getTime();
-        //              if (Math.abs(date.getTime() - createdTimestamp) > 1000 * 5) { // More than 5 seconds difference
-        //                 updatedDate = date.toLocaleDateString(undefined, {
-        //                     year: 'numeric',
-        //                     month: 'short',
-        //                     day: 'numeric',
-        //                     hour: 'numeric',
-        //                     minute: '2-digit',
-        //                     hour12: true // Use AM/PM
-        //                 });
-        //              } else {
-        //                  updatedDate = 'Created'; // Indicate it hasn't been edited since creation
-        //              }
-        //         }
-        //     }
-
-        // } catch (e) {
-        //     console.error("Date parsing/formatting error:", e);
-        //     // Keep default fallbacks if error occurs
-        // }
-    
         // Simplified Structure: doc-main for title, doc-actions for buttons + arrow
         docCard.innerHTML = `
             <div class="doc-main">
@@ -173,7 +109,8 @@ function renderDocumentList(documents) {
                 return;
             }
             // Navigate if clicking anywhere else on the card (like the title area)
-            window.location.href = `editor.html?id=${doc.id}`; // Relative path
+            // The editor path is relative to the current /docs/ path, so no change needed here
+            window.location.href = `editor.html?id=${doc.id}`; 
         });
 
         // Add listeners specifically to the buttons
@@ -199,7 +136,8 @@ function renderDocumentList(documents) {
         if (arrowDiv) {
             arrowDiv.addEventListener('click', (event) => {
                 // event.stopPropagation(); // Not strictly needed if main listener checks target
-                window.location.href = `editor.html?id=${doc.id}`; // Relative path
+                // The editor path is relative to the current /docs/ path, so no change needed here
+                window.location.href = `editor.html?id=${doc.id}`; 
             });
         }
 
@@ -211,7 +149,7 @@ function renderDocumentList(documents) {
 async function handleArchive(docId, cardElement) {
     console.log(`Archive clicked for doc: ${docId}`);
     try {
-        const response = await fetch(`/api/docs/${docId}/archive`, {
+        const response = await fetch(`${apiBaseUrl}/api/docs/${docId}/archive`, { // Updated
             method: 'PUT',
             credentials: 'include', // Include cookies for session auth
             headers: {
@@ -258,7 +196,7 @@ async function handleDelete(docId, cardElement) {
 
     console.log(`Proceeding with permanent deletion for doc: ${docId}`);
     try {
-        const response = await fetch(`/api/docs/${docId}`, {
+        const response = await fetch(`${apiBaseUrl}/api/docs/${docId}`, { // Updated
             method: 'DELETE',
             credentials: 'include', // Include cookies for session auth
             headers: {

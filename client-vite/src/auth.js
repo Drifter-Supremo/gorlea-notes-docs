@@ -4,71 +4,77 @@
  * - If on login/register page and logged in, redirect to chat.
  * - If on a protected page (not login/register) and not logged in, redirect to login.
  */
+
+// API Base URL - Read from environment variable, fallback for local dev
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || ''; // Use empty string for relative paths locally or set to 'http://localhost:3000' if needed
+
 async function checkAuthStatus() {
     const currentPage = window.location.pathname;
-    const isAuthPage = currentPage.includes('/login.html') || currentPage.includes('/register.html');
-    const protectedPages = ['/chat.html', '/docs/index.html', '/docs/editor.html']; // Added editor page
-    const isProtectedPage = protectedPages.some(page => currentPage.includes(page));
+    // Simplified check: If it's not exactly /login.html or /register.html, assume it's protected
+    const isAuthPage = currentPage.endsWith('/login.html') || currentPage.endsWith('/register.html');
+    const isProtectedPage = !isAuthPage; // Any page that isn't login/register is considered protected
 
     try {
-        const response = await fetch('/api/user/me', {
+        // Use apiBaseUrl for the fetch call
+        const response = await fetch(`${apiBaseUrl}/api/user/me`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
             },
+            // credentials: 'include' // Assuming cookies handle authentication
         });
+
+        const userEmailElement = document.getElementById('user-email'); // Get email element reference
 
         if (response.ok) {
             // User is logged in
             const userData = await response.json(); // Get user data
-            const userEmailElement = document.getElementById('user-email');
             if (userEmailElement && userData && userData.email) {
                 userEmailElement.textContent = userData.email; // Display the email
-                userEmailElement.style.display = ''; // Ensure display is not none if previously hidden
+                userEmailElement.style.display = 'inline'; // Make sure it's visible
             } else if (userEmailElement) {
-                 // If user data or email is missing, hide the element
-                 userEmailElement.style.display = 'none';
+                 userEmailElement.style.display = 'none'; // Hide if no email data
             }
 
             if (isAuthPage) {
                 console.log('User logged in, redirecting from auth page to chat.');
-                window.location.href = '/chat.html'; // Or the main app page
+                window.location.href = '/chat.html'; // Redirect to chat page
             }
             // If on a protected page, they are allowed, do nothing.
         } else if (response.status === 401) {
             // User is not logged in
+            if (userEmailElement) {
+                userEmailElement.style.display = 'none'; // Hide email element
+            }
             if (isProtectedPage) {
                 console.log('User not logged in, redirecting from protected page to login.');
-                window.location.href = '/login.html';
+                window.location.href = '/login.html'; // Redirect to login page
             }
             // If on login/register page, they are allowed, do nothing.
-            // Hide user email element if not logged in
-            const userEmailElement = document.getElementById('user-email');
-            if (userEmailElement) {
-                userEmailElement.style.display = 'none';
-            }
         } else {
-            // Handle other potential errors (e.g., server error)
-            // Handle other potential errors (e.g., server error)
+            // Handle other potential server errors (e.g., 500)
             console.error('Error checking auth status:', response.status, response.statusText);
-            // Optionally display a generic error message to the user
-             const userEmailElementOnError = document.getElementById('user-email');
-            if (userEmailElementOnError) {
-                userEmailElementOnError.style.display = 'none'; // Hide on error
+            if (userEmailElement) {
+                userEmailElement.style.display = 'none'; // Hide email element on error
+            }
+            // Optionally display a generic error message to the user on the current page
+            // Consider if redirection is needed even on server errors for protected pages
+            if (isProtectedPage) {
+                 console.warn('Server error checking auth. User might not be authenticated.');
+                 // window.location.href = '/login.html'; // Optional: Redirect on server error too?
             }
         }
     } catch (error) {
         console.error('Network error checking auth status:', error);
-        // Handle network errors, maybe show a message
-        // If the backend is down, we might want to prevent access to protected pages
-        // Also hide user email element on network error
+        // Handle network errors (e.g., backend is down)
         const userEmailElementOnNetworkError = document.getElementById('user-email');
         if (userEmailElementOnNetworkError) {
-            userEmailElementOnNetworkError.style.display = 'none'; // Hide on network error
+            userEmailElementOnNetworkError.style.display = 'none'; // Hide email element on network error
         }
+        // Decide how to handle network errors on protected pages
         if (isProtectedPage) {
              console.warn('Network error, cannot verify auth. Redirecting to login as a precaution.');
-             // window.location.href = '/login.html'; // Decide if redirection is desired on network error
+             // window.location.href = '/login.html'; // Redirecting might be safest
         }
     }
 }
@@ -79,9 +85,11 @@ async function checkAuthStatus() {
  * @param {string} message - The error message to display.
  */
 function displayFormError(formId, message) {
-    const errorElement = document.querySelector(`#${formId} #error-message`);
+    // Use more specific selector to avoid conflicts if multiple forms exist
+    const errorElement = document.querySelector(`#${formId} .error-message`);
     if (errorElement) {
         errorElement.textContent = message;
+        errorElement.style.display = 'block'; // Make sure it's visible
     } else {
         console.error(`Could not find error message element for form ${formId}`);
     }
@@ -92,9 +100,10 @@ function displayFormError(formId, message) {
  * @param {string} formId - The ID of the form ('login-form' or 'register-form').
  */
 function clearFormError(formId) {
-    const errorElement = document.querySelector(`#${formId} #error-message`);
+    const errorElement = document.querySelector(`#${formId} .error-message`);
     if (errorElement) {
         errorElement.textContent = '';
+        errorElement.style.display = 'none'; // Hide the element
     }
 }
 
@@ -102,39 +111,51 @@ function clearFormError(formId) {
 
 document.addEventListener('DOMContentLoaded', () => {
     // Run auth check as soon as the DOM is ready
-    // We don't await this, as it handles its own redirection
-    checkAuthStatus();
+    checkAuthStatus(); // No need to await this
 
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
 
     // --- Login Form Handler ---
     if (loginForm) {
+        // Add error message placeholder if not present in HTML
+        if (!loginForm.querySelector('.error-message')) {
+            const errorDiv = document.createElement('div');
+            errorDiv.id = 'login-error-message'; // Assign an ID for targeting
+            errorDiv.className = 'error-message'; // Add class for styling
+            errorDiv.style.color = 'red'; // Basic styling
+            errorDiv.style.display = 'none'; // Initially hidden
+            loginForm.appendChild(errorDiv); // Append it to the form
+        }
+
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
-            clearFormError('login-form');
+            clearFormError('login-form'); // Clear previous errors
             const email = loginForm.email.value;
             const password = loginForm.password.value;
-            const errorMessageElement = document.getElementById('error-message');
 
             try {
-                const response = await fetch('/api/auth/login', {
+                // Use apiBaseUrl for the fetch call
+                const response = await fetch(`${apiBaseUrl}/api/auth/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json',
+                        'Accept': 'application/json', // Indicate expected response type
                     },
                     body: JSON.stringify({ email, password }),
+                    // credentials: 'include' // Usually needed if using cookies/sessions across origins
                 });
 
-                const data = await response.json();
+                const data = await response.json(); // Always try to parse JSON
 
                 if (response.ok) {
-                    console.log('Login successful:', data.message);
-                    window.location.href = '/chat.html'; // Redirect to main app
+                    console.log('Login successful:', data.message || 'OK');
+                    // Successful login, redirect to chat page
+                    window.location.href = '/chat.html';
                 } else {
-                    console.error('Login failed:', data.message);
-                    displayFormError('login-form', data.message || 'Login failed. Please check your credentials.');
+                    // Handle specific error statuses or use the message from the backend
+                    console.error('Login failed:', data.message || `HTTP error ${response.status}`);
+                    displayFormError('login-form', data.message || `Login failed (Status: ${response.status})`);
                 }
             } catch (error) {
                 console.error('Network error during login:', error);
@@ -145,42 +166,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Register Form Handler ---
     if (registerForm) {
+         // Add error message placeholder if not present in HTML
+        if (!registerForm.querySelector('.error-message')) {
+            const errorDiv = document.createElement('div');
+            errorDiv.id = 'register-error-message'; // Assign an ID
+            errorDiv.className = 'error-message';
+            errorDiv.style.color = 'red';
+            errorDiv.style.display = 'none';
+            // Insert it before the submit button or at the end
+            registerForm.insertBefore(errorDiv, registerForm.querySelector('button[type="submit"]'));
+        }
+
         registerForm.addEventListener('submit', async (event) => {
             event.preventDefault();
-            clearFormError('register-form');
+            clearFormError('register-form'); // Clear previous errors
             const email = registerForm.email.value;
             const password = registerForm.password.value;
-            const confirmPassword = registerForm['confirm-password'].value; // Get value from the new field
+            const confirmPassword = registerForm['confirm-password'].value;
 
-            // Add password confirmation check
+            // Basic client-side validation
             if (password !== confirmPassword) {
                 displayFormError('register-form', 'Passwords do not match.');
-                return; // Stop submission if passwords don't match
+                return;
             }
-            // if (password !== confirmPassword) {
-            //     displayFormError('register-form', 'Passwords do not match.');
-            //     return;
-            // }
+            if (!email || !password) {
+                 displayFormError('register-form', 'Email and password cannot be empty.');
+                 return;
+            }
 
             try {
-                const response = await fetch('/api/auth/register', {
+                // Use apiBaseUrl for the fetch call
+                const response = await fetch(`${apiBaseUrl}/api/auth/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                     },
                     body: JSON.stringify({ email, password }),
+                    // credentials: 'include' // May not be needed for registration itself
                 });
 
-                const data = await response.json();
+                const data = await response.json(); // Always try to parse JSON
 
                 if (response.ok || response.status === 201) { // Handle 201 Created status
-                    console.log('Registration successful:', data.message);
+                    console.log('Registration successful:', data.message || 'User created');
                     // Redirect to login page after successful registration
-                    window.location.href = '/login.html?registered=true'; // Add query param for potential feedback
+                    // Optionally pass a query param to show a success message on the login page
+                    window.location.href = '/login.html?registered=true';
                 } else {
-                    console.error('Registration failed:', data.message);
-                    displayFormError('register-form', data.message || 'Registration failed. Please try again.');
+                    // Handle specific error statuses or use the message from the backend
+                    console.error('Registration failed:', data.message || `HTTP error ${response.status}`);
+                    displayFormError('register-form', data.message || `Registration failed (Status: ${response.status})`);
                 }
             } catch (error) {
                 console.error('Network error during registration:', error);
@@ -189,32 +225,46 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Logout Functionality (Example - needs a trigger) ---
-    // This function can be called from a logout button in the main app (e.g., chat.html)
-    window.logoutUser = async () => { // Make it global for easy access from HTML onclick or other scripts
+    // --- Logout Functionality ---
+    // Make logout function globally accessible IF NEEDED from HTML inline onclick
+    // It's generally better to attach listeners programmatically like above
+    window.logoutUser = async () => {
+        console.log('Attempting logout...');
         try {
-            const response = await fetch('/api/auth/logout', {
+            // Use apiBaseUrl for the fetch call
+            const response = await fetch(`${apiBaseUrl}/api/auth/logout`, {
                 method: 'POST',
                 headers: {
-                    'Accept': 'application/json',
+                    'Accept': 'application/json', // Expect JSON response
                 },
+                // credentials: 'include' // Include credentials (like cookies) if needed for logout
             });
+
+            // Check if logout was successful (e.g., backend sends 200 OK or 204 No Content)
             if (response.ok) {
                 console.log('Logout successful');
-                window.location.href = '/login.html';
+                // Redirect to login page after successful logout
+                window.location.href = '/login.html?loggedout=true'; // Add query param for feedback
             } else {
-                const data = await response.json();
-                console.error('Logout failed:', data.message || response.statusText);
-                // Handle logout error - maybe inform user?
-                alert('Logout failed. Please try again.'); // Simple alert for now
+                // Try to parse error message from backend
+                let errorMsg = `Logout failed with status: ${response.status}`;
+                try {
+                    const data = await response.json();
+                    errorMsg = data.message || errorMsg;
+                } catch (e) {
+                    // Ignore if response is not JSON
+                }
+                console.error('Logout failed:', errorMsg);
+                alert(`Logout failed: ${errorMsg}`); // Inform user
             }
         } catch (error) {
             console.error('Network error during logout:', error);
-            alert('Logout failed due to a network error.');
+            alert('Logout failed due to a network error. Please try again.');
         }
     };
 
-    // Example: Add logout button handler if a button with id="logout-button" exists
+    // Example: Attach logout handler to a button with id="logout-button"
+    // This is better practice than using onclick="" in HTML
     const logoutButton = document.getElementById('logout-button');
     if (logoutButton) {
         logoutButton.addEventListener('click', window.logoutUser);

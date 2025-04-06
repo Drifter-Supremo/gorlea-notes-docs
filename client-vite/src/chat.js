@@ -2,6 +2,9 @@
 import './styles/main.css';
 import { marked } from 'marked'; // Import marked library
 
+// API Base URL - Read from environment variable, fallback for local dev
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || ''; // Use empty string for relative paths locally or set to 'http://localhost:3000' if needed
+
 // DOM Elements
 const messageInput = document.getElementById('messageInput');
 const sendButton = document.getElementById('sendButton');
@@ -132,7 +135,7 @@ const showRecentPatterns = [
 // API Integration
 async function createDoc(title, content) {
     try {
-        const response = await fetch('/api/ai/create', {
+        const response = await fetch(`${apiBaseUrl}/api/ai/create`, { // Updated
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -155,7 +158,7 @@ async function createDoc(title, content) {
 
 async function saveNote(docName, content) {
     try {
-        const response = await fetch('/api/ai/save', {
+        const response = await fetch(`${apiBaseUrl}/api/ai/save`, { // Updated
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -187,7 +190,7 @@ async function saveNote(docName, content) {
 
 async function rewriteNote(text) {
     try {
-        const response = await fetch('/api/ai/rewrite', {
+        const response = await fetch(`${apiBaseUrl}/api/ai/rewrite`, { // Updated
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -351,7 +354,7 @@ function revealMessageBlocks(targetWrapper, fullHtml, delay = 250, callback) { /
 async function fetchAndDisplayRecentDocs() {
     const loadingMessage = addMessage('Fetching recent documents...', false, true);
     try {
-        const response = await fetch('/api/docs?limit=5', { credentials: 'include' });
+        const response = await fetch(`${apiBaseUrl}/api/docs?limit=5`, { credentials: 'include' }); // Updated
         if (!response.ok) {
             throw new Error(`HTTP error ${response.status}`);
         }
