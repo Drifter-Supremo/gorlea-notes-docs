@@ -112,6 +112,14 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 4. Future collaborative features
 
 ## Recent Changes
+
+- **(April 6, 2025)** Unified button styling across app:
+    - Created `.gorlea-button` class with gold background, rounded rectangle shape, consistent size, padding, and hover effects.
+    - Applied `.gorlea-button` to all header buttons on chat, docs list, and editor pages.
+    - Removed conflicting classes (`.header-button`, `.button-accent`, `.docs-button`) for consistency.
+    - Updated Logout buttons on docs list and editor pages to use `.gorlea-button`.
+    - Changed New Chat icon color from white to black for better theme alignment.
+
 - **(April 5, 2025)** Implemented UI overhaul for improved user experience:
     - Enhanced editor page with improved action buttons and sticky toolbar for better usability.
     - Upgraded document list page with better card styling and visual feedback on interactions.

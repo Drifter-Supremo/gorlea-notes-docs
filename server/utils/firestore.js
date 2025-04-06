@@ -37,11 +37,17 @@ const firestoreUtils = {
             }
 
             const snapshot = await query.get(); // Execute the query
-            
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
+
+            // Explicitly extract the required fields
+            return snapshot.docs.map(doc => {
+                const data = doc.data(); // Get the document data
+                return {
+                    id: doc.id,
+                    title: data.title || 'Untitled Document', // Provide default title if missing
+                    createdAt: data.createdAt || null, // Include createdAt timestamp
+                    lastOpenedAt: data.lastOpenedAt || data.createdAt || null // Include lastOpenedAt, fallback to createdAt
+                };
+            });
         } catch (error) {
             console.error('Firestore list documents error:', error);
             throw error;

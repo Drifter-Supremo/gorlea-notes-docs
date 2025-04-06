@@ -520,3 +520,40 @@ textarea {
 .auth-switch a:hover {
     text-decoration: underline;
 }
+
+/* --- Gorlea Button Unified Style --- */
+.gorlea-button {
+  background-color: var(--color-accent);
+  color: var(--color-secondary);
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  height: 2.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  line-height: 1;
+}
+
+.gorlea-button:hover {
+  background-color: color-mix(in srgb, var(--color-accent) 90%, white 10%);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+.gorlea-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  background-color: color-mix(in srgb, var(--color-accent) 80%, black 20%);
+}
+
+.gorlea-button:focus {
+  outline: 2px solid rgba(255, 215, 0, 0.5);
+  outline-offset: 2px;
+}

@@ -81,7 +81,16 @@ flowchart TD
 - Left-aligned Gorlea messages
 - Smooth animations and transitions
 
-### 3. Input Pattern
+### 3. Button Styling Pattern
+
+- **(April 6, 2025)** Unified `.gorlea-button` style created in `main.css` for header buttons across chat, docs list, and editor pages.
+  - **Style:** Gold background, dark text, rounded rectangle (8px radius), consistent height (2.2rem), padding (0.5rem 1.25rem), font size (0.95rem), font weight (600), hover/active effects.
+  - Applied to: Gorlea Docs, Logout, New Chat buttons.
+  - Removed conflicting classes (`.header-button`, `.button-accent`, `.docs-button`).
+  - New Chat icon color changed to black.
+  - **Result:** Consistent button appearance across the app.
+
+### 4. Input Pattern
 - Auto-expanding textarea
 - Character limit handling
 - Submit on Enter (Shift+Enter for newline)

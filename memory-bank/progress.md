@@ -217,6 +217,11 @@ To be implemented:
 - Critical Path: Auto-save → Delete → Tiptap Integration
 
 ## Recent Updates
+- **(April 6, 2025)** Unified button styling:
+    - Created `.gorlea-button` class in `main.css` for consistent button appearance.
+    - Applied `.gorlea-button` to header buttons in `chat.html`, `docs/index.html`, and `docs/editor.html`.
+    - Changed New Chat icon color to black in `chat.html`.
+
 - **2025-04-05:** Implemented Email/Password Authentication: Added Register, Login, Logout functionality with backend routes (`/api/auth/*`), controllers (`authController`), middleware (`requireAuth`), and frontend pages/logic (`login.html`, `register.html`, `auth.js`).
 - **2025-04-05:** Configured Persistent Sessions: Switched `express-session` to use `@google-cloud/connect-firestore` for storing sessions in Firestore, enhancing robustness. Added `bcrypt` for password hashing.
 - **2025-04-05:** Fixed User Email Display: Updated headers across `chat.html`, `docs/index.html`, and `docs/editor.html` to correctly display the logged-in user's email via the `/api/user/me` endpoint.

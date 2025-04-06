@@ -83,68 +83,79 @@ function renderDocumentList(documents) {
         const docCard = document.createElement('div');
         docCard.className = 'doc-card';
         
-        // Format dates with clear states for different scenarios
-        let createdDate = 'New document';
-        let updatedDate = 'Not yet edited';
-        
-        // Different states for dates:
-        // 1. Valid date - shows formatted date
-        // 2. New document - for missing creation date
-        // 3. Not yet edited - for missing update date
-        // 4. Date in future - "Recently created/updated"
-        // 5. Invalid date - "Unknown date"
-        
-        try {
-            const now = new Date();
-            
-            if (doc.createdAt) {
-                const date = new Date(doc.createdAt);
-                if (!isNaN(date.getTime())) {
-                    // Check for future dates (possible server time mismatch)
-                    if (date > now) {
-                        createdDate = 'Recently created';
-                    } else {
-                        // Format date with both date and time for better context
-                        createdDate = date.toLocaleDateString(undefined, {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric'
-                        });
-                    }
-                } else {
-                    createdDate = 'Unknown date';
-                }
-            }
-            
-            if (doc.updatedAt) {
-                const date = new Date(doc.updatedAt);
-                if (!isNaN(date.getTime())) {
-                    // Check for future dates
-                    if (date > now) {
-                        updatedDate = 'Recently updated';
-                    } else {
-                        updatedDate = date.toLocaleDateString(undefined, {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric'
-                        });
-                    }
-                } else {
-                    updatedDate = 'Unknown date';
-                }
-            }
-        } catch (e) {
-            console.log("Date parsing error:", e);
-        }
+        // Format dates - REMOVED as per user request
+        // let createdDate = 'Unknown date'; 
+        // let updatedDate = 'Not yet edited'; 
+
+        // try {
+        //     // --- Created Date ---
+        //     if (doc.createdAt && typeof doc.createdAt.toDate === 'function') {
+        //         const date = doc.createdAt.toDate();
+        //         if (!isNaN(date.getTime())) {
+        //             createdDate = date.toLocaleDateString(undefined, {
+        //                 year: 'numeric',
+        //                 month: 'short',
+        //                 day: 'numeric'
+        //             });
+        //         }
+        //     } else if (doc.createdAt) {
+        //         const date = new Date(doc.createdAt);
+        //          if (!isNaN(date.getTime())) {
+        //             createdDate = date.toLocaleDateString(undefined, {
+        //                 year: 'numeric',
+        //                 month: 'short',
+        //                 day: 'numeric'
+        //             });
+        //         }
+        //     }
+
+        //     // --- Updated Date ---
+        //      if (doc.updatedAt && typeof doc.updatedAt.toDate === 'function') {
+        //         const date = doc.updatedAt.toDate();
+        //          if (!isNaN(date.getTime())) {
+        //             let createdTimestamp = doc.createdAt?.toDate ? doc.createdAt.toDate().getTime() : new Date(doc.createdAt).getTime();
+        //             if (Math.abs(date.getTime() - createdTimestamp) > 1000 * 5) { // More than 5 seconds difference
+        //                  updatedDate = date.toLocaleDateString(undefined, {
+        //                     year: 'numeric',
+        //                     month: 'short',
+        //                     day: 'numeric',
+        //                     hour: 'numeric',
+        //                     minute: '2-digit',
+        //                     hour12: true // Use AM/PM
+        //                 });
+        //             } else {
+        //                  updatedDate = 'Created'; // Indicate it hasn't been edited since creation
+        //             }
+        //         }
+        //     } else if (doc.updatedAt) {
+        //          const date = new Date(doc.updatedAt);
+        //          if (!isNaN(date.getTime())) {
+        //              let createdTimestamp = doc.createdAt?.toDate ? doc.createdAt.toDate().getTime() : new Date(doc.createdAt).getTime();
+        //              if (Math.abs(date.getTime() - createdTimestamp) > 1000 * 5) { // More than 5 seconds difference
+        //                 updatedDate = date.toLocaleDateString(undefined, {
+        //                     year: 'numeric',
+        //                     month: 'short',
+        //                     day: 'numeric',
+        //                     hour: 'numeric',
+        //                     minute: '2-digit',
+        //                     hour12: true // Use AM/PM
+        //                 });
+        //              } else {
+        //                  updatedDate = 'Created'; // Indicate it hasn't been edited since creation
+        //              }
+        //         }
+        //     }
+
+        // } catch (e) {
+        //     console.error("Date parsing/formatting error:", e);
+        //     // Keep default fallbacks if error occurs
+        // }
     
-        // Enhanced Structure: doc-main for title and dates, doc-actions for buttons + arrow (removed doc-type)
+        // Simplified Structure: doc-main for title, doc-actions for buttons + arrow
         docCard.innerHTML = `
             <div class="doc-main">
                 <div class="doc-title">${doc.title || 'Untitled Document'}</div>
-                <div class="doc-meta">
-                    <span>📅 Created: ${createdDate}</span>
-                    <span>🔄 Updated: ${updatedDate}</span>
-                </div>
+                <!-- Removed doc-meta div -->
             </div>
             <div class="doc-actions">
                 <button class="doc-action-archive" data-id="${doc.id}" title="Archive Document">💾</button>

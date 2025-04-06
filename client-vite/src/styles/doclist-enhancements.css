@@ -1,10 +1,38 @@
 /* Enhanced styles for the document list page */
 
+/* Header styles */
+.docs-header {
+    /* Ensure header spans the full width */
+    width: 100%;
+    /* Add padding to match the main content area */
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 10;
+}
+
+.docs-header .header-content {
+    /* Center the content within the header */
+    max-width: var(--max-width);
+    margin: 0 auto;
+    /* Add horizontal padding to align with content below */
+    /* padding: 0 1.5rem; */ /* Removed horizontal padding */
+    padding: 0; /* Ensure no horizontal padding */
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Adjust gap between items as needed */
+    height: 2.5rem; /* Consistent height */
+}
+
+/* Existing styles below */
+
 /* Document List Layout Improvements */
 .docs-list {
     display: grid;
     gap: 1.5rem; /* Increased gap between cards */
-    padding: 1rem;
+    /* Remove padding - alignment is handled by .docs-main padding */
+    /* padding: 1rem; */
     animation: fadeIn 0.5s ease-out;
 }
 
@@ -69,19 +97,7 @@
     letter-spacing: 0.01em; /* Subtle letter spacing for readability */
 }
 
-/* Document metadata styling */
-.doc-meta {
-    font-size: 0.85rem; /* Slightly larger metadata */
-    color: rgba(255, 255, 255, 0.6); /* More contrast */
-    display: flex;
-    gap: 1.25rem; /* Increased space between date items */
-}
-
-.doc-meta span {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-}
+/* Document metadata styling - REMOVED */
 
 /* Document actions container */
 .doc-actions {
@@ -151,8 +167,10 @@
     color: var(--color-secondary); /* Dark color for contrast */
     border: none;
     border-radius: 8px; /* Slightly rounder */
-    padding: 0.85rem 2rem; /* Wider padding */
-    font-size: 1.1rem;
+    /* Remove padding override - inherit from .button-accent in docs.css */
+    /* padding: 0.85rem 2rem; */
+    /* Remove font-size override - inherit from .button-accent in docs.css */
+    /* font-size: 1.1rem; */
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;

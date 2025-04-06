@@ -8,7 +8,8 @@
 }
 
 .docs-header {
-    padding: 0.75rem 1.25rem; /* Reduced vertical padding */
+    /* Revert to original padding */
+    padding: 0.75rem 1.25rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     position: relative;
@@ -17,10 +18,14 @@
 /* Re-use header-content style from main.css if needed, or define here */
 .docs-header .header-content {
     max-width: var(--max-width);
+    /* Revert to original margin: auto */
     margin: 0 auto;
+    /* Remove horizontal padding added previously */
+    /* padding: 0 1.5rem; */
     display: flex;
     align-items: center;
-    gap: 0.75rem; /* Reduced gap between items */
+    /* Revert gap change */
+    gap: 0.5rem; /* Further reduced gap between items */
     height: 2.5rem; /* Consistent height for header content */
 }
 .docs-header .logo {
@@ -50,7 +55,7 @@
     flex: 1;
     max-width: var(--max-width);
     margin: 2.5rem auto;
-    padding: 0 1.5rem; /* Increased horizontal padding */
+    /* padding: 0 1.5rem; */ /* Removed horizontal padding */
     width: 100%;
     animation: fadeIn 0.5s ease-out;
 }
@@ -66,7 +71,7 @@ body {
 .docs-actions {
     margin-bottom: 2rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start; /* Align button to the start */
     align-items: center;
 }
 
@@ -114,8 +119,11 @@ body {
     display: inline-flex; /* Align icon and text */
     align-items: center;
     gap: 0.5rem; /* Space between icon and text */
-    font-size: 1.1rem;
-    padding: 0.85rem 1.75rem;
+    width: fit-content; /* Adjust width to content */
+    /* Remove font-size override, inherit from .button-accent */
+    /* font-size: 1.1rem; */
+    /* Remove padding override, inherit from .button-accent */
+    /* padding: 0.85rem 1.75rem; */
     position: relative;
     overflow: hidden;
 }
@@ -181,24 +189,6 @@ body {
     font-weight: 500;
     color: var(--color-text);
     font-size: 1rem;
-}
-
-.doc-meta {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.5);
-    display: flex;
-    gap: 1rem;
-}
-
-.doc-meta span {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-}
-
-.doc-meta i {
-    font-size: 0.8rem;
-    opacity: 0.7;
 }
 
 /* Document arrow styling */
