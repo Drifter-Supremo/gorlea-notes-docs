@@ -1,6 +1,7 @@
 // Import styles
 import '../styles/main.css'; // Import shared styles
 import '../styles/docs.css'; // Import docs specific styles
+import '../styles/doclist-enhancements.css'; // Import document list enhancements
 
 // DOM Elements
 const docsList = document.querySelector('.docs-list');
@@ -141,14 +142,14 @@ function renderDocumentList(documents) {
             <div class="doc-main">
                 <div class="doc-title">${doc.title || 'Untitled Document'}</div>
                 <div class="doc-meta">
-                    <span>Created: ${createdDate}</span>
-                    <span>Updated: ${updatedDate}</span>
+                    <span>📅 Created: ${createdDate}</span>
+                    <span>🔄 Updated: ${updatedDate}</span>
                 </div>
             </div>
             <div class="doc-actions">
-                <button class="doc-action-archive" data-id="${doc.id}" title="Archive">💾</button>
-                <button class="doc-action-delete" data-id="${doc.id}" title="Delete">🗑️</button>
-                <div class="doc-arrow">→</div>
+                <button class="doc-action-archive" data-id="${doc.id}" title="Archive Document">💾</button>
+                <button class="doc-action-delete" data-id="${doc.id}" title="Delete Document">🗑️</button>
+                <div class="doc-arrow" title="Open Document">→</div>
             </div>
         `;
 

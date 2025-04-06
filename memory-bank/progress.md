@@ -3,6 +3,14 @@
 ## Project Status: Gorlea Docs Phase 2 (Basic Editor Working)
 
 ## Completed Features
+- ✅ UI overhaul for improved user experience (April 5, 2025)
+  - Enhanced editor page with improved action buttons and sticky toolbar
+  - Upgraded document list page with better card styling and visual feedback
+  - Added document creation/edited dates in the list view
+  - Applied consistent button styling and hover effects throughout
+  - Improved spacing and visual hierarchy for clearer information architecture
+  - Enhanced mobile responsiveness for better cross-device compatibility
+
 - ✅ Removed timestamp insertion when appending notes (April 5, 2025)
   - Updated backend `appendContent` to no longer add timestamp separators.
   - Now appends new notes with a simple paragraph break for a cleaner, minimalist look.

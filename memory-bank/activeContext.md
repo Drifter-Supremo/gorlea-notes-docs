@@ -112,6 +112,14 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 4. Future collaborative features
 
 ## Recent Changes
+- **(April 5, 2025)** Implemented UI overhaul for improved user experience:
+    - Enhanced editor page with improved action buttons and sticky toolbar for better usability.
+    - Upgraded document list page with better card styling and visual feedback on interactions.
+    - Added document creation/edited dates in the list view for better context.
+    - Applied consistent button styling and hover effects across the application.
+    - Improved spacing and visual hierarchy for clearer information architecture.
+    - Enhanced mobile responsiveness for better cross-device experience.
+
 - **(April 5, 2025)** Removed timestamp insertion when appending notes:
     - Updated `appendContent` in `server/utils/firestore.js` to no longer add a timestamp separator.
     - Now, new notes are appended with a simple paragraph break for clean separation.

@@ -1,0 +1,229 @@
+/* Enhanced styles for the document list page */
+
+/* Document List Layout Improvements */
+.docs-list {
+    display: grid;
+    gap: 1.5rem; /* Increased gap between cards */
+    padding: 1rem;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Document Card Enhancements */
+.doc-card {
+    background-color: rgba(37, 37, 56, 0.8); /* Slightly darker than before */
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem; /* Increased padding */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.08); /* More visible border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* More pronounced shadow */
+    position: relative;
+    overflow: hidden; /* For the shine effect */
+}
+
+/* Enhanced hover effects */
+.doc-card:hover {
+    background-color: rgba(42, 45, 62, 0.9); /* More contrast on hover */
+    transform: translateY(-3px); /* More pronounced lift */
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2); /* Larger shadow on hover */
+    border-color: rgba(255, 215, 0, 0.25); /* Gold-tinted border on hover */
+}
+
+/* Shine effect on hover */
+.doc-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.05),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.doc-card:hover::after {
+    left: 100%;
+}
+
+/* Document content structure */
+.doc-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* Increased gap between title and metadata */
+}
+
+/* Document title styling */
+.doc-title {
+    font-weight: 600; /* Bolder title */
+    color: var(--color-text);
+    font-size: 1.1rem; /* Slightly larger title */
+    letter-spacing: 0.01em; /* Subtle letter spacing for readability */
+}
+
+/* Document metadata styling */
+.doc-meta {
+    font-size: 0.85rem; /* Slightly larger metadata */
+    color: rgba(255, 255, 255, 0.6); /* More contrast */
+    display: flex;
+    gap: 1.25rem; /* Increased space between date items */
+}
+
+.doc-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+/* Document actions container */
+.doc-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* Consistent spacing */
+    flex-shrink: 0;
+}
+
+/* Action button styling */
+.doc-action-archive,
+.doc-action-delete,
+.doc-arrow {
+    /* Common button styles */
+    background-color: rgba(42, 45, 62, 0.6); /* Match editor button style */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px; /* Match editor button radius */
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.8); /* Brighter text for better visibility */
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px; /* Larger buttons */
+    height: 32px; /* Larger buttons */
+    font-size: 1rem;
+}
+
+/* Archive button hover state */
+.doc-action-archive:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    background-color: rgba(255, 215, 0, 0.15); /* More pronounced highlight */
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Delete button hover state */
+.doc-action-delete:hover {
+    color: #ff6b6b;
+    border-color: #ff6b6b;
+    background-color: rgba(255, 107, 107, 0.15); /* More pronounced highlight */
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Arrow button styling */
+.doc-arrow {
+    color: var(--color-accent);
+    background-color: rgba(255, 215, 0, 0.1); /* Gold tinted background */
+    border-color: rgba(255, 215, 0, 0.2); /* Gold tinted border */
+    width: 34px; /* Slightly wider */
+    height: 34px; /* Slightly taller */
+}
+
+.doc-arrow:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    background-color: rgba(255, 215, 0, 0.2); /* More pronounced highlight */
+    transform: translateX(3px) translateY(-2px); /* Combined movement */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced New Document Button */
+.new-doc-button {
+    background-color: var(--color-accent); /* Gold */
+    color: var(--color-secondary); /* Dark color for contrast */
+    border: none;
+    border-radius: 8px; /* Slightly rounder */
+    padding: 0.85rem 2rem; /* Wider padding */
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(255, 215, 0, 0.1); /* Double shadow effect */
+    position: relative;
+    overflow: hidden;
+}
+
+.new-doc-button span {
+    font-size: 1.5rem; /* Larger plus icon */
+    margin-right: 0.5rem; /* More space after plus */
+    transition: transform 0.3s ease;
+}
+
+.new-doc-button:hover {
+    background-color: color-mix(in srgb, var(--color-accent) 90%, white 10%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(255, 215, 0, 0.15);
+}
+
+.new-doc-button:hover span {
+    transform: rotate(90deg); /* Rotate plus sign on hover */
+}
+
+.new-doc-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15), 0 0 0 2px rgba(255, 215, 0, 0.2);
+    background-color: color-mix(in srgb, var(--color-accent) 85%, black 15%);
+}
+
+/* Focus state for accessibility */
+.new-doc-button:focus {
+    outline: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(255, 215, 0, 0.3);
+}
+
+/* Improved empty state styling */
+.empty-state {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7); /* Brighter text */
+    padding: 3.5rem; /* More padding */
+    background-color: rgba(37, 37, 56, 0.6); /* Match card background */
+    border-radius: 12px;
+    border: 1px dashed rgba(255, 215, 0, 0.2); /* Gold-tinted border */
+    margin-top: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Add shadow */
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+    .doc-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .doc-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .doc-actions {
+        margin-top: 1rem;
+        width: 100%;
+        justify-content: flex-end;
+    }
+    
+    .new-doc-button {
+        width: 100%;
+    }
+}
