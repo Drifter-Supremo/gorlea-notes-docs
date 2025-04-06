@@ -2,8 +2,8 @@
 import './styles/main.css';
 import { marked } from 'marked'; // Import marked library
 
-// API Base URL - Read from environment variable, fallback for local dev
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || ''; // Use empty string for relative paths locally or set to 'http://localhost:3000' if needed
+// API Base URL - Removed as we'll use relative paths
+// const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '';
 
 // DOM Elements
 const messageInput = document.getElementById('messageInput');
@@ -354,7 +354,7 @@ function revealMessageBlocks(targetWrapper, fullHtml, delay = 250, callback) { /
 async function fetchAndDisplayRecentDocs() {
     const loadingMessage = addMessage('Fetching recent documents...', false, true);
     try {
-        const response = await fetch(`${apiBaseUrl}/api/docs?limit=5`, { credentials: 'include' }); // Updated
+        const response = await fetch('/api/docs?limit=5', { credentials: 'include' }); // Use relative path
         if (!response.ok) {
             throw new Error(`HTTP error ${response.status}`);
         }

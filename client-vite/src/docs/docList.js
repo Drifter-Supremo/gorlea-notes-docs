@@ -3,8 +3,8 @@ import '../styles/main.css'; // Import shared styles
 import '../styles/docs.css'; // Import docs specific styles
 import '../styles/doclist-enhancements.css'; // Import document list enhancements
 
-// API Base URL - Read from environment variable, fallback for local dev
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || ''; // Use empty string for relative paths locally or set to 'http://localhost:3000' if needed
+// API Base URL - Removed as we'll use relative paths
+// const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '';
 
 // DOM Elements
 const docsList = document.querySelector('.docs-list');
@@ -16,8 +16,8 @@ async function fetchDocuments() {
     try {
         // Show loading state
         emptyState.textContent = 'Loading documents...';
-        
-        const response = await fetch(`${apiBaseUrl}/api/docs`, { // Updated
+
+        const response = await fetch('/api/docs', { // Use relative path
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
@@ -43,7 +43,7 @@ async function createNewDocument() {
         newDocButton.disabled = true;
         newDocButton.innerHTML = 'Creating...';
 
-        const response = await fetch(`${apiBaseUrl}/api/docs`, { // Updated
+        const response = await fetch('/api/docs', { // Use relative path
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -57,7 +57,7 @@ async function createNewDocument() {
 
         const { data } = await response.json();
         // The editor path is relative to the current /docs/ path, so no change needed here
-        window.location.href = `editor.html?id=${data.id}`; 
+        window.location.href = `editor.html?id=${data.id}`;
     } catch (error) {
         console.error('Document creation error:', error);
         // Error handling remains the same
@@ -86,7 +86,7 @@ function renderDocumentList(documents) {
     documents.forEach(doc => {
         const docCard = document.createElement('div');
         docCard.className = 'doc-card';
-        
+
         // Simplified Structure: doc-main for title, doc-actions for buttons + arrow
         docCard.innerHTML = `
             <div class="doc-main">
@@ -110,7 +110,7 @@ function renderDocumentList(documents) {
             }
             // Navigate if clicking anywhere else on the card (like the title area)
             // The editor path is relative to the current /docs/ path, so no change needed here
-            window.location.href = `editor.html?id=${doc.id}`; 
+            window.location.href = `editor.html?id=${doc.id}`;
         });
 
         // Add listeners specifically to the buttons
@@ -137,7 +137,7 @@ function renderDocumentList(documents) {
             arrowDiv.addEventListener('click', (event) => {
                 // event.stopPropagation(); // Not strictly needed if main listener checks target
                 // The editor path is relative to the current /docs/ path, so no change needed here
-                window.location.href = `editor.html?id=${doc.id}`; 
+                window.location.href = `editor.html?id=${doc.id}`;
             });
         }
 
@@ -149,7 +149,7 @@ function renderDocumentList(documents) {
 async function handleArchive(docId, cardElement) {
     console.log(`Archive clicked for doc: ${docId}`);
     try {
-        const response = await fetch(`${apiBaseUrl}/api/docs/${docId}/archive`, { // Updated
+        const response = await fetch(`/api/docs/${docId}/archive`, { // Use relative path
             method: 'PUT',
             credentials: 'include', // Include cookies for session auth
             headers: {
@@ -196,7 +196,7 @@ async function handleDelete(docId, cardElement) {
 
     console.log(`Proceeding with permanent deletion for doc: ${docId}`);
     try {
-        const response = await fetch(`${apiBaseUrl}/api/docs/${docId}`, { // Updated
+        const response = await fetch(`/api/docs/${docId}`, { // Use relative path
             method: 'DELETE',
             credentials: 'include', // Include cookies for session auth
             headers: {
@@ -239,7 +239,7 @@ async function init() {
     }
     const documents = await fetchDocuments();
     renderDocumentList(documents);
-    
+
     // Event listeners
     newDocButton.addEventListener('click', createNewDocument);
 }

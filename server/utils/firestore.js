@@ -1,37 +1,25 @@
 const admin = require('firebase-admin');
-const { Firestore } = require('@google-cloud/firestore'); // Import the Firestore client library
-const path = require('path');
+const { Firestore } = require('@google-cloud/firestore'); // Keep this import if used by session store, otherwise remove
 
-// Get the service account key path from environment variable
-const serviceAccountPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-if (!serviceAccountPath) {
-  throw new Error('GOOGLE_APPLICATION_CREDENTIALS environment variable is not set.');
+// Initialize Firebase Admin SDK.
+// It will automatically look for the GOOGLE_APPLICATION_CREDENTIALS environment
+// variable to find the path to the service account key file.
+try {
+  admin.initializeApp();
+  console.log('Firebase Admin SDK initialized successfully using GOOGLE_APPLICATION_CREDENTIALS.');
+} catch (error) {
+  console.error('Failed to initialize Firebase Admin SDK:', error);
+  throw new Error('Could not initialize Firebase Admin. Ensure GOOGLE_APPLICATION_CREDENTIALS is set correctly.');
 }
 
-// Verify the path exists before attempting to initialize (optional but good practice)
-// const fs = require('fs');
-// if (!fs.existsSync(serviceAccountPath)) {
-//   throw new Error(`Service account key file not found at path: ${serviceAccountPath}`);
-// }
 
-// Initialize Firebase Admin SDK using the path from the environment variable
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccountPath),
-  projectId: 'gorlea-tasks' // Make sure this matches your Firebase project ID
-});
-
-const db = admin.firestore(); // Existing Firestore instance from Firebase Admin SDK
-
-// Create a separate Firestore client instance using the same path
-const firestoreClient = new Firestore({
-  projectId: 'gorlea-tasks', // Make sure this matches your Firebase project ID
-  keyFilename: serviceAccountPath
-});
+const db = admin.firestore(); // Get Firestore instance from initialized Admin SDK
 
 // Collection reference
 const DOCS_COLLECTION = 'documents';
 const USERS_COLLECTION = 'users'; // Added for users
-// Firestore utility functions
+
+// Firestore utility functions (Keep existing functions as they are)
 const firestoreUtils = {
     // List documents, optionally limited
     async listDocuments(limit = null) { // Add optional limit parameter
@@ -68,9 +56,9 @@ const firestoreUtils = {
     async findDocumentByTitle(title) {
         try {
             // Convert search title to lowercase
-            const lowercaseTitle = title.toLowerCase(); 
+            const lowercaseTitle = title.toLowerCase();
             console.log(`Firestore: Searching for title_lowercase == "${lowercaseTitle}"`); // Debug log
-            
+
             // Query using the dedicated lowercase field
             const snapshot = await db.collection(DOCS_COLLECTION)
                 .where('title_lowercase', '==', lowercaseTitle) // Query lowercase field
@@ -81,7 +69,7 @@ const firestoreUtils = {
             if (snapshot.empty) {
                 return null; // No matching document found
             }
-            
+
             // Return the first match
             const doc = snapshot.docs[0];
             return {
@@ -95,15 +83,15 @@ const firestoreUtils = {
     },
 
     // Create a new document, now accepting initial content
-    async createDocument(title = 'Untitled Document', content = '<p></p>') { 
+    async createDocument(title = 'Untitled Document', content = '<p></p>') {
         try {
             const finalTitle = title.trim() === '' ? 'Untitled Document' : title; // Ensure title isn't empty
             const docData = {
                 title: finalTitle, // Store original case title
                 title_lowercase: finalTitle.toLowerCase(), // Store lowercase version for searching
-                content: content, 
+                content: content,
                 createdAt: admin.firestore.Timestamp.now(),
-                lastOpenedAt: admin.firestore.Timestamp.now(), 
+                lastOpenedAt: admin.firestore.Timestamp.now(),
                 isArchived: false
             };
 
@@ -123,11 +111,11 @@ const firestoreUtils = {
         try {
             const docRef = db.collection(DOCS_COLLECTION).doc(docId);
             const docSnap = await docRef.get();
-            
+
             if (!docSnap.exists) {
                 throw new Error('Document not found');
             }
-            
+
             // Update lastOpenedAt timestamp whenever the document is fetched
             await docRef.update({ lastOpenedAt: admin.firestore.Timestamp.now() });
 
@@ -147,7 +135,7 @@ const firestoreUtils = {
     async updateDocument(docId, updates) {
         try {
             const docRef = db.collection(DOCS_COLLECTION).doc(docId);
-            
+
             // If the title is being updated, also update the lowercase version
             if (updates.title !== undefined) {
                 const finalTitle = updates.title.trim() === '' ? 'Untitled Document' : updates.title;
@@ -159,7 +147,7 @@ const firestoreUtils = {
             updates.lastOpenedAt = admin.firestore.Timestamp.now();
 
             // Apply the updates
-            await docRef.update(updates); 
+            await docRef.update(updates);
             console.log(`Firestore: Updated document ${docId} with fields:`, Object.keys(updates));
 
             // Get and return the updated document data (excluding the lowercase title potentially)
@@ -184,19 +172,19 @@ const firestoreUtils = {
             const existingContent = docSnap.data().content || '';
 
             // --- Add simple spacing separator ---
-            const separator = `<p><br></p>`; 
+            const separator = `<p><br></p>`;
             const contentWithSeparator = separator + contentToAppend;
             // --- End simple separator ---
 
             // Append the new content (with separator)
-            const newContent = existingContent + contentWithSeparator; 
+            const newContent = existingContent + contentWithSeparator;
 
             // Update content and lastOpenedAt timestamp
             await docRef.update({
                 content: newContent,
-                lastOpenedAt: admin.firestore.Timestamp.now() 
+                lastOpenedAt: admin.firestore.Timestamp.now()
             });
-            
+
             console.log(`Appended content to document ${docId}`);
             return true; // Indicate success
 
@@ -213,7 +201,7 @@ const firestoreUtils = {
             const docRef = db.collection(DOCS_COLLECTION).doc(docId);
             // Only update isArchived
             await docRef.update({
-                isArchived: true 
+                isArchived: true
             });
             return true;
         } catch (error) {
@@ -292,9 +280,8 @@ const firestoreUtils = {
     }
 };
 
+// Export the utility functions and the db instance
 module.exports = {
-    ...firestoreUtils, // Export existing functions
-    // Export the Firestore client instance separately for session store usage
-    firestoreClient: firestoreClient,
-    db: db // Keep exporting the original db instance if needed elsewhere
+    ...firestoreUtils,
+    db: db
 };

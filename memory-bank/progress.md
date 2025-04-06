@@ -60,6 +60,13 @@
 - ✅ Implemented Email/Password Authentication (Register, Login, Logout)
 - ✅ Configured Persistent Session Store (Firestore using `@google-cloud/connect-firestore`)
 - ✅ Fixed User Email Display in Headers (Chat, Docs List, Docs Editor)
+- ✅ Refactored API Base URL Handling (April 6, 2025)
+  - Removed `apiBaseUrl` definitions and `VITE_API_BASE_URL` dependency from frontend JS (`auth.js`, `chat.js`, `docs/docList.js`, `docs/editor.js`).
+  - Updated all `fetch` calls in frontend JS to use relative paths (e.g., `/api/docs`).
+  - Corrected Firebase Admin initialization in `server/utils/firestore.js` to automatically use `GOOGLE_APPLICATION_CREDENTIALS` environment variable (path-based).
+  - Created local `.env` file with correct `GOOGLE_APPLICATION_CREDENTIALS` path format.
+  - Confirmed `.gitignore` ignores `.env`.
+  - Identified missing `netlify.toml` and provided content for Netlify proxy setup.
 
 ## In Progress
 🔨 Gorlea Docs Feature Enhancements
@@ -99,9 +106,9 @@
    - [✓] New document creation
    - [✓] Firestore integration (using `lastOpenedAt`)
    - [✓] Basic text editor (load/save)
-   - [ ] Rich text editor (Tiptap)
-   - [ ] Auto-save
-   - [ ] Delete functionality
+   - [✓] Rich text editor (Tiptap)
+   - [✓] Auto-save
+   - [✓] Delete functionality
    - [ ] Export functionality (lower priority)
 
 5. 🎨 Basic Styling
@@ -137,9 +144,8 @@
 ## Known Issues
 1. Token refresh mechanism needed
 3. Error handling needs further improvement (e.g., UI feedback beyond alerts)
-4. Rich text editor integration pending (Tiptap selected)
-5. Export functionality not implemented (lower priority)
-6. Firestore index creation required manual step (document this)
+4. Export functionality not implemented (lower priority)
+5. Firestore index creation required manual step (document this)
 
 ## Technical Debt
 1. Add request validation
@@ -217,6 +223,13 @@ To be implemented:
 - Critical Path: Auto-save → Delete → Tiptap Integration
 
 ## Recent Updates
+- **(April 6, 2025)** Refactored API Base URL Handling & Firebase Init:
+    - Removed `apiBaseUrl` definitions and `VITE_API_BASE_URL` dependency from frontend JS (`auth.js`, `chat.js`, `docs/docList.js`, `docs/editor.js`).
+    - Updated all `fetch` calls in frontend JS to use relative paths (e.g., `/api/docs`).
+    - Corrected Firebase Admin initialization in `server/utils/firestore.js` to automatically use the standard `GOOGLE_APPLICATION_CREDENTIALS` environment variable (path-based).
+    - Created local `.env` file with correct `GOOGLE_APPLICATION_CREDENTIALS` path format.
+    - Confirmed `.gitignore` ignores `.env`.
+    - Identified missing `netlify.toml` and provided content for Netlify proxy setup.
 - **(April 6, 2025)** Unified button styling:
     - Created `.gorlea-button` class in `main.css` for consistent button appearance.
     - Applied `.gorlea-button` to header buttons in `chat.html`, `docs/index.html`, and `docs/editor.html`.
@@ -243,7 +256,7 @@ To be implemented:
 - **2025-03-29:** Debugged Vite setup: Fixed `document` shadowing, temporarily removed `requireAuth` from AI routes to resolve `401`, fixed `loadingMessage` `ReferenceError`.
 - **2025-03-29:** Integrated Tiptap editor via npm into Vite setup, replacing textarea and hooking into autosave.
 - **2025-03-29:** Implemented case-insensitive title search in Firestore utils.
-- **2025-03-29:** Improved chatbot intent handling for create vs. save commands. Simplified AI prompt. Diagnosed chat scroll issue.
+- **2025-03-29:** Refined chatbot save/create logic (Intent handling). Simplified AI prompt. Diagnosed chat scroll issue.
 - **2025-04-01:** Fixed chat auto-scrolling by targeting `.chat-container` in `scrollToBottom` (`client-vite/src/chat.js`).
 - **2025-04-01:** Added "Show Recent Docs" feature: Updated backend API (`/api/docs?limit=5`) and frontend chat logic (`chat.js`) to list and select recent documents for saving notes.
 - **2025-04-01:** Added "Gorlea Notes" navigation button to headers of `client-vite/docs/index.html` and `client-vite/docs/editor.html`.
@@ -261,7 +274,7 @@ To be implemented:
 - **2025-04-02:** Moved "New Chat" button to header (`chat.html`, `main.css`).
 - **2025-04-02:** Removed Gorlea message bubble background (`main.css`).
 - **2025-04-02:** Implemented block-reveal animation (`chat.js`, `main.css`).
-- **2025-04-02:** Fixed chat scroll during animation (`chat.js`).
+- **2025-04-02:** Fixed chat scroll behavior during animation (`chat.js`).
 
 ---
 
@@ -282,3 +295,23 @@ Last Updated: 2025-04-05 12:25 PM PDT
   - Sufficient padding/margin is critical for reliable scrolling.
   - Simpler scroll methods can be more robust.
 - **Status:** Issue resolved and documented in Memory Bank.
+
+---
+
+**Summary of Session (4/6):**
+*   **Goal:** Refactor frontend and backend to remove hardcoded API base URLs and simplify environment variable handling for deployment.
+*   **Frontend:**
+    *   Removed `apiBaseUrl` definitions from `client-vite/src/auth.js`, `client-vite/src/chat.js`, `client-vite/src/docs/docList.js`, and `client-vite/src/docs/editor.js`.
+    *   Updated all `fetch` calls in these files to use relative paths (e.g., `/api/docs`).
+*   **Backend:**
+    *   Corrected Firebase Admin initialization in `server/utils/firestore.js` to automatically use the standard `GOOGLE_APPLICATION_CREDENTIALS` environment variable (which contains the file path), simplifying the logic.
+*   **Configuration:**
+    *   Created a local `.env` file with `GOOGLE_APPLICATION_CREDENTIALS` pointing to the local key file path (using forward slashes).
+    *   Confirmed `.gitignore` correctly ignores `.env`.
+    *   Identified that `client-vite/netlify.toml` was missing and provided the necessary content for Netlify proxy configuration.
+
+**Immediate Next Steps:**
+1.  **Create `client-vite/netlify.toml`:** You need to create this file in the `client-vite` directory using the content I provided earlier. This is essential for the relative API paths to work on the deployed Netlify frontend by proxying requests to the Render backend.
+2.  **Commit & Push:** Commit all the code changes (including the new `netlify.toml`) to your Git repository and push to GitHub.
+3.  **Deploy & Monitor:** Pushing should trigger new deployments on Render (backend) and Netlify (frontend). Monitor the deployment logs on both platforms to ensure they complete successfully and the previous errors related to credentials and API paths are resolved.
+4.  **(Railway Note):** While the current deployment is on Render/Netlify, the changes made (using relative paths and standard environment variables like `GOOGLE_APPLICATION_CREDENTIALS`) are good practices that will also apply if you decide to migrate to Railway or another platform later.

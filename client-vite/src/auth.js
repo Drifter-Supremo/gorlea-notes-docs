@@ -5,8 +5,8 @@
  * - If on a protected page (not login/register) and not logged in, redirect to login.
  */
 
-// API Base URL - Read from environment variable, fallback for local dev
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || ''; // Use empty string for relative paths locally or set to 'http://localhost:3000' if needed
+// API Base URL - Removed as we'll use relative paths
+// const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '';
 
 async function checkAuthStatus() {
     const currentPage = window.location.pathname;
@@ -15,8 +15,8 @@ async function checkAuthStatus() {
     const isProtectedPage = !isAuthPage; // Any page that isn't login/register is considered protected
 
     try {
-        // Use apiBaseUrl for the fetch call
-        const response = await fetch(`${apiBaseUrl}/api/user/me`, {
+        // Use relative path for the fetch call
+        const response = await fetch('/api/user/me', {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -135,8 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const password = loginForm.password.value;
 
             try {
-                // Use apiBaseUrl for the fetch call
-                const response = await fetch(`${apiBaseUrl}/api/auth/login`, {
+                // Use relative path for the fetch call
+                const response = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -195,8 +195,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                // Use apiBaseUrl for the fetch call
-                const response = await fetch(`${apiBaseUrl}/api/auth/register`, {
+                // Use relative path for the fetch call
+                const response = await fetch('/api/auth/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -231,8 +231,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.logoutUser = async () => {
         console.log('Attempting logout...');
         try {
-            // Use apiBaseUrl for the fetch call
-            const response = await fetch(`${apiBaseUrl}/api/auth/logout`, {
+            // Use relative path for the fetch call
+            const response = await fetch('/api/auth/logout', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json', // Expect JSON response
