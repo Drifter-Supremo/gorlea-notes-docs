@@ -265,6 +265,21 @@ This technical context serves as the foundation for development decisions and en
 
 ---
 
+### Update: April 8, 2025 - Unified Local Development & Firebase Credentials
+
+- Added a **unified local development environment**:
+  - Root-level `npm run dev` script using `concurrently` to start both backend (`nodemon`) and frontend (`vite`) simultaneously.
+  - Simplifies local testing and development.
+- Backend now **loads environment variables from the root `.env` file** explicitly.
+- **Firebase Admin SDK** initialization updated:
+  - Uses **individual `FIREBASE_*` environment variables** instead of a JSON string or credentials file.
+  - Credentials include `FIREBASE_PROJECT_ID`, `FIREBASE_PRIVATE_KEY`, `FIREBASE_CLIENT_EMAIL`, etc.
+  - Compatible with Railway deployment and avoids file path issues.
+- Backend session store (`@google-cloud/connect-firestore`) now correctly uses the initialized Firestore instance.
+- Immediate next step: **Test all core functionality locally before deploying.**
+
+---
+
 ### Update: April 5, 2025 - Chat Scroll Technical Fixes
 
 - Fixed a scroll bug by:

@@ -223,17 +223,25 @@ To be implemented:
 - Critical Path: Auto-save → Delete → Tiptap Integration
 
 ## Recent Updates
+- **(April 8, 2025)** Unified Development Environment:
+    - Added root-level `npm run dev` script using `concurrently` to start both backend and frontend.
+    - Backend now explicitly loads root `.env` file.
+    - Simplified local testing workflow.
+- **(April 8, 2025)** Firebase Credential Management:
+    - Switched to individual `FIREBASE_*` environment variables.
+    - More secure and deployment-friendly approach.
+    - Backend session store now correctly uses initialized Firestore instance.
 - **(April 6, 2025)** Refactored API Base URL Handling & Firebase Init:
-    - Removed `apiBaseUrl` definitions and `VITE_API_BASE_URL` dependency from frontend JS (`auth.js`, `chat.js`, `docs/docList.js`, `docs/editor.js`).
-    - Updated all `fetch` calls in frontend JS to use relative paths (e.g., `/api/docs`).
-    - Corrected Firebase Admin initialization in `server/utils/firestore.js` to automatically use the standard `GOOGLE_APPLICATION_CREDENTIALS` environment variable (path-based).
-    - Created local `.env` file with correct `GOOGLE_APPLICATION_CREDENTIALS` path format.
+    - Removed `apiBaseUrl` definitions and `VITE_API_BASE_URL` dependency from frontend JS.
+    - Updated all `fetch` calls to use relative paths (e.g., `/api/docs`).
+    - Corrected Firebase Admin initialization to use standard environment variables.
+    - Created local `.env` file with proper credentials path.
     - Confirmed `.gitignore` ignores `.env`.
     - Identified missing `netlify.toml` and provided content for Netlify proxy setup.
 - **(April 6, 2025)** Unified button styling:
-    - Created `.gorlea-button` class in `main.css` for consistent button appearance.
-    - Applied `.gorlea-button` to header buttons in `chat.html`, `docs/index.html`, and `docs/editor.html`.
-    - Changed New Chat icon color to black in `chat.html`.
+    - Created `.gorlea-button` class for consistent button appearance.
+    - Applied to header buttons across all pages.
+    - Changed New Chat icon color to black.
 
 - **2025-04-05:** Implemented Email/Password Authentication: Added Register, Login, Logout functionality with backend routes (`/api/auth/*`), controllers (`authController`), middleware (`requireAuth`), and frontend pages/logic (`login.html`, `register.html`, `auth.js`).
 - **2025-04-05:** Configured Persistent Sessions: Switched `express-session` to use `@google-cloud/connect-firestore` for storing sessions in Firestore, enhancing robustness. Added `bcrypt` for password hashing.
@@ -310,8 +318,3 @@ Last Updated: 2025-04-05 12:25 PM PDT
     *   Confirmed `.gitignore` correctly ignores `.env`.
     *   Identified that `client-vite/netlify.toml` was missing and provided the necessary content for Netlify proxy configuration.
 
-**Immediate Next Steps:**
-1.  **Create `client-vite/netlify.toml`:** You need to create this file in the `client-vite` directory using the content I provided earlier. This is essential for the relative API paths to work on the deployed Netlify frontend by proxying requests to the Render backend.
-2.  **Commit & Push:** Commit all the code changes (including the new `netlify.toml`) to your Git repository and push to GitHub.
-3.  **Deploy & Monitor:** Pushing should trigger new deployments on Render (backend) and Netlify (frontend). Monitor the deployment logs on both platforms to ensure they complete successfully and the previous errors related to credentials and API paths are resolved.
-4.  **(Railway Note):** While the current deployment is on Render/Netlify, the changes made (using relative paths and standard environment variables like `GOOGLE_APPLICATION_CREDENTIALS`) are good practices that will also apply if you decide to migrate to Railway or another platform later.

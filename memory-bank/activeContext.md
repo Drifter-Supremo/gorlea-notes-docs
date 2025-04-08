@@ -301,16 +301,37 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 ## Next Steps - Updated
 
 ### Immediate Task
-1.  **Refine Editor UI/UX:** (e.g., add Tiptap toolbar if desired).
-    *   **File:** `client-vite/src/editor.js`, `client-vite/docs/editor.html`, `client-vite/src/styles/docs.css`
-    *   **Action:** Evaluate need for toolbar, implement if desired. Consider other UI improvements for Tiptap editor.
+1. **Local Testing Before Deployment:**
+   * Test all core functionality with the new unified dev environment (`npm run dev`)
+   * Verify:
+     - Authentication flows (register/login/logout)
+     - Chat functionality (messages, AI processing)
+     - Document operations (create/edit/delete)
+     - Session persistence
+   * **Files:** Entire application
+   * **Action:** Run through all major user flows before proceeding with deployment.
 
 ### Subsequent Tasks
-1.  **Gorlea Notes Integration:** Plan how notes from chat are saved/linked to specific docs.
-2.  **Gorlea Notes Integration:** Plan how notes from chat are saved/linked to specific docs.
-3.  **Authentication:** Basic Email/Password auth is implemented. Review `requireAuth` middleware. Plan next steps for OAuth if still needed.
-4.  **Testing:** Add more comprehensive unit/integration/E2E tests.
-5.  **Other Features:** Export, Search, etc.
+1. **Deployment Preparation:**
+   - Finalize environment variables for production
+   - Configure production session settings
+   - Set up monitoring/logging
+2. **Gorlea Notes Integration:** Plan how notes from chat are saved/linked to specific docs.
+3. **Authentication:** Review `requireAuth` middleware. Plan next steps for OAuth if still needed.
+4. **Testing:** Add more comprehensive unit/integration/E2E tests.
+5. **Other Features:** Export, Search, etc.
+
+## Recent Changes - Added
+- **Unified Development Environment:**
+  - Added root-level `npm run dev` script using `concurrently`
+  - Backend and frontend now start simultaneously
+  - Simplified local testing workflow
+- **Firebase Credential Management:**
+  - Switched to individual `FIREBASE_*` environment variables
+  - More secure and deployment-friendly
+  - Backend explicitly loads root `.env` file
+- **Session Store Fix:**
+  - Firestore session store now correctly uses initialized Firestore instance
 
 
 ## Risk Register

@@ -1,4 +1,4 @@
-require('dotenv').config(); // Ensure this is at the very top
+require('dotenv').config({ path: '../.env' }); // Explicitly load root .env file
 const express = require('express');
 const expressSession = require('express-session');
 const path = require('path');
@@ -10,7 +10,7 @@ const userRoutes = require('./routes/user');
 const { requireAuth } = require('./middleware/auth');
 const { Firestore } = require('@google-cloud/firestore');
 const { FirestoreStore } = require('@google-cloud/connect-firestore');
-const { firestoreClient } = require('./utils/firestore');
+const { db } = require('./utils/firestore');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 3000;
 // Session configuration with FirestoreStore
 app.use(expressSession({
   store: new FirestoreStore({
-    dataset: firestoreClient,
+    dataset: db,
     kind: 'sessions'
   }),
   secret: process.env.SESSION_SECRET,

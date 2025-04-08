@@ -1,15 +1,34 @@
 const admin = require('firebase-admin');
 const { Firestore } = require('@google-cloud/firestore'); // Keep this import if used by session store, otherwise remove
 
-// Initialize Firebase Admin SDK.
-// It will automatically look for the GOOGLE_APPLICATION_CREDENTIALS environment
-// variable to find the path to the service account key file.
+/**
+ * Initialize Firebase Admin SDK using individual FIREBASE_* environment variables.
+ */
 try {
-  admin.initializeApp();
-  console.log('Firebase Admin SDK initialized successfully using GOOGLE_APPLICATION_CREDENTIALS.');
+  const serviceAccount = {
+    type: process.env.FIREBASE_TYPE,
+    project_id: process.env.FIREBASE_PROJECT_ID,
+    private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
+    private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+    client_email: process.env.FIREBASE_CLIENT_EMAIL,
+    client_id: process.env.FIREBASE_CLIENT_ID,
+    auth_uri: process.env.FIREBASE_AUTH_URI,
+    token_uri: process.env.FIREBASE_TOKEN_URI,
+    auth_provider_x509_cert_url: process.env.FIREBASE_AUTH_PROVIDER_X509_CERT_URL,
+    client_x509_cert_url: process.env.FIREBASE_CLIENT_X509_CERT_URL,
+    universe_domain: process.env.FIREBASE_UNIVERSE_DOMAIN
+  };
+
+  console.log('DEBUG: FIREBASE_PROJECT_ID:', process.env.FIREBASE_PROJECT_ID);
+  console.log('DEBUG: Constructed serviceAccount object:', serviceAccount);
+
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  });
+  console.log('Firebase Admin SDK initialized using FIREBASE_* environment variables.');
 } catch (error) {
   console.error('Failed to initialize Firebase Admin SDK:', error);
-  throw new Error('Could not initialize Firebase Admin. Ensure GOOGLE_APPLICATION_CREDENTIALS is set correctly.');
+  throw new Error('Could not initialize Firebase Admin. Check your FIREBASE_* environment variables.');
 }
 
 

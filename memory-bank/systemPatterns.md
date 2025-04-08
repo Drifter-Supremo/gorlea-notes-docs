@@ -315,6 +315,23 @@ These patterns form the foundation of Gorlea Notes' technical implementation, en
 
 ---
 
+### Update: April 8, 2025 - Firebase Credential Pattern
+
+- **New Pattern:** Using individual `FIREBASE_*` environment variables for Firebase Admin SDK initialization.
+  - More secure than storing credentials in files or JSON strings.
+  - Easier to manage across different environments (local, staging, production).
+  - Compatible with deployment platforms like Railway.
+- **Implementation:**
+  - Root `.env` file contains all required Firebase credentials.
+  - Backend explicitly loads the root `.env` file.
+  - Firestore session store correctly uses the initialized Firestore instance.
+- **Benefits:**
+  - Simplified credential management.
+  - Better security through environment variables.
+  - More reliable local development setup.
+
+---
+
 ### Update: April 5, 2025 - Chat Scroll Pattern Fixes
 
 - Diagnosed a scroll bug caused by:
