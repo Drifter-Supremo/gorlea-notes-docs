@@ -77,6 +77,23 @@
 - [ ] Export functionality (lower priority)
 - [ ] Error handling improvements
 
+---
+
+## Recent Fixes (April 8, 2025)
+- Fixed AI processing error by updating `requireAuth` middleware in `server/routes/ai.js` to check `req.session.user` instead of obsolete `req.session.tokens`.
+- Implemented **user-specific chat history** in `client-vite/src/chat.js`:
+  - Chat history is now saved and loaded per user account using a key like `gorleaChatHistory_USERID`.
+  - Switching accounts resets the chat to default, preventing cross-user chat history leakage.
+- Added `"create a doc called"` to explicit create command patterns in `client-vite/src/chat.js` to fix misinterpretation of that phrase as a note.
+
+---
+
+## Next Task (Planned)
+- **Enhance Gorlea Docs List Page (`client-vite/docs/index.html` and `client-vite/src/docs/docList.js`):**
+  - When no documents exist, display a friendly message like **"No documents found. Click 'New Document' to create your first one!"** instead of a blank page.
+  - Add error handling for failed document fetches, displaying a message like **"Error loading documents. Please try again later."**
+  - Style these messages clearly so users understand the state.
+
 ## Upcoming Features
 
 ### MVP Features (Priority 1)

@@ -1,17 +1,37 @@
-// Import styles
 import './styles/main.css';
 import { marked } from 'marked'; // Import marked library
-
-// API Base URL - Removed as we'll use relative paths
-// const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '';
 
 // DOM Elements
 const messageInput = document.getElementById('messageInput');
 const sendButton = document.getElementById('sendButton');
-const newChatButton = document.getElementById('newChatButton'); // Get the new button
+const newChatButton = document.getElementById('newChatButton');
 const messagesContainer = document.getElementById('messages');
 const welcomeScreen = document.getElementById('welcomeScreen');
-const chatContainer = document.querySelector('.chat-container'); // Added reference to the scrollable container
+const chatContainer = document.querySelector('.chat-container');
+
+// User info and chat history key
+let currentUserId = null;
+let chatHistoryKey = null;
+
+// Fetch current user info on load
+async function fetchCurrentUser() {
+    try {
+        const response = await fetch('/api/user/me', { credentials: 'include' });
+        if (!response.ok) throw new Error('Not logged in');
+        const data = await response.json();
+        if (data && data.id) {
+            currentUserId = data.id;
+            chatHistoryKey = `gorleaChatHistory_${currentUserId}`;
+        } else {
+            currentUserId = null;
+            chatHistoryKey = null;
+        }
+    } catch (error) {
+        console.warn('No user logged in or failed to fetch user info:', error);
+        currentUserId = null;
+        chatHistoryKey = null;
+    }
+}
 
 // Save command patterns
 const savePatterns = [
@@ -59,11 +79,11 @@ const confirmPatterns = [
   'please'
 ];
 
-// Patterns indicating user wants to create a new document
 const createPatterns = [
   "create new doc named",
   "create new doc called",
   "create a new doc called", // Added missing variation
+  "create a doc called", // Added to fix misinterpretation
   "start new doc called",
   "save to new doc called",
   "save to a new doc called",
@@ -77,49 +97,51 @@ const createPatterns = [
 let isFirstMessage = true;
 let lastRewrittenNote = null;
 let pendingDocTitle = null;
-let isAwaitingRecentChoice = false; // New state: Are we waiting for user to pick from recent list?
-let recentDocList = []; // New state: Store the fetched recent docs
-let chatHistory = []; // Array to store chat messages for persistence
+let isAwaitingRecentChoice = false;
+let recentDocList = [];
+let chatHistory = [];
 
-// --- Chat History Persistence ---
-const CHAT_HISTORY_KEY = 'gorleaChatHistory';
-
+// Chat History Persistence (user-specific)
 function saveChatHistory() {
+    if (!chatHistoryKey) return;
     try {
-        localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(chatHistory));
+        localStorage.setItem(chatHistoryKey, JSON.stringify(chatHistory));
     } catch (error) {
-        console.error("Error saving chat history to localStorage:", error);
-        // Optionally notify the user or handle the error
+        console.error('Error saving chat history:', error);
     }
 }
 
 function loadChatHistory() {
-    const savedHistory = localStorage.getItem(CHAT_HISTORY_KEY);
-    if (savedHistory) {
+    if (!chatHistoryKey) {
+        chatHistory = [];
+        messagesContainer.innerHTML = '';
+        return;
+    }
+    const saved = localStorage.getItem(chatHistoryKey);
+    if (saved) {
         try {
-            chatHistory = JSON.parse(savedHistory);
-            // Clear existing messages before loading history
-            messagesContainer.innerHTML = ''; 
-            // Render messages from history
+            chatHistory = JSON.parse(saved);
+            messagesContainer.innerHTML = '';
             chatHistory.forEach(msg => {
-                // Re-create message elements from stored data
-                const messageElement = createMessage(msg.text, msg.isUser, false, msg.isError); // Don't mark as loading
-                messagesContainer.appendChild(messageElement);
+                const el = createMessage(msg.text, msg.isUser, false, msg.isError);
+                messagesContainer.appendChild(el);
             });
             scrollToBottom();
-            // Check if the welcome screen should be hidden based on loaded history
             if (chatHistory.length > 0 && welcomeScreen.style.display !== 'none') {
-                 welcomeScreen.style.opacity = '0';
-                 welcomeScreen.style.transform = 'translateY(-20px)';
-                 setTimeout(() => {
-                     welcomeScreen.style.display = 'none';
-                 }, 300);
+                welcomeScreen.style.opacity = '0';
+                welcomeScreen.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    welcomeScreen.style.display = 'none';
+                }, 300);
             }
         } catch (error) {
-            console.error("Error loading chat history from localStorage:", error);
-            chatHistory = []; // Reset history on error
-            localStorage.removeItem(CHAT_HISTORY_KEY); // Clear corrupted data
+            console.error('Error loading chat history:', error);
+            chatHistory = [];
+            localStorage.removeItem(chatHistoryKey);
         }
+    } else {
+        chatHistory = [];
+        messagesContainer.innerHTML = '';
     }
 }
 
@@ -681,40 +703,24 @@ messageInput.addEventListener('keydown', (e) => {
 
 sendButton.addEventListener('click', handleSubmit);
 
-// --- New Chat Button Listener ---
 newChatButton.addEventListener('click', () => {
-    // Optional: Add confirmation dialog? For now, clear directly.
-    // console.log('New Chat button clicked'); 
-    
-    // Clear localStorage
-    localStorage.removeItem(CHAT_HISTORY_KEY);
-    
-    // Clear the in-memory history array
+    if (chatHistoryKey) {
+        localStorage.removeItem(chatHistoryKey);
+    }
     chatHistory = [];
-    
-    // Clear the messages displayed on the screen
     messagesContainer.innerHTML = '';
-    
-    // Reset relevant states for a clean slate
     lastRewrittenNote = null;
     pendingDocTitle = null;
     isAwaitingRecentChoice = false;
     recentDocList = [];
-    isFirstMessage = true; // Reset this if needed
-
-    // Optionally show welcome screen again, or just clear input
+    isFirstMessage = true;
     messageInput.value = '';
-    messageInput.style.height = 'auto'; // Reset height
-    // To show welcome screen again:
-    // welcomeScreen.style.display = 'flex'; // Or 'block' depending on original display
-    // welcomeScreen.style.opacity = '1';
-    // welcomeScreen.style.transform = 'translateY(0)';
-
-    // addMessage("Chat cleared. Ready for your next note!", false); // Remove confirmation message
+    messageInput.style.height = 'auto';
 });
-// --- End New Chat Button Listener ---
 
-
-// Initial load and scroll
-loadChatHistory(); // Load history before initial scroll
-scrollToBottom();
+// On load: fetch user info, then load chat history
+(async () => {
+    await fetchCurrentUser();
+    loadChatHistory();
+    scrollToBottom();
+})();
