@@ -8,8 +8,8 @@ import '../styles/main.css'; // Import shared styles
 import '../styles/docs.css'; // Import docs specific styles
 import '../styles/editor-enhancements.css'; // Import editor-specific enhancements
 
-// API Base URL - Removed as we'll use relative paths
-// const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '';
+// API Base URL - Use relative paths by default
+const apiBaseUrl = ''; // Set to empty string for relative paths
 
 console.log("Top level document:", document); // DEBUG: Check document object
 console.log("editor.js loaded"); // Debug log

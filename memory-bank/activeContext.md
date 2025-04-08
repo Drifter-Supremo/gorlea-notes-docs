@@ -1,7 +1,10 @@
 # 🎯 Active Context: Gorlea Notes & Docs
 
 ## Current Sprint Focus
-Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
+Debugging Core Functionality (Auth, Docs, AI)
+- Investigating AI processing failures
+- Fixing document listing/editing issues
+- Resolving editor loading problems
 
 ## Active Decisions
 
@@ -113,6 +116,10 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 
 ## Recent Changes
 
+- **(April 8, 2025)** Core Functionality Debugging:
+    - Fixed editor loading issue by removing `apiBaseUrl` definition in `editor.js`
+    - Worked around document listing/editing issue via manual `userId` updates in existing documents
+    - Investigated AI processing failures ("Failed to get AI response" errors)
 - **(April 6, 2025)** Unified button styling across app:
     - Created `.gorlea-button` class with gold background, rounded rectangle shape, consistent size, padding, and hover effects.
     - Applied `.gorlea-button` to all header buttons on chat, docs list, and editor pages.
@@ -352,8 +359,8 @@ Gorlea Docs Phase 2: Basic Editor Functionality & Feature Planning
 
 ---
 
-Last Updated: 2025-04-05 12:26 PM PDT
-Next Review: 2025-04-08
+Last Updated: 2025-04-08 3:31 PM PDT
+Next Review: 2025-04-09
 
 ---
 

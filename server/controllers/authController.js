@@ -47,6 +47,8 @@ exports.login = async (req, res) => {
     try {
         // Find user by email
         const user = await firestoreUtils.findUserByEmail(email);
+        
+        // console.log('DEBUG: Full user object from Firestore:', JSON.stringify(user, null, 2)); // Removed debug log
 
         if (!user) {
             console.warn(`Login failed: User not found - ${email}`);
@@ -62,11 +64,12 @@ exports.login = async (req, res) => {
         }
 
         // --- Establish Session ---
-        // Store essential, non-sensitive user info in the session
-        req.session.user = {
-            id: user.id,
-            email: user.email
-        };
+            // Store essential, non-sensitive user info in the session
+            req.session.user = {
+                id: user.id, // This will now use the correct userId from firestoreUtils.findUserByEmail
+                email: user.email
+            };
+            console.log('Session created with user ID:', req.session.user.id);
         // Note: express-session handles saving the session automatically on response end
 
         console.log(`User logged in successfully: ${user.email}`);

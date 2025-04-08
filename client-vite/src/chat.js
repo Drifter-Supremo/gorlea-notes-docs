@@ -135,7 +135,7 @@ const showRecentPatterns = [
 // API Integration
 async function createDoc(title, content) {
     try {
-        const response = await fetch(`${apiBaseUrl}/api/ai/create`, { // Updated
+        const response = await fetch('/api/ai/create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -158,7 +158,7 @@ async function createDoc(title, content) {
 
 async function saveNote(docName, content) {
     try {
-        const response = await fetch(`${apiBaseUrl}/api/ai/save`, { // Updated
+        const response = await fetch('/api/ai/save', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -190,7 +190,7 @@ async function saveNote(docName, content) {
 
 async function rewriteNote(text) {
     try {
-        const response = await fetch(`${apiBaseUrl}/api/ai/rewrite`, { // Updated
+        const response = await fetch('/api/ai/rewrite', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

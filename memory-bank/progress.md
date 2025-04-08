@@ -1,6 +1,6 @@
 # 📊 Progress Tracker: Gorlea Notes & Docs
 
-## Project Status: Gorlea Docs Phase 2 (Basic Editor Working)
+## Project Status: Core Functionality Debugging (Auth, Docs, AI)
 
 ## Completed Features
 - ✅ UI overhaul for improved user experience (April 5, 2025)
@@ -142,7 +142,8 @@
    - [ ] Related notes
 
 ## Known Issues
-1. Token refresh mechanism needed
+1. AI processing sometimes fails with "Failed to get AI response" error
+2. Token refresh mechanism needed
 3. Error handling needs further improvement (e.g., UI feedback beyond alerts)
 4. Export functionality not implemented (lower priority)
 5. Firestore index creation required manual step (document this)
@@ -223,6 +224,9 @@ To be implemented:
 - Critical Path: Auto-save → Delete → Tiptap Integration
 
 ## Recent Updates
+- **(April 8, 2025)** Core Functionality Debugging:
+    - Fixed editor loading issue (`apiBaseUrl` definition in editor.js)
+    - Worked around document listing/editing issue via manual `userId` updates in existing documents
 - **(April 8, 2025)** Unified Development Environment:
     - Added root-level `npm run dev` script using `concurrently` to start both backend and frontend.
     - Backend now explicitly loads root `.env` file.
@@ -317,4 +321,3 @@ Last Updated: 2025-04-05 12:25 PM PDT
     *   Created a local `.env` file with `GOOGLE_APPLICATION_CREDENTIALS` pointing to the local key file path (using forward slashes).
     *   Confirmed `.gitignore` correctly ignores `.env`.
     *   Identified that `client-vite/netlify.toml` was missing and provided the necessary content for Netlify proxy configuration.
-

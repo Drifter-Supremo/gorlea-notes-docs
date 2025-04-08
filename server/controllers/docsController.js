@@ -17,7 +17,7 @@ const docsController = {
       }
 
       // Pass the parsed limit (or null) to the utility function
-      const documents = await firestoreUtils.listDocuments(limit); 
+      const documents = await firestoreUtils.listDocuments(req.session.user.id, limit); 
       console.log('Successfully listed', documents.length, 'documents');
       res.json({ data: documents });
     } catch (error) {
@@ -35,7 +35,7 @@ const docsController = {
       const { title, content } = req.body; 
       console.log('Creating new document with:', { title, content: content ? '[content provided]' : '[no content]' });
       // Pass title and content to the updated utility function
-      const newDoc = await firestoreUtils.createDocument(title, content); 
+      const newDoc = await firestoreUtils.createDocument(req.session.user.id, title, content); 
       console.log('Successfully created document:', newDoc.id);
       res.status(201).json({ 
         data: newDoc // Return the full new document object

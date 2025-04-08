@@ -174,7 +174,7 @@ const createDoc = async (req, res) => {
     }
 
     // Call the modified Firestore utility to create the document
-    const newDoc = await firestoreUtils.createDocument(title, content); 
+    const newDoc = await firestoreUtils.createDocument(req.session.user.id, title, content); 
     
     // Return success indicating creation and new doc details
     return res.json({

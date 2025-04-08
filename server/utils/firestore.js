@@ -19,8 +19,8 @@ try {
     universe_domain: process.env.FIREBASE_UNIVERSE_DOMAIN
   };
 
-  console.log('DEBUG: FIREBASE_PROJECT_ID:', process.env.FIREBASE_PROJECT_ID);
-  console.log('DEBUG: Constructed serviceAccount object:', serviceAccount);
+  // console.log('DEBUG: FIREBASE_PROJECT_ID:', process.env.FIREBASE_PROJECT_ID); // Removed debug log
+  // console.log('DEBUG: Constructed serviceAccount object:', serviceAccount); // Removed debug log
 
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
@@ -41,16 +41,19 @@ const USERS_COLLECTION = 'users'; // Added for users
 // Firestore utility functions (Keep existing functions as they are)
 const firestoreUtils = {
     // List documents, optionally limited
-    async listDocuments(limit = null) { // Add optional limit parameter
+    async listDocuments(userId, limit = null) {
         try {
+            // Main query with sorting
+            // Note: We are NOT filtering out archived documents here by default.
+            // Add .where('isArchived', '==', false) if needed.
             let query = db.collection(DOCS_COLLECTION)
-                .where('isArchived', '==', false)
-                .orderBy('lastOpenedAt', 'desc'); // Start query chain
+                .where('userId', '==', userId) // Filter by user
+                .orderBy('lastOpenedAt', 'desc');
 
             // Apply limit if provided and valid
             if (limit && typeof limit === 'number' && limit > 0) {
                 query = query.limit(limit);
-                console.log(`Firestore: Limiting listDocuments to ${limit} results.`); // Debug log
+                // console.log(`Firestore: Limiting listDocuments to ${limit} results.`); // Removed debug log
             }
 
             const snapshot = await query.get(); // Execute the query
@@ -76,7 +79,7 @@ const firestoreUtils = {
         try {
             // Convert search title to lowercase
             const lowercaseTitle = title.toLowerCase();
-            console.log(`Firestore: Searching for title_lowercase == "${lowercaseTitle}"`); // Debug log
+            // console.log(`Firestore: Searching for title_lowercase == "${lowercaseTitle}"`); // Removed debug log
 
             // Query using the dedicated lowercase field
             const snapshot = await db.collection(DOCS_COLLECTION)
@@ -102,10 +105,11 @@ const firestoreUtils = {
     },
 
     // Create a new document, now accepting initial content
-    async createDocument(title = 'Untitled Document', content = '<p></p>') {
+    async createDocument(userId, title = 'Untitled Document', content = '<p></p>') {
         try {
             const finalTitle = title.trim() === '' ? 'Untitled Document' : title; // Ensure title isn't empty
             const docData = {
+                userId: userId, // Associate document with user
                 title: finalTitle, // Store original case title
                 title_lowercase: finalTitle.toLowerCase(), // Store lowercase version for searching
                 content: content,
@@ -167,7 +171,7 @@ const firestoreUtils = {
 
             // Apply the updates
             await docRef.update(updates);
-            console.log(`Firestore: Updated document ${docId} with fields:`, Object.keys(updates));
+            // console.log(`Firestore: Updated document ${docId} with fields:`, Object.keys(updates)); // Removed debug log
 
             // Get and return the updated document data (excluding the lowercase title potentially)
             // Note: getDocument also updates lastOpenedAt, which is slightly redundant here but harmless
@@ -204,7 +208,7 @@ const firestoreUtils = {
                 lastOpenedAt: admin.firestore.Timestamp.now()
             });
 
-            console.log(`Appended content to document ${docId}`);
+            // console.log(`Appended content to document ${docId}`); // Removed debug log
             return true; // Indicate success
 
         } catch (error) {
@@ -257,9 +261,10 @@ const firestoreUtils = {
             }
 
             const userDoc = snapshot.docs[0];
+            const userData = userDoc.data();
             return {
-                id: userDoc.id,
-                ...userDoc.data()
+                id: userData.userId || userDoc.id, // Use userId field if exists, otherwise fallback to doc ID
+                ...userData
             };
         } catch (error) {
             console.error('Firestore findUserByEmail error:', error);
