@@ -9,7 +9,7 @@ const { rewriteNote, saveNote, createDoc } = require('../controllers/aiControlle
  * @param {NextFunction} next - Express next function
  */
 const requireAuth = (req, res, next) => {
-  if (!req.session.tokens) {
+  if (!req.session.user || !req.session.user.id) {
     return res.status(401).json({
       success: false,
       error: {
