@@ -109,6 +109,12 @@
 - Cypress for E2E (future)
 - Postman for API testing
 
+### Notion MCP Tools
+- Always use specific Page/Database/User IDs found in `memory-bank/notionContext.md`.
+- Verify the "Cline" integration has permissions for the target page/database before use.
+- Use `notion_create_database_item` for new tasks, `notion_update_page_properties` for updates, `notion_create_comment` for adding comments.
+- Assign users via the User ID: `1d0d872b-594c-81ae-9b29-00022622ce1f` (Drifter Supremo).
+
 ## Project Intelligence
 
 ### Performance Considerations

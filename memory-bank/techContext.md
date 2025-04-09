@@ -44,10 +44,13 @@
 - **Authentication**: Email/Password (using `bcrypt` for hashing), Google OAuth 2.0 (kept for reference)
 - **Session Management**: `express-session` with `@google-cloud/connect-firestore` for persistent storage in Firestore.
 - **Token Storage**: Secure HTTP-only cookies
-- **API Security**: 
+- **API Security**:
   - CORS configuration
   - Rate limiting
   - Request validation
+
+### External Services
+- **Notion Integration:** Used for task management via the `github.com/pashpashpash/mcp-notion-server` MCP server. See `memory-bank/notionContext.md` for database IDs, user IDs, and usage details.
 
 ## Development Setup
 

@@ -295,6 +295,12 @@ flowchart TD
 }
 ```
 
+### External API Patterns
+- **Notion Integration:** Uses the `github.com/pashpashpash/mcp-notion-server` MCP server tools (e.g., `notion_create_database_item`, `notion_update_page_properties`, `notion_create_comment`).
+  - **Critical:** Always use specific Page/Database/User IDs found in `memory-bank/notionContext.md`.
+  - **Critical:** Verify the "Cline" integration has permissions for the target page/database before use.
+  - Refer to `memory-bank/notionContext.md` for full details and usage notes.
+
 ## Future Considerations
 
 ### Scalability

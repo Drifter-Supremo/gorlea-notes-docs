@@ -97,7 +97,9 @@ Debugging Core Functionality (Auth, Docs, AI)
    - Assessing customization needs
    - Reviewing community support
 
-2. Recent Changes (March 26):
+2. **Notion Integration:** Configured and available for task management via MCP tools. See `memory-bank/notionContext.md` for IDs and usage details.
+
+3. Recent Changes (March 26):
    - Created document list view
    - Implemented Firestore document storage
    - Added document CRUD endpoints
