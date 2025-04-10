@@ -21,7 +21,7 @@ async function checkAuthStatus() {
             headers: {
                 'Accept': 'application/json',
             },
-            // credentials: 'include' // Assuming cookies handle authentication
+            credentials: 'include' // Send cookies with the request
         });
 
         const userEmailElement = document.getElementById('user-email'); // Get email element reference
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         'Accept': 'application/json', // Indicate expected response type
                     },
                     body: JSON.stringify({ email, password }),
-                    // credentials: 'include' // Usually needed if using cookies/sessions across origins
+                    credentials: 'include' // Send cookies with the request
                 });
 
                 const data = await response.json(); // Always try to parse JSON
