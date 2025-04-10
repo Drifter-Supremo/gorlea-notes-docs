@@ -15,6 +15,9 @@ const { db } = require('./utils/firestore');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Define static path early for use in routes
+const staticPath = path.join(__dirname, '../client-vite/dist');
+
 // Session configuration with FirestoreStore
 app.use(expressSession({
   store: new FirestoreStore({
@@ -43,10 +46,49 @@ app.use('/api/user', userRoutes);
 app.use('/api/ai', requireAuth, aiRoutes);
 app.use('/api/docs', requireAuth, docsRoutes);
 
-// --- Static Files & Frontend Routing ---
-// Serve static files from the Vite build output directory
-const staticPath = path.join(__dirname, '../client-vite/dist');
+// --- Explicit HTML Routes ---
+// Serve specific HTML files for direct navigation
+app.get('/', (req, res) => {
+  res.sendFile(path.join(staticPath, 'index.html'), (err) => {
+    if (err) res.status(404).send('Home page not found'); // Handle potential error
+  });
+});
+app.get('/login.html', (req, res) => {
+  res.sendFile(path.join(staticPath, 'login.html'), (err) => {
+    if (err) res.status(404).send('Login page not found');
+  });
+});
+app.get('/register.html', (req, res) => {
+  res.sendFile(path.join(staticPath, 'register.html'), (err) => {
+    if (err) res.status(404).send('Register page not found');
+  });
+});
+app.get('/chat.html', (req, res) => {
+  res.sendFile(path.join(staticPath, 'chat.html'), (err) => {
+    if (err) res.status(404).send('Chat page not found');
+  });
+});
+// Handle both /docs and /docs/index.html
+app.get(['/docs', '/docs/index.html'], (req, res) => {
+  res.sendFile(path.join(staticPath, 'docs/index.html'), (err) => {
+    if (err) res.status(404).send('Docs list page not found');
+  });
+});
+app.get('/docs/editor.html', (req, res) => {
+  res.sendFile(path.join(staticPath, 'docs/editor.html'), (err) => {
+    if (err) res.status(404).send('Editor page not found');
+  });
+});
+
+// --- Static Assets Route ---
+// Serve other static files (CSS, JS, images) AFTER specific HTML routes
 app.use(express.static(staticPath));
+
+// --- Optional: Catch-all for 404 ---
+// If none of the above matched, send a 404
+app.use((req, res) => {
+  res.status(404).send("Sorry, can't find that!");
+});
 
 // Start server
 app.listen(PORT, () => {
