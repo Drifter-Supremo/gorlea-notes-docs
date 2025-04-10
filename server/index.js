@@ -2,6 +2,7 @@ require('dotenv').config({ path: '../.env' }); // Explicitly load root .env file
 const express = require('express');
 const expressSession = require('express-session');
 const path = require('path');
+const fs = require('fs'); // Added for debugging
 // const { default: open } = require('open'); // Removed for Railway deployment
 const authRoutes = require('./routes/auth');
 const aiRoutes = require('./routes/ai');
@@ -17,6 +18,20 @@ const PORT = process.env.PORT || 3000;
 
 // Define static path early for use in routes - Changed to server/public
 const staticPath = path.join(__dirname, 'public');
+
+// --- Runtime Debug Logging ---
+console.log("🔍 Runtime staticPath:", staticPath);
+try { // Added try...catch for safety
+  if (fs.existsSync(staticPath)) {
+    console.log("✅ staticPath exists! Files inside:");
+    console.log(fs.readdirSync(staticPath));
+  } else {
+    console.log("❌ staticPath DOES NOT EXIST at runtime!");
+  }
+} catch (err) {
+  console.error("🚨 Error checking staticPath:", err);
+}
+// --- End Debug Logging ---
 
 // Session configuration with FirestoreStore
 app.use(expressSession({
@@ -54,8 +69,13 @@ app.get('/', (req, res) => {
   });
 });
 app.get('/login.html', (req, res) => {
-  res.sendFile(path.join(staticPath, 'login.html'), (err) => {
-    if (err) res.status(404).send('Login page not found');
+  const loginPath = path.join(staticPath, 'login.html'); // Define path
+  console.log("Trying to serve login.html from:", loginPath); // Log path
+  res.sendFile(loginPath, (err) => { // Use defined path
+    if (err) {
+      console.error("Error sending login.html:", err); // Log error details
+      res.status(404).send('Login page not found');
+    }
   });
 });
 app.get('/register.html', (req, res) => {
