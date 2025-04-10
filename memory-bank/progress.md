@@ -1,6 +1,6 @@
 # 📊 Progress Tracker: Gorlea Notes & Docs
 
-## Project Status: Core Functionality Debugging (Auth, Docs, AI)
+## Project Status: Deployed to Railway - Pending Production Testing
 
 ## Completed Features
 - ✅ UI overhaul for improved user experience (April 5, 2025)
@@ -71,6 +71,13 @@
 - ✅ Fixed "No Documents" message display logic on Docs List page (April 10, 2025)
 - ✅ Implemented Page Load Fade-in Transition (CSS + JS) (April 10, 2025)
 - ✅ Fixed Logo Flash during page load (Inline Styles) (April 10, 2025)
+- ✅ Deployed to Railway (April 10, 2025)
+  - Configured build/start commands.
+  - Added environment variables.
+  - Debugged Nixpacks/Node version issue (`.node-version`).
+  - Debugged server dependency installation (`npm install` in build command).
+  - Debugged static file serving (Vite output path, explicit routes).
+  - Debugged session persistence (`credentials: 'include'`, `trust proxy`, `SameSite=Lax`).
 
 ## In Progress
 🔨 Gorlea Docs Feature Enhancements
@@ -98,6 +105,14 @@
   - Add error handling for failed document fetches, displaying a message like **"Error loading documents. Please try again later."**
   - Style these messages clearly so users understand the state.
 - **(Task Completed)**
+
+## Next Task: Production Testing (Railway)
+1.  **Test Register Flow:** Ensure new account creation works and logs in.
+2.  **Test Logout/Login:** Confirm sessions clear and restore correctly.
+3.  **Test Doc Editing/Saving:** Verify edits persist after reload.
+4.  **Test New Doc Creation:** Ensure it appears in list and opens.
+5.  **Test Editor Direct Link:** Check if `/docs/editor.html?id=XYZ` loads correctly.
+6.  **Add Debugging Failsafe:** Add basic console logs to auth/session endpoints for future debugging.
 
 ## Upcoming Features
 
@@ -226,11 +241,12 @@ To be implemented:
 - [ ] Error masking
 
 ## Deployment Status
-- Environment: Development
-- Version: Pre-alpha
-- Last Deploy: N/A
+- Environment: Production (Railway)
+- Version: Alpha
+- Last Deploy: April 10, 2025
+- URL: `https://gorlea-notes-docs-production.up.railway.app/` (Verify)
 - Server: Express.js on Node.js
-- Status: Local development
+- Status: Active, pending testing
 
 ## Documentation Status
 - ✅ Project brief
@@ -313,10 +329,11 @@ To be implemented:
 - **2025-04-02:** Removed Gorlea message bubble background (`main.css`).
 - **2025-04-02:** Implemented block-reveal animation (`chat.js`, `main.css`).
 - **2025-04-02:** Fixed chat scroll behavior during animation (`chat.js`).
+- **(April 10, 2025)** Successfully deployed to Railway after extensive debugging of build process, static file serving, and session cookie handling.
 
 ---
 
-Last Updated: 2025-04-05 12:25 PM PDT
+Last Updated: 2025-04-10 3:47 PM PDT
 
 ---
 

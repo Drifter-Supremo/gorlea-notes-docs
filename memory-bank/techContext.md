@@ -75,6 +75,14 @@ COOKIE_SECRET=
 # Environment
 NODE_ENV=development
 PORT=3000
+
+# Production (Railway) Variables:
+# - Firebase Admin SDK credentials (FIREBASE_PROJECT_ID, FIREBASE_PRIVATE_KEY, FIREBASE_CLIENT_EMAIL, etc.)
+# - GEMINI_API_KEY
+# - SESSION_SECRET
+# - NODE_ENV=production
+# (PORT is set automatically by Railway)
+# (Client-side Firebase variables like FIREBASE_API_KEY are NOT needed)
 ```
 
 ### Project Structure
@@ -207,11 +215,17 @@ PORT=3000
 - E2E tests for critical flows
 - Manual testing checklist
 
-### Deployment
-- Local development server
-- Production deployment TBD
-- Environment separation
-- CI/CD consideration
+### Deployment (Railway - Production)
+- **Platform:** Railway.app
+- **Branch:** `master`
+- **Build Command:** `npm install && cd server && npm install && cd ../client-vite && npm install && npm run build`
+  - Installs root, server, and client dependencies.
+  - Builds Vite frontend into `server/public`.
+- **Start Command:** `node server/index.js`
+- **Node Version:** Specified via `.node-version` file (e.g., `20`).
+- **Static Serving:** Express server serves built frontend from `server/public` using explicit routes for HTML and `express.static` for assets.
+- **Session Cookies:** Configured with `secure: true`, `httpOnly: true`, `sameSite: 'Lax'`, and `trust proxy: 1`.
+- **Environment Variables:** Managed via Railway dashboard (see list above).
 
 ## Monitoring & Logging
 

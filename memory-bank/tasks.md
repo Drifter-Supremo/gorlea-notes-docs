@@ -1,49 +1,59 @@
-# 🚀 Railway Deployment Plan for Gorlea Notes
+# ✅ Next Task: Production Testing (Railway)
 
-This file outlines the step-by-step plan for deploying the Gorlea Notes application to Railway, based on the sequential thinking process completed on April 9, 2025.
+Now that the initial deployment to Railway is successful and the login/session issues are resolved, the immediate priority is to thoroughly test the core functionality in the production environment.
 
----
-
-## Deployment Steps
-
-1.  **Confirm Environment Variables:**
-    *   Ensure all necessary variables are identified and documented, referencing `techContext.md` and recent updates.
-    *   Required: `FIREBASE_API_KEY`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_PROJECT_ID`, `FIREBASE_STORAGE_BUCKET`, `FIREBASE_MESSAGING_SENDER_ID`, `FIREBASE_APP_ID`, `FIREBASE_PRIVATE_KEY`, `FIREBASE_CLIENT_EMAIL`, `GEMINI_API_KEY`, `SESSION_SECRET`, `COOKIE_SECRET`, `NODE_ENV=production`.
-    *   Note: `GOOGLE_APPLICATION_CREDENTIALS` file path is *not* used; individual `FIREBASE_*` vars are used instead.
-
-2.  **Create Railway Project:**
-    *   Create a new project in the Railway dashboard.
-    *   Link it to the GitHub repository containing the Gorlea Notes codebase.
-
-3.  **Configure Build Settings in Railway:**
-    *   Set **Root Directory** to the repository root.
-    *   Set **Build Command**. Example: `cd client-vite && npm run build && cp -r dist ../server/public` (Verify server serves static files from `server/public`).
-    *   Confirm Railway automatically handles `npm install` in both `/server` and `/client-vite` directories (or adjust build command if needed).
-
-4.  **Configure Start Command in Railway:**
-    *   Set the **Start Command** to `node server/index.js`.
-
-5.  **Add Environment Variables to Railway:**
-    *   Input all required environment variables (from Step 1) into Railway's variable management system.
-    *   Pay special attention to handling multi-line variables like `FIREBASE_PRIVATE_KEY`.
-
-6.  **Deploy & Monitor:**
-    *   Trigger the initial deployment via the Railway dashboard or CLI.
-    *   Monitor the build and deployment logs closely for any errors.
-
-7.  **Test Deployed Application:**
-    *   Access the application using the URL provided by Railway.
-    *   Thoroughly test core functionality:
-        *   User registration and login.
-        *   Chat interface and message persistence.
-        *   AI note rewriting.
-        *   Document listing, creation, and editing.
-        *   Session persistence across browser restarts.
-
-8.  **Optional Post-Deployment:**
-    *   Configure a custom domain if desired.
-    *   Set up basic application monitoring or alerting through Railway or external services.
+URL: `https://gorlea-notes-docs-production.up.railway.app/` (Verify this URL)
 
 ---
 
-This plan serves as a checklist for the deployment process. Refer back to other memory bank files (`techContext.md`, `systemPatterns.md`) for specific configuration details.
+## Testing Checklist
+
+1.  **Register Flow:**
+    *   Go to the `/register.html` page.
+    *   Create a brand new user account.
+    *   Verify that registration is successful and redirects to the login page.
+    *   Log in with the newly created account.
+    *   Verify that login is successful and redirects to `/chat.html`.
+
+2.  **Logout / Login Flow:**
+    *   While logged in, click the "Logout" button.
+    *   Verify you are redirected to `/login.html`.
+    *   Log back in with the same account.
+    *   Verify login is successful and redirects to `/chat.html`.
+    *   Close the browser tab/window completely.
+    *   Reopen the browser and navigate back to the application URL.
+    *   Verify you are still logged in (e.g., you see `/chat.html` or your email in the header, not the login page).
+
+3.  **Document Editing & Saving:**
+    *   Log in with an account that has existing documents (e.g., Account 1).
+    *   Navigate to Gorlea Docs (`/docs` or `/docs/index.html`).
+    *   Open an existing document.
+    *   Make a noticeable edit to the content or title.
+    *   Wait a few seconds for autosave (or navigate away via "Docs Home").
+    *   Reload the page or navigate back to the document list and reopen the same document.
+    *   Verify that your edits were saved correctly.
+
+4.  **New Document Creation:**
+    *   While logged in, navigate to Gorlea Docs.
+    *   Click the "New Document" button.
+    *   Verify you are taken to the editor page for a new document (likely with "Untitled Document" as the title).
+    *   Add a title and some content.
+    *   Navigate back to the "Docs Home" (document list).
+    *   Verify the new document appears in the list.
+    *   Click the new document in the list.
+    *   Verify it opens correctly in the editor with the title and content you added.
+
+5.  **Editor Direct Link:**
+    *   Find the ID of an existing document (you might need to look in Firestore or add it to the UI temporarily if not visible).
+    *   Construct the URL: `https://gorlea-notes-docs-production.up.railway.app/docs/editor.html?id=DOCUMENT_ID` (replace `DOCUMENT_ID` with the actual ID).
+    *   Log in to the application in one tab.
+    *   Open a *new* browser tab and paste the constructed URL.
+    *   Verify that the editor loads directly with the correct document content.
+
+6.  **(Optional but Recommended) Add Debugging Failsafe:**
+    *   Add basic `console.log` statements to key backend endpoints involved in authentication and session handling (e.g., in `authController.js` for login/logout/register, and in `userController.js` for `/api/user/me`, and potentially in the `requireAuth` middleware). Log things like `req.session.user` or success/failure points.
+    *   This is a code change for *after* the initial testing, to aid future debugging if needed.
+
+---
+
+Please perform these tests systematically on the deployed Railway application. Report any failures or unexpected behavior.

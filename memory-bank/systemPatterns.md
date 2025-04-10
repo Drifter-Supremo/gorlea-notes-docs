@@ -73,6 +73,7 @@ flowchart TD
 ### 2. Frontend State Management
 - **Chat History:** Uses browser `localStorage` to persist the current chat message list across page refreshes. State is cleared via the "New Chat" button.
 - **Application State:** Other state (e.g., `lastRewrittenNote`) is currently ephemeral and resets on refresh.
+- **Authentication:** Uses `fetch` with `credentials: 'include'` to send session cookies for authenticated API requests.
 
 ### 3. Message Styling Pattern
 - Consistent dark theme (#1E1E2E)
@@ -176,10 +177,15 @@ flowchart LR
     Storage --> Confirmation[User Confirmation]
 ```
 
-### 3. Session Management Pattern
-- `express-session` middleware
+### 3. Session Management Pattern (Production Considerations)
+- `express-session` middleware.
 - Persistent session store using `@google-cloud/connect-firestore` connected to Firestore.
-- Secure cookie configuration (HTTPOnly, Secure in production, SameSite).
+- **Proxy Trust:** `app.set('trust proxy', 1)` is used to ensure secure cookies work correctly behind Railway's reverse proxy.
+- **Cookie Configuration:**
+  - `secure: process.env.NODE_ENV === 'production'` (Ensures cookie only sent over HTTPS in production).
+  - `httpOnly: true` (Prevents client-side script access).
+  - `sameSite: 'Lax'` (Explicitly set for better browser compatibility, prevents sending on most cross-site requests).
+  - `maxAge` set for session duration.
 - Session data includes user ID upon successful login.
 
 ### 4. Security Pattern
@@ -199,6 +205,7 @@ server/
 ├── middleware/              # Custom middleware (e.g., requireAuth.js)
 ├── routes/                  # Route definitions (e.g., auth.js, user.js, ai.js, docs.js)
 ├── utils/                   # Utility functions (e.g., firestore.js)
+├── public/                  # Built frontend assets (HTML, CSS, JS) - Served statically
 └── ...                      # Other files (e.g., .gitignore, package.json)
 ```
 
@@ -210,15 +217,31 @@ server/
 
 ## Data Flow Patterns
 
-### 1. Request Flow
+### 1. Request Flow (Production)
 ```mermaid
 flowchart LR
-    Request[Client Request]
-    -->Router[Route Handler]
-    -->Controller[Controller Logic]
-    -->Service[Service Layer]
-    -->External[External APIs]
+    Request[Client Request] --> Server(Express Server)
+    
+    subgraph Server
+        subgraph Routing
+            HTML{HTML Route?} -- Yes --> SendFile(res.sendFile)
+            HTML -- No --> API{API Route?}
+            API -- Yes --> Controller(Controller Logic)
+            API -- No --> Static{Static Asset?}
+            Static -- Yes --> ServeStatic(express.static)
+            Static -- No --> NotFound(404 Handler)
+        end
+        Controller --> Service(Service Layer)
+        Service --> External(External APIs / DB)
+    end
+
+    SendFile --> Response([Response])
+    ServeStatic --> Response
+    NotFound --> Response
+    Service --> Controller
+    Controller --> Response
 ```
+*Note: Explicit HTML routes (`app.get('/page.html', ...)` handle direct page requests before `express.static` serves assets.*
 
 ### 2. Error Handling Flow
 ```mermaid

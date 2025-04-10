@@ -1,10 +1,9 @@
 # 🎯 Active Context: Gorlea Notes & Docs
 
 ## Current Sprint Focus
-Debugging Core Functionality (Auth, Docs, AI)
-- Investigating AI processing failures
-- Fixing document listing/editing issues
-- Resolving editor loading problems
+Post-Deployment Testing & Refinement (Railway)
+- Verify core application functionality in production.
+- Identify and fix any deployment-specific bugs.
 
 ## Active Decisions
 
@@ -65,13 +64,15 @@ Debugging Core Functionality (Auth, Docs, AI)
 - [✓] Create initial project structure
 - [✓] Set up Express server
 - [✓] Configure Firestore
+- [✓] Deploy to Railway (Initial setup & debugging complete)
 
 ### 2. Authentication Flow
-- [✓] Configure Google OAuth
-- [✓] Implement token management
-- [✓] Set up secure session handling (Now using persistent Firestore store via `@google-cloud/connect-firestore`)
+- [✓] Configure Google OAuth (Reference only)
+- [✓] Implement token management (Server-side session)
+- [✓] Set up secure session handling (Persistent Firestore store via `@google-cloud/connect-firestore`)
 - [✓] Create login/logout flow (Email/Password implemented)
-- [ ] Add token refresh mechanism
+- [✓] Resolve production session persistence issues (Railway)
+- [ ] Add token refresh mechanism (Lower priority)
 
 ### 3. Gorlea Notes Interface
 - [✓] Design basic UI layout
@@ -118,6 +119,26 @@ Debugging Core Functionality (Auth, Docs, AI)
 
 ## Recent Changes
 
+- **(April 10, 2025)** Railway Deployment & Debugging:
+    - Created Railway project linked to GitHub (`master` branch).
+    - Configured Build Command: `npm install && cd server && npm install && cd ../client-vite && npm install && npm run build`
+    - Configured Start Command: `node server/index.js`
+    - Added required environment variables (Firebase Admin, Gemini, Session Secret, NODE_ENV=production).
+    - **Troubleshooting:**
+        - Fixed initial Nixpacks build failure by adding `.node-version` file (specifying Node 20).
+        - Fixed `npm: command not found` by ensuring `.node-version` was on the correct branch (`master`).
+        - Fixed `Cannot find module 'dotenv'` error by ensuring server dependencies were installed via `cd server && npm install` in the build command.
+        - Fixed `Cannot GET /login.html` (and other pages) by:
+            - Initially removing `app.get('*', ...)` catch-all in `server/index.js`.
+            - Investigating build output (Vite *was* building HTML files to `server/public`).
+            - Adding explicit `app.get()` routes for each HTML page in `server/index.js`.
+            - Confirming `vite.config.js` correctly used `resolve` for `outDir`.
+            - Adding `login.html` and `register.html` to Vite build inputs (`vite.config.js`).
+        - Fixed `401 Unauthorized` after login (session not persisting) by:
+            - Confirming `credentials: 'include'` was present in frontend `fetch` calls (`auth.js`).
+            - Adding `app.set('trust proxy', 1)` to `server/index.js`.
+            - Explicitly setting `cookie.sameSite = 'Lax'` in `expressSession` config (`server/index.js`).
+    - **Result:** Successful deployment with working login and navigation. URL: `https://gorlea-notes-docs-production.up.railway.app/` (Verify this URL).
 - **(April 10, 2025)** Page Load Transition & Logo Flash Fix:
     - Implemented CSS fade-in transition (`opacity: 0` to `opacity: 1`) for main page containers (`.app`, `.docs-app`, etc.) triggered by adding a `.loaded` class via JavaScript on `DOMContentLoaded`.
     - Added inline `width` and `height` styles to logo `<img>` tags in HTML files (`chat.html`, `index.html`, `login.html`, `register.html`, `docs/index.html`) to prevent flash/layout shift before CSS loads.
@@ -317,28 +338,21 @@ Debugging Core Functionality (Auth, Docs, AI)
 - **(March 29)** Diagnosed chat auto-scroll issue: `scrollToBottom` in `chat.js` targets `#messages` instead of the scrollable parent `.chat-container`.
 
 
-## Next Steps - Updated
+## Next Steps - Updated (Post-Deployment)
 
-### Immediate Task
-1. **Local Testing Before Deployment:**
-   * Test all core functionality with the new unified dev environment (`npm run dev`)
-   * Verify:
-     - Authentication flows (register/login/logout)
-     - Chat functionality (messages, AI processing)
-     - Document operations (create/edit/delete)
-     - Session persistence
-   * **Files:** Entire application
-   * **Action:** Run through all major user flows before proceeding with deployment.
+### Immediate Task: Production Testing (Railway)
+1.  **Test Register Flow:** Ensure new account creation works and logs in.
+2.  **Test Logout/Login:** Confirm sessions clear and restore correctly.
+3.  **Test Doc Editing/Saving:** Verify edits persist after reload.
+4.  **Test New Doc Creation:** Ensure it appears in list and opens.
+5.  **Test Editor Direct Link:** Check if `/docs/editor.html?id=XYZ` loads correctly.
+6.  **Add Debugging Failsafe:** Add basic console logs to auth/session endpoints for future debugging.
 
 ### Subsequent Tasks
-1. **Deployment Preparation:**
-   - Finalize environment variables for production
-   - Configure production session settings
-   - Set up monitoring/logging
-2. **Gorlea Notes Integration:** Plan how notes from chat are saved/linked to specific docs.
-3. **Authentication:** Review `requireAuth` middleware. Plan next steps for OAuth if still needed.
-4. **Testing:** Add more comprehensive unit/integration/E2E tests.
-5. **Other Features:** Export, Search, etc.
+1.  **Gorlea Notes Chat Testing:** Verify chat functionality, AI processing, and note saving in production.
+2.  **Refinement & Bug Fixes:** Address any issues found during testing.
+3.  **Monitoring:** Set up basic Railway monitoring if needed.
+4.  **Future Features:** Revisit stretch goals (Search, Tagging, etc.).
 
 ## Recent Changes - Added
 - **Unified Development Environment:**
