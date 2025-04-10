@@ -15,6 +15,8 @@ export default defineConfig({
       input: {
         // Define entry points for each HTML page
         main: resolve(__dirname, 'index.html'),
+        login: resolve(__dirname, 'login.html'), // Added login
+        register: resolve(__dirname, 'register.html'), // Added register
         chat: resolve(__dirname, 'chat.html'),
         docs: resolve(__dirname, 'docs/index.html'),
         editor: resolve(__dirname, 'docs/editor.html'),
