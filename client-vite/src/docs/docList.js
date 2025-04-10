@@ -272,3 +272,11 @@ async function init() {
 if (document.getElementById('doc-list')) { // Check if the main list container exists
     document.addEventListener('DOMContentLoaded', init);
 }
+
+// Add loaded class on DOMContentLoaded for fade-in effect
+document.addEventListener('DOMContentLoaded', () => {
+    const appContainer = document.querySelector('.docs-app');
+    if (appContainer) {
+        appContainer.classList.add('loaded');
+    }
+});

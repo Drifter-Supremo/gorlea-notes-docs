@@ -29,6 +29,19 @@ body {
     color: var(--color-text);
 }
 
+/* --- Page Load Transition --- */
+/* Initial state for main containers */
+.app, .docs-app, .auth-container, .landing-container {
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out; /* Adjust timing as needed */
+}
+/* State after content is loaded */
+.app.loaded, .docs-app.loaded, .auth-container.loaded, .landing-container.loaded {
+    opacity: 1;
+}
+/* --- End Page Load Transition --- */
+
+
 /* App container */
 .app {
     height: 100vh;

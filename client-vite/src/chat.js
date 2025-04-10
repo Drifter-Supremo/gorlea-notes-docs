@@ -724,3 +724,11 @@ newChatButton.addEventListener('click', () => {
     loadChatHistory();
     scrollToBottom();
 })();
+
+// Add loaded class on DOMContentLoaded for fade-in effect
+document.addEventListener('DOMContentLoaded', () => {
+    const appContainer = document.querySelector('.app');
+    if (appContainer) {
+        appContainer.classList.add('loaded');
+    }
+});

@@ -118,6 +118,9 @@ Debugging Core Functionality (Auth, Docs, AI)
 
 ## Recent Changes
 
+- **(April 10, 2025)** Page Load Transition & Logo Flash Fix:
+    - Implemented CSS fade-in transition (`opacity: 0` to `opacity: 1`) for main page containers (`.app`, `.docs-app`, etc.) triggered by adding a `.loaded` class via JavaScript on `DOMContentLoaded`.
+    - Added inline `width` and `height` styles to logo `<img>` tags in HTML files (`chat.html`, `index.html`, `login.html`, `register.html`, `docs/index.html`) to prevent flash/layout shift before CSS loads.
 - **(April 10, 2025)** Favicon Implementation:
     - Added Gorlea logo (`/gorlea-logo.png`) as favicon to main HTML pages (`chat.html`, `docs/index.html`, `docs/editor.html`, `index.html`). Login/Register pages already had it.
 - **(April 10, 2025)** Docs List "No Documents" Message:

@@ -69,6 +69,8 @@
   - Identified missing `netlify.toml` and provided content for Netlify proxy setup.
 - ✅ Added Favicon to all main HTML pages (April 10, 2025)
 - ✅ Fixed "No Documents" message display logic on Docs List page (April 10, 2025)
+- ✅ Implemented Page Load Fade-in Transition (CSS + JS) (April 10, 2025)
+- ✅ Fixed Logo Flash during page load (Inline Styles) (April 10, 2025)
 
 ## In Progress
 🔨 Gorlea Docs Feature Enhancements
@@ -262,6 +264,8 @@ To be implemented:
     - Created local `.env` file with proper credentials path.
     - Confirmed `.gitignore` ignores `.env`.
   - Identified missing `netlify.toml` and provided content for Netlify proxy setup.
+- **(April 10, 2025)** Implemented Page Load Transition: Added CSS opacity/transition rules and JS `DOMContentLoaded` listeners to add a `.loaded` class for smooth page fade-in.
+- **(April 10, 2025)** Fixed Logo Flash: Added inline `width` and `height` styles to logo `<img>` tags in HTML to prevent flash before CSS loads.
 - **(April 10, 2025)** Added Favicon: Added Gorlea logo as favicon to `chat.html`, `docs/index.html`, `docs/editor.html`, `index.html`.
 - **(April 10, 2025)** Fixed Docs List UI: Refactored HTML and JS (`docList.js`) to correctly display "No documents found" message. Simplified related logic and error handling after previous attempts caused issues. Performed `git reset --hard HEAD` to revert problematic changes before implementing the final fix.
 - **(April 6, 2025)** Unified button styling:

@@ -360,3 +360,12 @@ function setupFloatingToolbar() {
         });
     });
 }
+
+// Add loaded class on DOMContentLoaded for fade-in effect
+document.addEventListener('DOMContentLoaded', () => {
+    // This page uses .docs-app as the main container
+    const appContainer = document.querySelector('.docs-app');
+    if (appContainer) {
+        appContainer.classList.add('loaded');
+    }
+});

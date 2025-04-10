@@ -270,4 +270,10 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutButton.addEventListener('click', window.logoutUser);
     }
 
+    // Add loaded class for fade-in effect
+    const authContainer = document.querySelector('.auth-container');
+    if (authContainer) {
+        authContainer.classList.add('loaded');
+    }
+
 }); // End DOMContentLoaded
