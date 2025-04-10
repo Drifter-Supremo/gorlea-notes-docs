@@ -30,11 +30,14 @@
                 </button>
             </div>
 
-            <div class="docs-list">
-                <!-- Placeholder for document list -->
-                <div class="empty-state">
-                    <p>✨ No documents yet. Create your first document!</p>
-                </div>
+            <!-- Container for the actual list -->
+            <div id="doc-list" class="docs-list">
+                <!-- Document cards will be rendered here by JS -->
+            </div>
+
+            <!-- Message shown when no documents are found -->
+            <div id="no-docs-message" class="empty-state" style="display: none; text-align: center; padding: 2rem;">
+                <p>✨ No documents found. Click 'New Document' to create your first one!</p>
             </div>
         </main>
     </div>

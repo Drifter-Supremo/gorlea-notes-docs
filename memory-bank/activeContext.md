@@ -118,6 +118,13 @@ Debugging Core Functionality (Auth, Docs, AI)
 
 ## Recent Changes
 
+- **(April 10, 2025)** Favicon Implementation:
+    - Added Gorlea logo (`/gorlea-logo.png`) as favicon to main HTML pages (`chat.html`, `docs/index.html`, `docs/editor.html`, `index.html`). Login/Register pages already had it.
+- **(April 10, 2025)** Docs List "No Documents" Message:
+    - Refactored `client-vite/docs/index.html` to separate list container (`#doc-list`) and message container (`#no-docs-message`).
+    - Updated `client-vite/src/docs/docList.js` (`init` function) to correctly show/hide the list or the message based on fetched document count. Simplified error handling. Moved DOM selections into `init`.
+- **(April 10, 2025)** Git Reset:
+    - Rolled back changes using `git reset --hard HEAD` to commit `b847c74` after previous attempts to fix docs list UI caused broader issues.
 - **(April 8, 2025)** Core Functionality Debugging:
     - Fixed editor loading issue by removing `apiBaseUrl` definition in `editor.js`
     - Worked around document listing/editing issue via manual `userId` updates in existing documents

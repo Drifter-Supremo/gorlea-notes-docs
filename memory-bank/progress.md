@@ -67,6 +67,8 @@
   - Created local `.env` file with correct `GOOGLE_APPLICATION_CREDENTIALS` path format.
   - Confirmed `.gitignore` ignores `.env`.
   - Identified missing `netlify.toml` and provided content for Netlify proxy setup.
+- ✅ Added Favicon to all main HTML pages (April 10, 2025)
+- ✅ Fixed "No Documents" message display logic on Docs List page (April 10, 2025)
 
 ## In Progress
 🔨 Gorlea Docs Feature Enhancements
@@ -93,6 +95,7 @@
   - When no documents exist, display a friendly message like **"No documents found. Click 'New Document' to create your first one!"** instead of a blank page.
   - Add error handling for failed document fetches, displaying a message like **"Error loading documents. Please try again later."**
   - Style these messages clearly so users understand the state.
+- **(Task Completed)**
 
 ## Upcoming Features
 
@@ -258,7 +261,9 @@ To be implemented:
     - Corrected Firebase Admin initialization to use standard environment variables.
     - Created local `.env` file with proper credentials path.
     - Confirmed `.gitignore` ignores `.env`.
-    - Identified missing `netlify.toml` and provided content for Netlify proxy setup.
+  - Identified missing `netlify.toml` and provided content for Netlify proxy setup.
+- **(April 10, 2025)** Added Favicon: Added Gorlea logo as favicon to `chat.html`, `docs/index.html`, `docs/editor.html`, `index.html`.
+- **(April 10, 2025)** Fixed Docs List UI: Refactored HTML and JS (`docList.js`) to correctly display "No documents found" message. Simplified related logic and error handling after previous attempts caused issues. Performed `git reset --hard HEAD` to revert problematic changes before implementing the final fix.
 - **(April 6, 2025)** Unified button styling:
     - Created `.gorlea-button` class for consistent button appearance.
     - Applied to header buttons across all pages.

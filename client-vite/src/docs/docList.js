@@ -6,19 +6,14 @@ import '../styles/doclist-enhancements.css'; // Import document list enhancement
 // API Base URL - Removed as we'll use relative paths
 // const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '';
 
-// DOM Elements
-const docsList = document.querySelector('.docs-list');
-const newDocButton = document.querySelector('.new-doc-button');
-const emptyState = document.querySelector('.empty-state');
+// DOM Elements - Defined inside init
 
 // Fetch documents from API
 async function fetchDocuments() {
+    // Removed loading state handling from here, will be managed in init
     try {
-        // Show loading state
-        emptyState.textContent = 'Loading documents...';
-
         const response = await fetch('/api/docs', { // Use relative path
-            credentials: 'include',
+            credentials: 'include', // Include cookies for session auth
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -29,11 +24,11 @@ async function fetchDocuments() {
         }
 
         const { data } = await response.json();
-        return data;
+        return data; // Return the fetched documents
     } catch (error) {
         console.error('Document fetch error:', error);
-        emptyState.textContent = 'Error loading documents. Please refresh.';
-        return [];
+        // Re-throw the error to be caught by the caller (init function)
+        throw error;
     }
 }
 
@@ -70,19 +65,15 @@ async function createNewDocument() {
 }
 
 // Render document list
-function renderDocumentList(documents) {
-    if (!docsList) return; // Add guard clause
-    if (!emptyState) return; // Add guard clause
-
-    if (documents.length === 0) {
-        emptyState.textContent = 'No documents found.'; // Update empty state message
-        emptyState.style.display = 'block';
-        docsList.innerHTML = ''; // Clear list if empty
+function renderDocumentList(documents, docListElement) { // Accept docListElement
+    // Removed guard clauses for global elements
+    if (!docListElement) {
+        console.error("renderDocumentList called without docListElement");
         return;
     }
+    // Removed empty state logic from here, handled in init
 
-    emptyState.style.display = 'none';
-    docsList.innerHTML = '';
+    docListElement.innerHTML = ''; // Clear previous content
     documents.forEach(doc => {
         const docCard = document.createElement('div');
         docCard.className = 'doc-card';
@@ -141,7 +132,7 @@ function renderDocumentList(documents) {
             });
         }
 
-        docsList.appendChild(docCard);
+        docListElement.appendChild(docCard); // Use the passed element
     });
 }
 
@@ -167,10 +158,12 @@ async function handleArchive(docId, cardElement) {
         cardElement.style.opacity = '0';
         setTimeout(() => {
             cardElement.remove();
-            // Check if list is now empty
-            if (docsList.children.length === 0) {
-                emptyState.textContent = 'No documents found.'; // Update empty state message
-                emptyState.style.display = 'block';
+            // Check if list is now empty using the correct elements
+            const docList = document.getElementById('doc-list'); // Re-select in case needed
+            const noDocsMessage = document.getElementById('no-docs-message');
+            if (docList && noDocsMessage && docList.children.length === 0) {
+                docList.style.display = 'none'; // Hide the list container
+                noDocsMessage.style.display = 'block'; // Show the message
             }
             // Optionally show a more persistent success message
             // For now, just log it
@@ -214,10 +207,12 @@ async function handleDelete(docId, cardElement) {
         cardElement.style.opacity = '0';
         setTimeout(() => {
             cardElement.remove();
-            // Check if list is now empty
-            if (docsList.children.length === 0) {
-                emptyState.textContent = 'No documents found.'; // Update empty state message
-                emptyState.style.display = 'block';
+             // Check if list is now empty using the correct elements
+            const docList = document.getElementById('doc-list'); // Re-select in case needed
+            const noDocsMessage = document.getElementById('no-docs-message');
+            if (docList && noDocsMessage && docList.children.length === 0) {
+                docList.style.display = 'none'; // Hide the list container
+                noDocsMessage.style.display = 'block'; // Show the message
             }
             // Optionally show a more persistent success message
             console.log(`Document ${docId} permanently deleted.`);
@@ -232,20 +227,48 @@ async function handleDelete(docId, cardElement) {
 
 // Initialize
 async function init() {
-    // Add checks for elements before proceeding
-    if (!newDocButton || !docsList || !emptyState) {
-        console.error("Required DOM elements not found for docList.js");
+    // Select elements within init
+    const docList = document.getElementById('doc-list');
+    const noDocsMessage = document.getElementById('no-docs-message');
+    const newDocButton = document.querySelector('.new-doc-button');
+
+    // Guard clause if essential elements aren't found
+    if (!docList || !noDocsMessage || !newDocButton) {
+        console.error("Essential DOM elements (#doc-list, #no-docs-message, .new-doc-button) not found.");
         return;
     }
-    const documents = await fetchDocuments();
-    renderDocumentList(documents);
 
-    // Event listeners
+    // Add event listener
     newDocButton.addEventListener('click', createNewDocument);
+
+    // Initial state: hide list and message
+    docList.style.display = 'none';
+    noDocsMessage.style.display = 'none';
+
+    try {
+        const documents = await fetchDocuments();
+
+        if (documents.length === 0) {
+            // No documents: show message, hide list
+            noDocsMessage.style.display = 'block';
+            docList.style.display = 'none';
+        } else {
+            // Documents exist: hide message, show list, render docs
+            noDocsMessage.style.display = 'none';
+            docList.style.display = 'grid'; // Or 'block' based on your CSS
+            renderDocumentList(documents, docList); // Pass the list element
+        }
+    } catch (error) {
+        // Error fetching: log error, hide both list and message
+        console.error("Initialization failed:", error);
+        docList.style.display = 'none';
+        noDocsMessage.style.display = 'none';
+        // Optionally show a generic error message here if needed in the future
+    }
 }
 
 // Start when DOM is loaded
 // Ensure this runs only if we are on the correct page
-if (document.querySelector('.docs-list')) { // Check if the main element exists
+if (document.getElementById('doc-list')) { // Check if the main list container exists
     document.addEventListener('DOMContentLoaded', init);
 }
