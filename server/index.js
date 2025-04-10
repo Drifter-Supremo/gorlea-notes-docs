@@ -16,6 +16,9 @@ const { db } = require('./utils/firestore');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust the first proxy (e.g., Railway's load balancer)
+app.set('trust proxy', 1); 
+
 // Define static path early for use in routes - Changed to server/public
 const staticPath = path.join(__dirname, 'public');
 
@@ -29,9 +32,9 @@ app.use(expressSession({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    // sameSite: 'lax', // Consider adding 'lax' or 'strict' in production
+    secure: process.env.NODE_ENV === 'production', // Should be true in production (HTTPS)
+    httpOnly: true, // Prevent client-side JS access
+    sameSite: 'Lax', // Explicitly set SameSite for better cross-browser compatibility
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
 }));
