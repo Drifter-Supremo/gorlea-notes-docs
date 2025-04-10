@@ -15,8 +15,8 @@ const { db } = require('./utils/firestore');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Define static path early for use in routes
-const staticPath = path.join(__dirname, '../client-vite/dist');
+// Define static path early for use in routes - Changed to server/public
+const staticPath = path.join(__dirname, 'public');
 
 // Session configuration with FirestoreStore
 app.use(expressSession({

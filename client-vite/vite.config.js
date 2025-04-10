@@ -7,8 +7,8 @@ export default defineConfig({
   // Base public path (adjust if deploying to subdirectory)
   base: '/', 
   build: {
-    // Output directory relative to root
-    outDir: resolve(__dirname, 'dist'), 
+    // Output directory relative to root - Changed to server/public
+    outDir: resolve(__dirname, '../server/public'), 
     // Empty output directory before build
     emptyOutDir: true, 
     rollupOptions: {
