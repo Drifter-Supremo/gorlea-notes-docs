@@ -48,16 +48,6 @@ app.use('/api/docs', requireAuth, docsRoutes);
 const staticPath = path.join(__dirname, '../client-vite/dist');
 app.use(express.static(staticPath));
 
-// Catch-all route to serve index.html for frontend routing
-// This should be AFTER all API routes and static file serving
-app.get('*', (req, res) => {
-  res.sendFile(path.join(staticPath, 'index.html'), (err) => {
-    if (err) {
-      res.status(500).send(err);
-    }
-  });
-});
-
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
