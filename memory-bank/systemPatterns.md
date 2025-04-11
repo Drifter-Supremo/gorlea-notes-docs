@@ -97,6 +97,10 @@ flowchart TD
 - Submit on Enter (Shift+Enter for newline)
 - Visual feedback on actions
 
+### 5. DOM Element Scoping (Refinement - April 11, 2025)
+- **Pattern:** Key DOM elements referenced in multiple functions within a module (e.g., `docList.js`) should be queried and defined at the top level of the module, rather than inside initialization functions (`init()`).
+- **Rationale:** Prevents `ReferenceError` issues if event handlers or other functions attempt to access elements before `init()` completes or if elements are defined with `const` inside `init()`'s scope.
+- **Example:** `newDocButton`, `docList`, `noDocsMessage` in `docList.js` were moved to top-level scope to fix document creation errors.
 ## Core Design Patterns
 
 ### 1. Authentication Patterns

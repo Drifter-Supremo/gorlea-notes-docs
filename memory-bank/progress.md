@@ -262,6 +262,14 @@ To be implemented:
 - Critical Path: Auto-save → Delete → Tiptap Integration
 
 ## Recent Updates
+- **(April 11, 2025)** Fixed frontend document creation error:
+    - Resolved `ReferenceError: newDocButton is not defined` in `client-vite/src/docs/docList.js`.
+    - Moved DOM element definitions (`newDocButton`, `docList`, `noDocsMessage`) to top-level scope.
+    - Document creation flow now works correctly for new users.
+- **(April 11, 2025)** Added new Documentation mode:
+    - Created `UpdaterBot` mode in `.roomodes` for managing memory bank updates.
+    - Configured with specific responsibilities, rules, and file access restrictions (`/memory-bank/*.md`).
+
 - **(April 8, 2025)** Core Functionality Debugging:
     - Fixed editor loading issue (`apiBaseUrl` definition in editor.js)
     - Worked around document listing/editing issue via manual `userId` updates in existing documents

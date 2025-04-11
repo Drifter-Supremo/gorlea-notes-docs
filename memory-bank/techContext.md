@@ -227,6 +227,8 @@ PORT=3000
 - **Session Cookies:** Configured with `secure: true`, `httpOnly: true`, `sameSite: 'Lax'`, and `trust proxy: 1`.
 - **Environment Variables:** Managed via Railway dashboard (see list above).
 
+### Custom Modes
+- **Documentation Mode (`UpdaterBot`):** A custom mode defined in `.roomodes` specifically for updating the `/memory-bank/` documentation based on recent code changes. It has restricted file access to only `.md` files within that directory.
 ## Monitoring & Logging
 
 ### Metrics to Track

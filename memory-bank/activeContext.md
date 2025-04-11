@@ -119,6 +119,14 @@ Post-Deployment Testing & Refinement (Railway)
 
 ## Recent Changes
 
+- **(April 11, 2025)** Fixed frontend document creation error:
+    - Resolved `ReferenceError: newDocButton is not defined` in `client-vite/src/docs/docList.js`.
+    - Moved DOM element definitions (`newDocButton`, `docList`, `noDocsMessage`) to top-level scope.
+    - Document creation flow now works correctly for new users.
+- **(April 11, 2025)** Added new Documentation mode:
+    - Created `UpdaterBot` mode in `.roomodes` for managing memory bank updates.
+    - Configured with specific responsibilities, rules, and file access restrictions (`/memory-bank/*.md`).
+
 - **(April 10, 2025)** Railway Deployment & Debugging:
     - Created Railway project linked to GitHub (`master` branch).
     - Configured Build Command: `npm install && cd server && npm install && cd ../client-vite && npm install && npm run build`
