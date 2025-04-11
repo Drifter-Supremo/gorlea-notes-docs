@@ -603,6 +603,15 @@ body {
     #editor-toolbar {
         justify-content: center;
     }
+  /* Additional mobile toolbar/editor layout overrides */
+  .editor-toolbar {
+    flex-wrap: wrap;
+    overflow-x: auto;
+  }
+  .editor-toolbar button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
 }
 
 /* Remove opacity change on error, hiding wrapper is enough */
