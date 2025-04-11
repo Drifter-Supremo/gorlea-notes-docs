@@ -447,15 +447,24 @@ body {
 /* --- End Toolbar Styles --- */
 
 /* Optional: Basic styling for Tiptap content */
+/* Reset top margin for pasted content consistency */
+.ProseMirror * {
+  margin-top: 0;
+}
+
 #editor .ProseMirror p {
-    margin-bottom: 1em; /* Increased space between paragraphs */
+    line-height: 1.5; /* Consistent line height */
+    margin-bottom: 12px; /* Consistent space between paragraphs */
 }
 #editor .ProseMirror h1,
 #editor .ProseMirror h2,
-#editor .ProseMirror h3 {
-    margin-top: 1.75em;
-    margin-bottom: 0.75em;
-    line-height: 1.3;
+#editor .ProseMirror h3,
+#editor .ProseMirror h4,
+#editor .ProseMirror h5,
+#editor .ProseMirror h6 {
+    margin-top: 1.5em; /* Adjusted top margin */
+    margin-bottom: 12px; /* Consistent bottom margin */
+    line-height: 1.3; /* Keep header line height tighter */
     color: var(--color-text);
 }
 
@@ -482,7 +491,8 @@ body {
 }
 
 #editor .ProseMirror li {
-    margin-bottom: 0.5em;
+    line-height: 1.5; /* Consistent line height */
+    margin-bottom: 6px; /* Consistent, slightly tighter space for list items */
 }
 
 #editor .ProseMirror blockquote {
