@@ -31,13 +31,20 @@ const docsController = {
 
   async createDocument(req, res) {
     try {
+      // Debug logs for session and user
+      console.log('DEBUG: req.session:', req.session);
+      console.log('DEBUG: req.session.user:', req.session ? req.session.user : undefined);
+
       // Extract optional title and content from body
-      const { title, content } = req.body; 
+      const { title, content } = req.body;
+      const userId = req.session && req.session.user ? req.session.user.id : undefined;
+      console.log('DEBUG: userId extracted for document creation:', userId);
+
       console.log('Creating new document with:', { title, content: content ? '[content provided]' : '[no content]' });
       // Pass title and content to the updated utility function
-      const newDoc = await firestoreUtils.createDocument(req.session.user.id, title, content); 
+      const newDoc = await firestoreUtils.createDocument(userId, title, content);
       console.log('Successfully created document:', newDoc.id);
-      res.status(201).json({ 
+      res.status(201).json({
         data: newDoc // Return the full new document object
       });
     } catch (error) {
