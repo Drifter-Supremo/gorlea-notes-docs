@@ -119,6 +119,11 @@ Production Testing & Refinement (Railway) - Mostly Complete
 
 ## Recent Changes
 
+- **(April 11, 2025)** Attempted mobile responsiveness overhaul:
+    - Added mobile-specific CSS overrides using `@media (max-width: 768px)` to `main.css` and `docs.css`.
+    - Attempted a mobile-first CSS restructuring, which inadvertently broke desktop layout.
+    - **Decision:** Rolled back changes to commit `fb8588a` ("mobile layout fix") via `git reset --hard`.
+    - **Outcome:** Project reverted to previous state. Mobile responsiveness remains basic; focus shifted back to desktop MVP functionality for now.
 - **(April 11, 2025)** Fixed Tiptap editor spacing and added paste sanitization:
     - Adjusted CSS in `docs.css` for consistent line-height and margins.
     - Added `transformPastedHTML` to Tiptap config in `editor.js` to clean pasted HTML.
@@ -350,16 +355,17 @@ Production Testing & Refinement (Railway) - Mostly Complete
 - **(March 29)** Diagnosed chat auto-scroll issue: `scrollToBottom` in `chat.js` targets `#messages` instead of the scrollable parent `.chat-container`.
 
 
-## Next Steps - Updated (Post-Deployment)
+## Next Steps - Updated (April 11, 2025)
 
-### Immediate Task: Production Testing (Railway)
-1.  **Test Register Flow:** Ensure new account creation works and logs in.
-2.  **Test Logout/Login:** Confirm sessions clear and restore correctly.
-3.  **Test Doc Editing/Saving:** Verify edits persist after reload.
-4.  **Test New Doc Creation:** Ensure it appears in list and opens.
-5.  **Test Editor Direct Link:** Check if `/docs/editor.html?id=XYZ` loads correctly.
-6.  **Add Debugging Failsafe:** Add basic console logs to auth/session endpoints for future debugging.
+### Current Focus: Stabilize Desktop MVP
+1.  **Complete Production Testing:** Verify remaining items (Editor Direct Link, Debugging Failsafe).
+2.  **Address Desktop Scroll Issue:** Investigate and fix the chatbox scroll problem reported on desktop.
+3.  **Refine Existing Features:** Polish core desktop functionality based on testing feedback.
+4.  **Monitor Production:** Keep an eye on the Railway deployment for any issues.
 
+### Deferred Tasks
+1.  **Major Mobile Responsiveness Overhaul:** Postponed. The current basic mobile overrides will remain, but a full mobile-first redesign is deferred to focus on the desktop MVP.
+2.  **Future Features:** Revisit stretch goals (Search, Tagging, etc.) after the desktop MVP is stable and validated.
 ### Subsequent Tasks
 1.  **Gorlea Notes Chat Testing:** Verify chat functionality, AI processing, and note saving in production.
 2.  **Refinement & Bug Fixes:** Address any issues found during testing.

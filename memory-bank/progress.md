@@ -351,7 +351,16 @@ To be implemented:
 
 ---
 
-Last Updated: 2025-04-10 3:47 PM PDT
+## Recent Updates (Continued)
+- **(April 11, 2025)** Attempted Mobile Responsiveness Overhaul & Rollback:
+    - Added mobile-specific CSS overrides to `main.css` and `docs.css`.
+    - Attempted a mobile-first CSS restructuring, which broke desktop layout and introduced scroll issues.
+    - Rolled back all changes to commit `fb8588a` ("mobile layout fix") using `git reset --hard`.
+    - **Decision:** Defer major mobile UI/UX overhaul to focus on stabilizing the desktop MVP. Basic mobile overrides from `fb8588a` remain.
+
+---
+
+Last Updated: 2025-04-11 2:12 PM PDT
 
 ---
 

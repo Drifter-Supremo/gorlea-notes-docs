@@ -1,6 +1,6 @@
-# ✅ Next Task: Production Testing (Railway)
+# ✅ Current Task: Stabilize Desktop MVP & Address Scroll Issue
 
-Now that the initial deployment to Railway is successful and the login/session issues are resolved, the immediate priority is to thoroughly test the core functionality in the production environment.
+Following the rollback from mobile overhaul attempts, the immediate priority is to ensure the desktop version is stable, fix the reported chat scroll issue, and complete any remaining production testing. Major mobile UI/UX improvements are deferred.
 
 URL: `https://gorlea-notes-docs-production.up.railway.app/` (Verify this URL)
 
