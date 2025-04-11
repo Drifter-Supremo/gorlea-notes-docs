@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     // Trigger autosave on update
                     debouncedAutosave(); 
                 },
-            },
+            // Removed extra closing brace and comma that caused syntax error
             editorProps: {
                 transformPastedHTML(html) {
                     // Basic cleanup for Google Docs paste
