@@ -598,6 +598,50 @@ body {
     .new-doc-button {
         width: 100%;
         justify-content: center;
+      /* --- Enhanced mobile fixes for docs/editor layout --- */
+      .header-content {
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 0.5rem;
+      }
+      .gorlea-button,
+      .docs-home-button,
+      .button-accent {
+        width: 100%;
+        margin-bottom: 0.5rem;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+      .user-email-indicator {
+        font-size: 0.95rem;
+        word-break: break-all;
+        margin-bottom: 0.5rem;
+      }
+      .docs-header {
+        padding: 0.5rem 0.5rem 0 0.5rem;
+      }
+      .docs-app, .docs-main, .editor-container {
+        padding: 0.5rem 0.25rem 5.5rem 0.25rem;
+        min-height: 100vh;
+        box-sizing: border-box;
+      }
+      .doc-card {
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+      #editor, .ProseMirror {
+        font-size: 1rem;
+        padding: 0.5rem;
+        min-height: 300px;
+        box-sizing: border-box;
+        overflow-y: auto;
+        max-height: calc(100vh - 12rem);
+      }
+      .editor-toolbar {
+        flex-wrap: wrap;
+        overflow-x: auto;
+        gap: 0.5rem;
+      }
     }
     
     #editor-toolbar {
