@@ -88,7 +88,33 @@ document.addEventListener('DOMContentLoaded', async () => {
                     // Trigger autosave on update
                     debouncedAutosave(); 
                 },
-            });
+            },
+            editorProps: {
+                transformPastedHTML(html) {
+                    // Basic cleanup for Google Docs paste
+                    // Remove specific style spans often used by GDocs
+                    let cleanedHtml = html.replace(/<span style="font-weight:700;">(.*?)<\/span>/gi, '<strong>$1</strong>');
+                    cleanedHtml = cleanedHtml.replace(/<span style="font-style:italic;">(.*?)<\/span>/gi, '<em>$1</em>');
+                    
+                    // Remove other potentially problematic spans but keep content
+                    cleanedHtml = cleanedHtml.replace(/<span[^>]*>(.*?)<\/span>/gi, '$1');
+
+                    // Collapse multiple consecutive <br> tags into one (or none within paragraphs)
+                    cleanedHtml = cleanedHtml.replace(/(<br\s*\/?>\s*){2,}/gi, '<br>');
+
+                    // Remove empty paragraphs that might just contain <br> or whitespace
+                    cleanedHtml = cleanedHtml.replace(/<p>\s*(<br\s*\/?>)?\s*<\/p>/gi, '');
+
+                    // Optional: Remove trailing <br> within list items or paragraphs if they cause issues
+                    cleanedHtml = cleanedHtml.replace(/<p>(.*?)<br\s*\/?>\s*<\/p>/gi, '<p>$1</p>');
+                    cleanedHtml = cleanedHtml.replace(/<li>(.*?)<br\s*\/?>\s*<\/li>/gi, '<li>$1</li>');
+
+
+                    console.log("Cleaned pasted HTML:", cleanedHtml.substring(0, 200) + "..."); // Log cleaned HTML snippet
+                    return cleanedHtml;
+                },
+            },
+        });
             console.log("Tiptap editor initialized.");
         } else {
              console.error("Editor element #editor not found!");
