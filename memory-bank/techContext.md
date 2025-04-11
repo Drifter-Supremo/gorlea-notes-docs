@@ -123,7 +123,9 @@ PORT=3000
   - Chat message persistence via `localStorage`
   - "New Chat" button functionality
 - Document list view
-- Rich text editor (pending)
+- Rich text editor (Tiptap)
+  - Implemented paste sanitization (`transformPastedHTML`) to clean content from sources like Google Docs.
+  - Adjusted CSS (`docs.css`) for consistent line spacing.
 - Auto-expanding inputs
 - Smooth animations
 - Dark theme with gold accents

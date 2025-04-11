@@ -8,7 +8,7 @@ URL: `https://gorlea-notes-docs-production.up.railway.app/` (Verify this URL)
 
 ## Testing Status (April 11, 2025)
 
-**Summary:** Initial production testing is largely successful. Login/logout, session persistence, document listing per user, document opening, editing, and autosave are confirmed working. The "No documents" message displays correctly. A bug preventing new document creation for new users was identified (frontend ReferenceError) and fixed.
+**Summary:** Initial production testing is largely successful. Login/logout, session persistence, document listing/creation/editing/saving, and **AI features (rewrite, save suggestions)** are confirmed working. The "No documents" message displays correctly. A bug preventing new document creation for new users was identified (frontend ReferenceError) and fixed. Tiptap editor spacing and paste sanitization are also working correctly.
 
 **Remaining Tests:**
 - Editor Direct Link (#5)
@@ -67,6 +67,15 @@ URL: `https://gorlea-notes-docs-production.up.railway.app/` (Verify this URL)
     *   Add basic `console.log` statements to key backend endpoints involved in authentication and session handling (e.g., in `authController.js` for login/logout/register, and in `userController.js` for `/api/user/me`, and potentially in the `requireAuth` middleware). Log things like `req.session.user` or success/failure points.
     *   This is a code change for *after* the initial testing, to aid future debugging if needed.
     *   *Status: Not yet implemented.*
+
+7.  **[✓ - Completed] Gorlea Notes AI Features:**
+    *   [✓] Log in and navigate to the chat interface (`/chat.html`).
+    *   [✓] Enter a messy note and send it.
+    *   [✓] Verify the AI rewrites the note clearly.
+    *   [✓] Verify the AI prompts to save the note (suggesting existing docs or new).
+    *   [✓] Test saving the note to a new document. Verify it appears in the Docs list.
+    *   [✓] Test saving the note by appending it to an existing document. Verify the content is appended correctly in the editor.
+    *   *User confirmed AI rewrite and save suggestions are working correctly.*
 
 ---
 
