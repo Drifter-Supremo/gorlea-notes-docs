@@ -6,7 +6,10 @@ import '../styles/doclist-enhancements.css'; // Import document list enhancement
 // API Base URL - Removed as we'll use relative paths
 // const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '';
 
-// DOM Elements - Defined inside init
+/* DOM Elements - Defined at top level for global access */
+const docList = document.getElementById('doc-list');
+const noDocsMessage = document.getElementById('no-docs-message');
+const newDocButton = document.querySelector('.new-doc-button');
 
 // Fetch documents from API
 async function fetchDocuments() {
@@ -228,9 +231,7 @@ async function handleDelete(docId, cardElement) {
 // Initialize
 async function init() {
     // Select elements within init
-    const docList = document.getElementById('doc-list');
-    const noDocsMessage = document.getElementById('no-docs-message');
-    const newDocButton = document.querySelector('.new-doc-button');
+    // DOM elements now defined at top level
 
     // Guard clause if essential elements aren't found
     if (!docList || !noDocsMessage || !newDocButton) {
