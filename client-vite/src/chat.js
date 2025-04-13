@@ -40,7 +40,7 @@ const savePatterns = [
   'save it to',
   'save this to',
   'save that to',
-  
+
   // With yes/yeah variations
   'yeah save to',
   'yeah save it to',
@@ -50,13 +50,13 @@ const savePatterns = [
   'yep save it to',
   'yup save to',
   'yup save it to',
-  
+
   // With please/ok
   'please save to',
   'please save it to',
   'ok save to',
   'ok save it to',
-  
+
   // Just save it
   'save it',
   'save this',
@@ -194,7 +194,7 @@ async function saveNote(docName, content) {
         }
 
         const data = await response.json();
-        
+
         // If we need to create a new doc
         if (data.data.needsConfirmation) {
             return {
@@ -230,6 +230,8 @@ async function rewriteNote(text) {
     } catch (error) {
         console.error('Note processing error:', error);
         throw error;
+    } finally {
+        // Added empty finally block to potentially resolve linter issue
     }
 }
 
@@ -249,7 +251,7 @@ messageInput.addEventListener('input', () => {
 function autoExpandTextarea() {
     // Reset height to auto to accurately calculate scroll height
     messageInput.style.height = 'auto';
-    
+
     // Set new height based on scroll height
     const newHeight = Math.min(messageInput.scrollHeight, 150); // Max height: 150px
     messageInput.style.height = newHeight + 'px';
@@ -261,10 +263,10 @@ function createMessage(text, isUser = true, isLoading = false, isError = false) 
     messageDiv.className = `message ${isUser ? 'user-message' : 'gorlea-message'}`;
     if (isLoading) messageDiv.className += ' loading';
     if (isError) messageDiv.className += ' error';
-    
+
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
-    
+
     if (!isUser) {
         // Add Gorlea header for AI messages
         const headerDiv = document.createElement('div');
@@ -292,7 +294,7 @@ function createMessage(text, isUser = true, isLoading = false, isError = false) 
 
     contentDiv.appendChild(textWrapper); // Append the text wrapper to the main content div
     messageDiv.appendChild(contentDiv);
-    
+
     return messageDiv;
 }
 
@@ -305,13 +307,13 @@ function addMessage(text, isUser = true, isLoading = false, isError = false) {
     const messageElement = createMessage(text, isUser, isLoading, isError);
     messageElement.classList.add('last-message');
     messagesContainer.appendChild(messageElement);
-    
+
     // Only save non-loading messages to history
     if (!isLoading) {
         chatHistory.push({ text, isUser, isError });
         saveChatHistory();
     }
-    
+
     scrollToBottom();
     return messageElement; // Return the DOM element
 }
@@ -332,10 +334,10 @@ function revealMessageBlocks(targetWrapper, fullHtml, delay = 250, callback) { /
         if (index < blocks.length) {
             const block = blocks[index];
             // Clone the node to avoid issues if it's already attached elsewhere
-            const blockClone = block.cloneNode(true); 
-            
+            const blockClone = block.cloneNode(true);
+
             // Add animation class only to element nodes
-            if (blockClone.nodeType === Node.ELEMENT_NODE) { 
+            if (blockClone.nodeType === Node.ELEMENT_NODE) {
                  blockClone.classList.add('reveal-block');
             } else if (blockClone.nodeType === Node.TEXT_NODE && blockClone.textContent.trim() !== '') {
                 // Wrap non-empty text nodes in a span for animation
@@ -347,7 +349,7 @@ function revealMessageBlocks(targetWrapper, fullHtml, delay = 250, callback) { /
                  // Append other node types (like comments) directly without animation
                  targetWrapper.appendChild(blockClone);
             }
-            
+
             // Only append elements with the class if they were created
             if (blockClone.nodeType === Node.ELEMENT_NODE && blockClone.classList.contains('reveal-block')) {
                  targetWrapper.appendChild(blockClone);
@@ -367,7 +369,7 @@ function revealMessageBlocks(targetWrapper, fullHtml, delay = 250, callback) { /
     }
 
     // Add a small initial delay before starting the first block reveal
-    setTimeout(revealNextBlock, 50); 
+    setTimeout(revealNextBlock, 50);
 }
 // --- End Block Reveal Effect Function ---
 
@@ -390,7 +392,7 @@ async function fetchAndDisplayRecentDocs() {
             recentDocList.forEach((doc, index) => {
                 // Ensure title exists and is not empty before displaying
                 const displayTitle = doc.title && doc.title.trim() !== '' ? doc.title.trim() : 'Untitled Document';
-                messageText += `${index + 1}. ${displayTitle}\n`; 
+                messageText += `${index + 1}. ${displayTitle}\n`;
             });
             messageText += "\nPlease reply with the number (1-5) to save, or type 'create new doc' or provide a different name.";
             addMessage(messageText, false);
@@ -418,28 +420,28 @@ async function handleSubmit() {
     let loadingMessage = null; // Declare loadingMessage here, initialized to null
     const text = messageInput.value.trim();
     if (!text) return;
-    
+
     // Add user message
     addMessage(text, true);
-    
+
     // Clear input
     messageInput.value = '';
     messageInput.style.height = 'auto';
-    
+
     // --- Restructured Logic using if/else if ---
     try {
         console.log('Processing message:', text);
         const lowerText = text.toLowerCase();
-        console.log('Current state:', { 
-            lastRewrittenNote: !!lastRewrittenNote, 
-            pendingDocTitle, 
-            isAwaitingRecentChoice 
+        console.log('Current state:', {
+            lastRewrittenNote: !!lastRewrittenNote,
+            pendingDocTitle,
+            isAwaitingRecentChoice
         });
 
         // --- Priority 1: Handle Explicit Create Command ---
-        
+
         // Use Regex to find matching create pattern (Removed temporary debug code)
-        let matchedCreatePattern = null; 
+        let matchedCreatePattern = null;
         for (const pattern of createPatterns) {
             const trimmedPattern = pattern.trim();
             // Create a regex that matches the pattern at the beginning (^) of the string
@@ -450,10 +452,10 @@ async function handleSubmit() {
                 break; // Stop after finding the first match
             }
         }
-        
+
         if (matchedCreatePattern) {
             // Log the matched pattern (it's already trimmed from the loop)
-            console.log(`Intent: Explicit Create. Matched: "${matchedCreatePattern}"`); 
+            console.log(`Intent: Explicit Create. Matched: "${matchedCreatePattern}"`);
             if (!lastRewrittenNote) {
                 addMessage('Please provide a note first before creating a document with it.', false, false, true);
             } else {
@@ -462,29 +464,29 @@ async function handleSubmit() {
                     extractedTitle = text.substring(matchedCreatePattern.length).trim();
                 }
                 const finalTitle = extractedTitle || 'Untitled Document';
-                
+
                 loadingMessage = addMessage(`Creating new document "${finalTitle}"...`, false, true);
                 try {
                     const result = await createDoc(finalTitle, lastRewrittenNote); // Use API function
                     if(loadingMessage) messagesContainer.removeChild(loadingMessage);
-                    addMessage(`I've created a new document "${result.title}" and saved your note!`, false); 
+                    addMessage(`I've created a new document "${result.title}" and saved your note!`, false);
                     requestAnimationFrame(() => {
                       requestAnimationFrame(() => {
                         scrollToBottom();
                       });
                     });
-                    lastRewrittenNote = null; 
-                    pendingDocTitle = null; 
+                    lastRewrittenNote = null;
+                    pendingDocTitle = null;
                     isAwaitingRecentChoice = false; // Reset state
                     recentDocList = [];
                     return; // <<< ADD THIS RETURN STATEMENT >>>
                 } catch (error) {
-                    console.error('Direct create doc error:', error); 
-                    if(loadingMessage) messagesContainer.removeChild(loadingMessage); 
+                    console.error('Direct create doc error:', error);
+                    if(loadingMessage) messagesContainer.removeChild(loadingMessage);
                     addMessage(`Sorry, I had trouble creating the document. Please try again. Error: ${error.message}`, false, false, true);
                 }
             }
-        
+
         // --- Priority 2: Handle Numeric Choice for Recent Docs ---
         } else if (isAwaitingRecentChoice && /^[1-5]$/.test(text)) {
             console.log(`Intent: Recent Doc Choice. Choice: ${text}`);
@@ -496,12 +498,12 @@ async function handleSubmit() {
                 const choiceIndex = parseInt(text, 10) - 1;
                 if (choiceIndex >= 0 && choiceIndex < recentDocList.length) {
                     const chosenDoc = recentDocList[choiceIndex];
-                    const chosenTitle = chosenDoc.title; 
+                    const chosenTitle = chosenDoc.title;
                     loadingMessage = addMessage(`Saving note to "${chosenTitle}"...`, false, true);
                     try {
-                        const result = await saveNote(chosenTitle, lastRewrittenNote); 
+                        const result = await saveNote(chosenTitle, lastRewrittenNote);
                         if(loadingMessage) messagesContainer.removeChild(loadingMessage);
-                        if (result.needsConfirmation) { 
+                        if (result.needsConfirmation) {
                             console.error("Unexpected 'needsConfirmation' after selecting recent doc.");
                             addMessage(`Hmm, something unexpected happened trying to save to "${chosenTitle}". Please try again.`, false, false, true);
                         } else {
@@ -515,7 +517,7 @@ async function handleSubmit() {
                     } finally {
                         isAwaitingRecentChoice = false; // Reset state
                         recentDocList = [];
-                        pendingDocTitle = null; 
+                        pendingDocTitle = null;
                     }
                 } else {
                     addMessage("That wasn't a valid choice. Please enter a number from 1 to 5, or type 'create new doc'.", false, false, true);
@@ -534,16 +536,16 @@ async function handleSubmit() {
              } else {
                 isAwaitingRecentChoice = false; // Reset recent choice state
                 recentDocList = [];
-                loadingMessage = addMessage('Creating new document...', false, true); 
+                loadingMessage = addMessage('Creating new document...', false, true);
                 try {
                     const result = await createDoc(pendingDocTitle, lastRewrittenNote); // Use API function
                     if(loadingMessage) messagesContainer.removeChild(loadingMessage);
-                    addMessage(`I've created a new document "${result.title}" and saved your note!`, false); 
+                    addMessage(`I've created a new document "${result.title}" and saved your note!`, false);
                     lastRewrittenNote = null; // Clear state
-                    pendingDocTitle = null; 
+                    pendingDocTitle = null;
                 } catch (error) {
-                    console.error('Create doc error (in confirmation block):', error); 
-                    if(loadingMessage) messagesContainer.removeChild(loadingMessage); 
+                    console.error('Create doc error (in confirmation block):', error);
+                    if(loadingMessage) messagesContainer.removeChild(loadingMessage);
                     addMessage(`Sorry, I had trouble creating the document. Please try again. Error: ${error.message}`, false, false, true);
                 }
              }
@@ -568,7 +570,7 @@ async function handleSubmit() {
             } else {
                 // --- Doc Name Extraction (same as before) ---
                 const matchedPattern = savePatterns.find(pattern => text.toLowerCase().includes(pattern));
-                let docName = ''; 
+                let docName = '';
                 if (matchedPattern) {
                     const patternIndex = text.toLowerCase().indexOf(matchedPattern);
                     if (patternIndex !== -1) {
@@ -584,22 +586,22 @@ async function handleSubmit() {
                     console.warn("Could not reliably extract document name from save command:", text);
                 }
                 console.log('Extracted doc name:', docName);
-                
-                loadingMessage = addMessage('Saving your note...', false, true); 
+
+                loadingMessage = addMessage('Saving your note...', false, true);
                 try {
                     const result = await saveNote(docName, lastRewrittenNote);
                     if(loadingMessage) messagesContainer.removeChild(loadingMessage);
-                    
+
                     if (result.needsConfirmation) {
                         pendingDocTitle = result.suggestedTitle;
-                        addMessage(`I couldn't find a document named "${result.suggestedTitle}". Would you like me to create a new one with this name? (Or type 'show recent' to see recent documents)`, false); 
-                        isAwaitingRecentChoice = false; 
+                        addMessage(`I couldn't find a document named "${result.suggestedTitle}". Would you like me to create a new one with this name? (Or type 'show recent' to see recent documents)`, false);
+                        isAwaitingRecentChoice = false;
                         recentDocList = [];
                     } else {
                         addMessage(`I've saved your note to "${result.title}"!`, false);
-                        lastRewrittenNote = null; 
+                        lastRewrittenNote = null;
                         pendingDocTitle = null;
-                        isAwaitingRecentChoice = false; 
+                        isAwaitingRecentChoice = false;
                         recentDocList = [];
                     }
                 } catch (error) {
@@ -614,7 +616,7 @@ async function handleSubmit() {
         // --- Default: Treat as a new note to rewrite ---
         } else {
             console.log('Intent: Rewrite Note (Default).');
-            loadingMessage = addMessage('Processing your note...', false, true); 
+            loadingMessage = addMessage('Processing your note...', false, true);
             try {
                 const cleanedNoteMarkdown = await rewriteNote(text); // Get raw Markdown text from AI
                 if(loadingMessage) messagesContainer.removeChild(loadingMessage);
@@ -635,13 +637,13 @@ async function handleSubmit() {
                 // 3. Start the block reveal effect
                 revealMessageBlocks(textWrapperElement, finalHtml, 250, () => { // Slower delay: 250ms
                     // 4. Callback executed AFTER reveal finishes:
-                    
+
                     // Save the *original Markdown* to history AFTER reveal
                     chatHistory.push({ text: cleanedNoteMarkdown, isUser: false, isError: false });
                     saveChatHistory();
 
                     // Store the parsed HTML version for saving to the editor later
-                    lastRewrittenNote = finalHtml; 
+                    lastRewrittenNote = finalHtml;
 
                     // Ask the follow-up question AFTER reveal is done
                     // Apply reveal effect to follow-up message too? Let's do it.
@@ -657,22 +659,22 @@ async function handleSubmit() {
                     });
                 });
                 // --- End Block Reveal Effect Implementation ---
-                
+
                 isFirstMessage = false;
                 // Reset other states immediately after initiating the rewrite/reveal
-                isAwaitingRecentChoice = false; 
+                isAwaitingRecentChoice = false;
                 recentDocList = [];
-                pendingDocTitle = null; 
+                pendingDocTitle = null;
                 // Ask where to save - Handled within the revealMessageBlocks callback now
             } catch (error) {
                  if(loadingMessage) messagesContainer.removeChild(loadingMessage);
                  // Ensure error messages are also saved to history via addMessage
-                 addMessage('Sorry, I had trouble processing your note. Please try again.', false, false, true); 
+                 addMessage('Sorry, I had trouble processing your note. Please try again.', false, false, true);
                  // Don't clear lastRewrittenNote here, maybe the rewrite failed but the original text is still valid? Or clear it? Let's clear it for safety.
                  lastRewrittenNote = null;
-                 isAwaitingRecentChoice = false; 
+                 isAwaitingRecentChoice = false;
                  recentDocList = [];
-                 pendingDocTitle = null; 
+                 pendingDocTitle = null;
             }
         }
 
@@ -691,19 +693,8 @@ async function handleSubmit() {
     }
 }
 
-// Event Listeners
-messageInput.addEventListener('input', autoExpandTextarea);
-
-messageInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        handleSubmit();
-    }
-});
-
-sendButton.addEventListener('click', handleSubmit);
-
-newChatButton.addEventListener('click', () => {
+// --- Helper function to clear chat state ---
+function clearChatState() {
     if (chatHistoryKey) {
         localStorage.removeItem(chatHistoryKey);
     }
@@ -716,7 +707,29 @@ newChatButton.addEventListener('click', () => {
     isFirstMessage = true;
     messageInput.value = '';
     messageInput.style.height = 'auto';
+    // Ensure welcome screen is shown if no history
+    if (chatHistory.length === 0) {
+        welcomeScreen.style.display = 'flex'; // Or 'block', depending on original style
+        welcomeScreen.style.opacity = '1';
+        welcomeScreen.style.transform = 'translateY(0)';
+    }
+    scrollToBottom(); // Scroll after clearing
+}
+
+// Event Listeners
+messageInput.addEventListener('input', autoExpandTextarea);
+
+messageInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSubmit();
+    }
 });
+
+sendButton.addEventListener('click', handleSubmit);
+
+// Desktop New Chat Button
+newChatButton.addEventListener('click', clearChatState);
 
 // On load: fetch user info, then load chat history
 (async () => {
@@ -726,9 +739,60 @@ newChatButton.addEventListener('click', () => {
 })();
 
 // Add loaded class on DOMContentLoaded for fade-in effect
+// Also add mobile menu logic here
 document.addEventListener('DOMContentLoaded', () => {
     const appContainer = document.querySelector('.app');
     if (appContainer) {
         appContainer.classList.add('loaded');
     }
+
+    // --- Mobile Menu Toggle Logic ---
+    const hamburgerMenu = document.getElementById('hamburger-menu');
+    const mobileNav = document.getElementById('mobile-nav'); // Added reference for mobile nav panel
+    const mobileNewChatButton = document.getElementById('mobile-newChatButton');
+    const mobileLogoutButton = document.getElementById('mobile-logout-button'); // Assuming this ID exists
+
+    if (hamburgerMenu) {
+        hamburgerMenu.addEventListener('click', () => {
+            document.body.classList.toggle('mobile-menu-open');
+        });
+    }
+
+    // Mobile New Chat Button (closes menu and clears state)
+    if (mobileNewChatButton) {
+        mobileNewChatButton.addEventListener('click', () => {
+            document.body.classList.remove('mobile-menu-open'); // Close menu
+            clearChatState(); // Clear chat state
+        });
+    }
+
+    // Mobile Logout Button (closes menu and redirects - adjust action as needed)
+    if (mobileLogoutButton) {
+        mobileLogoutButton.addEventListener('click', async () => {
+            document.body.classList.remove('mobile-menu-open'); // Close menu
+            // Perform logout action (e.g., call API endpoint, redirect)
+            try {
+                await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+            } catch (error) {
+                console.error('Logout failed:', error);
+            } finally {
+                // Redirect to login page regardless of API call success/failure
+                window.location.href = '/login.html';
+            }
+        });
+    }
+    // --- End Mobile Menu Toggle Logic ---
+
+    // --- Click Outside to Close Mobile Menu ---
+    document.addEventListener('click', (event) => {
+        // Check if the menu is open, if the click is outside the nav,
+        // and if the click wasn't on the hamburger button itself or its children.
+        if (document.body.classList.contains('mobile-menu-open') &&
+            mobileNav && !mobileNav.contains(event.target) &&
+            hamburgerMenu && !hamburgerMenu.contains(event.target) && event.target !== hamburgerMenu) {
+            document.body.classList.remove('mobile-menu-open');
+        }
+    });
+    // --- End Click Outside Logic ---
+
 });
