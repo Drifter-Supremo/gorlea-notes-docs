@@ -119,6 +119,18 @@ Production Testing & Refinement (Railway) - Mostly Complete
 
 ## Recent Changes
 
+- **(April 13, 2025)** Fixed Mobile Keyboard Overlap (`client-vite/chat.html`):
+    - **Problem:** On mobile devices, the virtual keyboard obscured the chat input and recent messages. Previous CSS attempts (e.g., `100vh` adjustments) were unreliable.
+    - **Solution:** Implemented JavaScript using the `visualViewport` API in `client-vite/src/chat.js`. This API accurately detects the visible area excluding the keyboard.
+    - **Implementation:**
+        - Added event listeners (`resize`, `scroll`) for `visualViewport`.
+        - Dynamically calculated the available height and adjusted the `bottom` style of the fixed footer (`#chat-footer`) and the `padding-bottom` of the chat messages container (`#messages`) to ensure the input stays visible and the chat area resizes correctly when the keyboard appears/disappears.
+        - Reverted previous CSS-only attempts in `client-vite/src/styles/main.css`.
+        - Modified `client-vite/vite.config.js` temporarily for HTTPS local testing required by `visualViewport` on some mobile browsers/setups.
+    - **Outcome:** The chat input and messages now correctly adjust on mobile when the keyboard is shown or hidden, resolving the overlap issue.
+    - **Files Modified:** `client-vite/src/chat.js`, `client-vite/src/styles/main.css`, `client-vite/vite.config.js` (for testing).
+
+
 - **(April 13, 2025)** Implemented Mobile Responsiveness for Chat UI (`client-vite/chat.html`):
     - **Goal:** Create a functional and visually appealing mobile layout for the chat interface.
     - **Implementation:**

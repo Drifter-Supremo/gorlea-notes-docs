@@ -101,6 +101,13 @@
 
 ---
 
+## Recent Fixes (April 13, 2025)
+- ✅ **Fixed Mobile Keyboard Overlap (`client-vite/chat.html`):**
+    - **Problem:** Virtual keyboard obscured chat input/messages on mobile.
+    - **Solution:** Used JavaScript `visualViewport` API (`client-vite/src/chat.js`) to detect keyboard presence and available screen space.
+    - **Implementation:** Dynamically adjusted footer `bottom` position and message container `padding-bottom` based on `visualViewport` height changes. Reverted prior CSS attempts (`main.css`). Used HTTPS via `vite.config.js` for local testing.
+    - **Outcome:** Chat interface now correctly adapts to the mobile keyboard, keeping input visible.
+
 ## Recent Fixes (April 8, 2025)
 - Fixed AI processing error by updating `requireAuth` middleware in `server/routes/ai.js` to check `req.session.user` instead of obsolete `req.session.tokens`.
 - Implemented **user-specific chat history** in `client-vite/src/chat.js`:
