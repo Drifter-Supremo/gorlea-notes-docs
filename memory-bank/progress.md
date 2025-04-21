@@ -3,6 +3,16 @@
 ## Project Status: Deployed to Railway - Production Testing Mostly Complete
 
 ## Completed Features
+- ✅ Replicated Mobile Header/Drawer for Docs Pages (April 20, 2025)
+  - Applied consistent mobile navigation (header/drawer) from Chat (`chat.html`) to Docs List (`docs/index.html`) and Editor (`docs/editor.html`).
+  - Replicated HTML structure (logo left, hamburger right).
+  - Added shared JS logic for hamburger toggle and drawer buttons (`docList.js`, `editor.js`).
+  - Appended mobile-specific CSS (`docs.css`).
+  - Fixed JS linter error (`ts(8013)`) by using standard existence checks.
+  - Fixed mobile header alignment with CSS padding adjustments (`docs.css`).
+  - Hid duplicate "New Document" button on mobile (`docs/index.html`) using `desktop-only` class.
+  - Files: `client-vite/docs/index.html`, `client-vite/docs/editor.html`, `client-vite/src/styles/docs.css`, `client-vite/src/docs/docList.js`, `client-vite/src/docs/editor.js`.
+
 - ✅ Mobile Responsiveness for Chat UI (April 13, 2025)
   - Implemented CSS media queries, HTML structure changes (`chat.html`), and JS (`chat.js`) for mobile header (logo left, hamburger right).
   - Added hamburger button toggle for a right-sliding side navigation panel.
@@ -273,6 +283,12 @@ To be implemented:
 - Critical Path: Auto-save → Delete → Tiptap Integration
 
 ## Recent Updates
+- **(April 20, 2025)** Replicated Mobile Header/Drawer & Fixed UI Issues:
+    - Applied consistent mobile navigation (header/drawer) from Chat to Docs List and Editor pages.
+    - Replicated HTML, added shared JS logic, and appended mobile CSS.
+    - Fixed JS linter error (`ts(8013)`), adjusted mobile header CSS padding for alignment, and hid duplicate "New Document" button on mobile.
+    - Files: `client-vite/docs/index.html`, `client-vite/docs/editor.html`, `client-vite/src/styles/docs.css`, `client-vite/src/docs/docList.js`, `client-vite/src/docs/editor.js`.
+
 - **(April 11, 2025)** Fixed Tiptap editor spacing and added paste sanitization:
     - Adjusted CSS in `docs.css` for consistent line-height and margins on paragraphs, list items, and headers within the editor.
     - Added a CSS rule (`.ProseMirror * { margin-top: 0; }`) to help normalize pasted content spacing.

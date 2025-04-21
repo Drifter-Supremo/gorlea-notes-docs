@@ -82,7 +82,7 @@ flowchart TD
 - Left-aligned Gorlea messages
 - Smooth animations and transitions
 
-### 3. Button Styling Pattern
+### 4. Button Styling Pattern
 
 - **(April 6, 2025)** Unified `.gorlea-button` style created in `main.css` for header buttons across chat, docs list, and editor pages.
   - **Style:** Gold background, dark text, rounded rectangle (8px radius), consistent height (2.2rem), padding (0.5rem 1.25rem), font size (0.95rem), font weight (600), hover/active effects.
@@ -91,16 +91,30 @@ flowchart TD
   - New Chat icon color changed to black.
   - **Result:** Consistent button appearance across the app.
 
-### 4. Input Pattern
+### 5. Input Pattern
 - Auto-expanding textarea
 - Character limit handling
 - Submit on Enter (Shift+Enter for newline)
 - Visual feedback on actions
 
-### 5. DOM Element Scoping (Refinement - April 11, 2025)
+### 6. DOM Element Scoping (Refinement - April 11, 2025)
 - **Pattern:** Key DOM elements referenced in multiple functions within a module (e.g., `docList.js`) should be queried and defined at the top level of the module, rather than inside initialization functions (`init()`).
 - **Rationale:** Prevents `ReferenceError` issues if event handlers or other functions attempt to access elements before `init()` completes or if elements are defined with `const` inside `init()`'s scope.
 - **Example:** `newDocButton`, `docList`, `noDocsMessage` in `docList.js` were moved to top-level scope to fix document creation errors.
+
+### 7. Mobile Header & Drawer Pattern (Established April 13 & 20, 2025)
+- **Goal:** Provide a consistent mobile navigation experience across different application sections (Chat, Docs List, Editor).
+- **Header Structure (`@media (max-width: 768px)`):**
+    - Fixed height (e.g., 60px).
+    - Logo aligned to the left.
+    - Hamburger menu icon aligned to the right.
+    - Precise padding/margins ensure flush alignment (e.g., `padding: 0.5rem 0.5rem 0 0.5rem` on `header.docs-header`).
+- **Drawer Functionality:**
+    - A side navigation panel (`#side-nav`) slides in from the right when the hamburger icon is clicked.
+    - Contains key navigation links (e.g., New Document, Logout, User Email).
+    - Shared JavaScript logic handles the toggle mechanism (`chat.js`, `docList.js`, `editor.js`).
+- **Implementation:** Requires specific HTML structure, CSS media queries (`main.css`, `docs.css`), and JavaScript event listeners.
+
 ## Core Design Patterns
 
 ### 1. Authentication Patterns

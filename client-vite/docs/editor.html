@@ -15,17 +15,33 @@
 <body>
     <header class="docs-header"> <!-- Changed class for consistency -->
         <div class="header-content"> <!-- Added container for consistency -->
-            <!-- Logo removed permanently -->
-            <h1>Document Editor</h1>
-            <!-- Use root-relative path for home link -->
-            <a href="/docs/index.html" class="button-accent docs-home-button">Docs Home</a>
-            <a href="/chat.html" class="button button-accent" target="_blank" rel="noopener noreferrer">Gorlea Notes</a> <!-- Added target blank -->
-            <!-- Logged in user indicator -->
-            <span id="user-email" class="user-email-indicator"></span>
-            <!-- Logout Button - Styled like Docs button -->
-<button id="logout-button" class="gorlea-button">Logout</button>
+             <!-- Logo -->
+             <img src="/gorlea-logo.png" alt="Gorlea Logo" class="logo" style="width: 40px; height: 40px;">
+             <!-- Desktop Navigation Buttons (Desktop Only) -->
+             <div class="desktop-nav desktop-only">
+                 <h1>Document Editor</h1>
+                 <!-- Use root-relative path for home link -->
+                 <a href="/docs/index.html" class="button-accent docs-home-button">Docs Home</a>
+                 <a href="/chat.html" class="button button-accent" target="_blank" rel="noopener noreferrer">Gorlea Notes</a> <!-- Added target blank -->
+                 <!-- Logged in user indicator -->
+                 <span id="user-email" class="user-email-indicator"></span>
+                 <!-- Logout Button -->
+                 <button id="logout-button" class="gorlea-button">Logout</button>
+             </div>
+             <!-- Hamburger Menu Button (Mobile Only) -->
+             <button id="hamburger-menu" class="mobile-only gorlea-button">☰</button>
         </div>
     </header>
+
+    <!-- Mobile Navigation Menu (Initially Hidden by CSS) -->
+    <nav id="mobile-nav" class="mobile-nav">
+      <ul>
+        <li><button id="mobile-home" class="gorlea-button">Docs Home</button></li> <!-- Changed from newDoc -->
+        <li><a href="/chat.html" class="gorlea-button">Gorlea Notes</a></li>
+        <li><span id="mobile-user-email" class="user-email-indicator"></span></li>
+        <li><button id="mobile-logout"  class="gorlea-button">Logout</button></li>
+      </ul>
+    </nav>
     <div class="editor-container">
         <!-- Toolbar Container -->
         <div id="editor-toolbar">

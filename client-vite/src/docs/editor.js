@@ -11,6 +11,38 @@ import '../styles/editor-enhancements.css'; // Import editor-specific enhancemen
 // API Base URL - Use relative paths by default
 const apiBaseUrl = ''; // Set to empty string for relative paths
 
+const hamburgerMenu = document.getElementById('hamburger-menu');
+const mobileNav     = document.getElementById('mobile-nav');
+if (hamburgerMenu) {
+ hamburgerMenu.addEventListener('click', () =>
+   document.body.classList.toggle('mobile-menu-open')
+ );
+ document.addEventListener('click', e => {
+   if (document.body.classList.contains('mobile-menu-open') &&
+       !mobileNav.contains(e.target) &&
+       !hamburgerMenu.contains(e.target)) {
+     document.body.classList.remove('mobile-menu-open');
+   }
+ });
+}
+// OPTIONAL mobile buttons
+document.getElementById('mobile-newDoc')?.addEventListener('click', () => {
+ document.body.classList.remove('mobile-menu-open');
+ createNewDocument(); // Note: createNewDocument might not exist in editor.js context
+});
+document.getElementById('mobile-home')?.addEventListener('click', () => {
+ window.location.href = '/docs/index.html';
+});
+document.getElementById('mobile-logout')?.addEventListener('click', () => {
+ document.body.classList.remove('mobile-menu-open');
+ window.logoutUser();
+});
+const mobileUserEmailEl = document.getElementById('mobile-user-email');
+if (mobileUserEmailEl) {
+  mobileUserEmailEl.textContent =
+    document.getElementById('user-email')?.textContent || '';
+}
+
 console.log("Top level document:", document); // DEBUG: Check document object
 console.log("editor.js loaded"); // Debug log
 

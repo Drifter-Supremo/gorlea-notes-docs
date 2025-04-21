@@ -119,6 +119,19 @@ Production Testing & Refinement (Railway) - Mostly Complete
 
 ## Recent Changes
 
+- **(April 20, 2025)** Replicated Mobile Header/Drawer & Fixed UI Issues:
+    - **Goal:** Apply consistent mobile navigation (header/drawer) from Chat to Docs List and Editor pages.
+    - **Implementation:**
+        - Replicated mobile header HTML structure (logo left, hamburger right) in `client-vite/docs/index.html` and `client-vite/docs/editor.html`.
+        - Added shared JS logic for hamburger toggle and drawer button handling to `client-vite/src/docs/docList.js` and `client-vite/src/docs/editor.js`.
+        - Appended mobile-specific CSS rules to `client-vite/src/styles/docs.css` for the header and drawer.
+    - **Fixes:**
+        - Corrected JS linter error (`ts(8013)`) in `docList.js` and `editor.js` by replacing non-null assertion (`!`) with standard existence check (`if (element)`).
+        - Adjusted CSS padding (`header.docs-header`) in mobile media query (`docs.css`) for precise alignment, matching `chat.html`.
+        - Hid duplicate "New Document" button on mobile (`docs/index.html`) using `desktop-only` class.
+    - **Files Modified:** `client-vite/docs/index.html`, `client-vite/docs/editor.html`, `client-vite/src/styles/docs.css`, `client-vite/src/docs/docList.js`, `client-vite/src/docs/editor.js`.
+
+
 - **(April 13, 2025)** Implemented Mobile Responsiveness for Chat UI (`client-vite/chat.html`):
     - **Goal:** Create a functional and visually appealing mobile layout for the chat interface.
     - **Implementation:**

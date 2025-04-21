@@ -11,6 +11,38 @@ const docList = document.getElementById('doc-list');
 const noDocsMessage = document.getElementById('no-docs-message');
 const newDocButton = document.querySelector('.new-doc-button');
 
+const hamburgerMenu = document.getElementById('hamburger-menu');
+const mobileNav     = document.getElementById('mobile-nav');
+if (hamburgerMenu) {
+ hamburgerMenu.addEventListener('click', () =>
+   document.body.classList.toggle('mobile-menu-open')
+ );
+ document.addEventListener('click', e => {
+   if (document.body.classList.contains('mobile-menu-open') &&
+       !mobileNav.contains(e.target) &&
+       !hamburgerMenu.contains(e.target)) {
+     document.body.classList.remove('mobile-menu-open');
+   }
+ });
+}
+// OPTIONAL mobile buttons
+document.getElementById('mobile-newDoc')?.addEventListener('click', () => {
+ document.body.classList.remove('mobile-menu-open');
+ createNewDocument();
+});
+document.getElementById('mobile-home')?.addEventListener('click', () => {
+ window.location.href = '/docs/index.html';
+});
+document.getElementById('mobile-logout')?.addEventListener('click', () => {
+ document.body.classList.remove('mobile-menu-open');
+ window.logoutUser();
+});
+const mobileUserEmailEl = document.getElementById('mobile-user-email');
+if (mobileUserEmailEl) {
+  mobileUserEmailEl.textContent =
+    document.getElementById('user-email')?.textContent || '';
+}
+
 // Fetch documents from API
 async function fetchDocuments() {
     // Removed loading state handling from here, will be managed in init
