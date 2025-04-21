@@ -25,7 +25,8 @@ export default defineConfig({
   },
   server: {
     // Port for Vite dev server (optional, defaults to 5173)
-    // port: 5173, 
+    // port: 5173,
+    host: '0.0.0.0', // Allow network access
     proxy: {
       // Proxy API requests to the backend server
       '/api': {

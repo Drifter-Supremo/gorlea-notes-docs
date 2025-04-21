@@ -247,6 +247,8 @@ messageInput.addEventListener('input', () => {
     autoExpandTextarea();
 });
 
+// Scroll into view on mobile when keyboard appears (Listener removed - CSS handles this now)
+
 // Auto-expand textarea as user types
 function autoExpandTextarea() {
     // Reset height to auto to accurately calculate scroll height
@@ -783,10 +785,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // --- End Mobile Menu Toggle Logic ---
 
+    // --- Visual Viewport API for Mobile Keyboard ---
+    // Note: chatContainer is defined globally
+    const inputArea = document.querySelector('.input-area'); // Get reference
+
+    function handleViewportResize() {
+        // Ensure elements and visualViewport exist
+        if (!window.visualViewport || !inputArea || !chatContainer) {
+            console.warn('VisualViewport handler: Missing required elements or API.');
+            return;
+        }
+
+        const viewportHeight = window.visualViewport.height;
+        const windowHeight = window.innerHeight;
+        // Calculate the difference, ensuring it's not negative
+        const offset = Math.max(0, windowHeight - viewportHeight);
+
+        // Apply styles only if the keyboard is likely visible (offset is significant)
+        if (offset > 50) { // Threshold to detect keyboard
+            // Apply styles to lift the input area above the keyboard
+            inputArea.style.bottom = offset + 'px';
+
+            // Adjust chat container padding to prevent overlap
+            // Use a base padding value (adjust '16' if your default padding is different)
+            const basePadding = 16; // Example: corresponds to 1rem if base font-size is 16px
+            chatContainer.style.paddingBottom = (inputArea.offsetHeight + offset + basePadding) + 'px';
+
+            // Scroll to bottom after styles are applied (use rAF for smoother updates)
+            requestAnimationFrame(() => {
+                scrollToBottom();
+            });
+        } else {
+            // Reset styles when keyboard is hidden
+            inputArea.style.bottom = '0px';
+            chatContainer.style.paddingBottom = ''; // Reset to default (removes inline style)
+        }
+    }
+
+    if (window.visualViewport && inputArea && chatContainer) {
+        window.visualViewport.addEventListener('resize', handleViewportResize);
+        // Optional: Call handler once initially in case keyboard is already open on load.
+        // Be cautious, this might cause a layout shift on desktop if not handled carefully.
+        // handleViewportResize();
+    }
+
+    // Handle orientation changes as well, as they affect the viewport
+    window.addEventListener('orientationchange', () => {
+        // Delay slightly to allow viewport dimensions to stabilize after rotation
+        setTimeout(handleViewportResize, 100);
+    });
+    // --- End Visual Viewport API Logic ---
+
     // --- Click Outside to Close Mobile Menu ---
     document.addEventListener('click', (event) => {
         // Check if the menu is open, if the click is outside the nav,
         // and if the click wasn't on the hamburger button itself or its children.
+        const mobileNav = document.getElementById('mobile-nav'); // Ensure mobileNav is accessible here
+        const hamburgerMenu = document.getElementById('hamburger-menu'); // Ensure hamburgerMenu is accessible here
         if (document.body.classList.contains('mobile-menu-open') &&
             mobileNav && !mobileNav.contains(event.target) &&
             hamburgerMenu && !hamburgerMenu.contains(event.target) && event.target !== hamburgerMenu) {
