@@ -18,11 +18,24 @@
     margin: 0 auto;
     /* Add horizontal padding to align with content below */
     /* padding: 0 1.5rem; */ /* Removed horizontal padding */
-    padding: 0; /* Ensure no horizontal padding */
+    padding: 0 1rem; /* Add some horizontal padding */
     display: flex;
     align-items: center;
     gap: 0.5rem; /* Adjust gap between items as needed */
     height: 2.5rem; /* Consistent height */
+    justify-content: space-between; /* Distribute space between logo and other elements */
+}
+
+/* Logo should be first in order */
+.docs-header .logo {
+    order: 0;
+}
+
+/* Desktop navigation container */
+.desktop-nav {
+    display: flex;
+    align-items: center;
+    order: 2; /* Control the order in flexbox */
 }
 
 /* Existing styles below */
@@ -172,7 +185,8 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        margin-left: 1rem;
+        margin-left: auto; /* Push to the right side of available space */
+        margin-right: 0.75rem; /* Add space between search icon and Gorlea Notes button */
         color: #bbb;
         cursor: pointer;
         font-size: 1.2rem;
@@ -183,14 +197,23 @@
         padding: 0 0.25rem;
         height: 2.2rem;
         width: 2.2rem;
+        order: 1; /* Control the order in flexbox */
     }
     #search-icon:focus,
     #search-icon:hover {
         color: var(--color-accent, #ffd700);
     }
+    #search-icon {
+        /* Existing styles */
+        display: inline-flex; /* Keep display for layout */
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 0.3s ease-out, visibility 0.3s ease-out, color 0.2s;
+    }
+
     #doc-search-input {
-        display: none;
-        margin-left: 0.5rem;
+        /* Existing styles */
+        display: inline-block; /* Keep display for layout */
         padding: 0.4rem 0.8rem;
         font-size: 1rem;
         border: 1.5px solid #bbb;
@@ -199,14 +222,38 @@
         color: #fff;
         min-width: 220px;
         max-width: 320px;
-        transition: border-color 0.2s, box-shadow 0.2s;
+        transition: border-color 0.2s, box-shadow 0.2s, opacity 0.3s ease-out, visibility 0.3s ease-out, width 0.3s ease-out;
         outline: none;
+        order: 1; /* Same order as search icon */
+        margin-left: auto; /* Push to the right side of available space */
+        margin-right: 0.75rem; /* Same margin as search icon */
+
+        /* Initial state (hidden) */
+        opacity: 0;
+        visibility: hidden;
+        width: 0; /* Collapse width when hidden */
+        padding-left: 0;
+        padding-right: 0;
+        overflow: hidden; /* Hide content when collapsed */
     }
+
     #doc-search-input.search-active {
-        display: inline-block;
+        /* Active state (visible) */
+        opacity: 1;
+        visibility: visible;
+        width: 220px; /* Specific width when visible */
+        padding: 0.4rem 0.8rem; /* Restore padding */
         border-color: var(--color-accent, #ffd700);
         box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.15);
+        overflow: visible; /* Show content when expanded */
     }
+
+    /* Hide search icon when search input is active */
+    #search-icon.search-active {
+        opacity: 0;
+        visibility: hidden;
+    }
+
     #no-results-message {
         display: block;
         color: #ff6b6b;

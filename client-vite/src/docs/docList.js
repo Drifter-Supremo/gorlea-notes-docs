@@ -337,15 +337,9 @@ async function init() {
     // --- Search UI logic (desktop only) ---
     if (searchIcon && searchInput) {
         searchIcon.addEventListener('click', () => {
-            searchInput.classList.toggle('search-active');
-            if (searchInput.classList.contains('search-active')) {
-                searchInput.style.display = 'inline-block';
-                searchInput.focus();
-            } else {
-                searchInput.value = '';
-                searchInput.style.display = 'none';
-                renderDocuments(allDocuments, '');
-            }
+            searchInput.classList.add('search-active');
+            searchIcon.classList.add('search-active'); // Add class to icon to hide it
+            searchInput.focus();
         });
         // Also allow keyboard activation for accessibility
         searchIcon.addEventListener('keydown', (e) => {
@@ -367,6 +361,25 @@ async function init() {
         });
     }
 }
+
+// Handle click outside search input/icon to hide
+document.addEventListener('click', (event) => {
+    // Check if the search input is active and it's a desktop view
+    if (searchInput && searchInput.classList.contains('search-active') && window.innerWidth >= 768) {
+        const isClickInsideSearchInput = searchInput.contains(event.target);
+        const isClickInsideSearchIcon = searchIcon.contains(event.target);
+
+        if (!isClickInsideSearchInput && !isClickInsideSearchIcon) {
+            // Click is outside both, hide the search input
+            searchInput.classList.remove('search-active');
+            searchIcon.classList.remove('search-active'); // Make search icon visible again
+            searchInput.value = ''; // Clear input on hide
+            // The display change will be handled by CSS transitions/classes
+            renderDocuments(allDocuments, ''); // Re-render with all documents
+        }
+    }
+});
+
 
 // Start when DOM is loaded
 // Ensure this runs only if we are on the correct page
