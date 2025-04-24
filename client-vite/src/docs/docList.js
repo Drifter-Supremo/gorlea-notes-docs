@@ -339,7 +339,10 @@ async function init() {
         searchIcon.addEventListener('click', () => {
             searchInput.classList.add('search-active');
             searchIcon.classList.add('search-active'); // Add class to icon to hide it
-            searchInput.focus();
+            // Add a small delay to ensure the element is visible before focusing
+            setTimeout(() => {
+                searchInput.focus();
+            }, 100); // Increased delay
         });
         // Also allow keyboard activation for accessibility
         searchIcon.addEventListener('keydown', (e) => {
