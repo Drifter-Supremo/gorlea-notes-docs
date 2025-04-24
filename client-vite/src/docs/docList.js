@@ -120,50 +120,25 @@ function renderDocumentList(documents, docListElement) { // Accept docListElemen
                 <!-- Removed doc-meta div -->
             </div>
             <div class="doc-actions">
-                <button class="doc-action-archive" data-id="${doc.id}" title="Archive Document">💾</button>
                 <button class="doc-action-delete" data-id="${doc.id}" title="Delete Document">🗑️</button>
-                <div class="doc-arrow" title="Open Document">→</div>
             </div>
         `;
 
-        // Navigate to editor when clicking the main card area (excluding action buttons)
+        // Navigate to editor when clicking the main card area (excluding delete button)
         docCard.addEventListener('click', (event) => {
-            // Prevent navigation if an action button OR the arrow inside doc-actions is clicked
-            if (event.target.closest('.doc-action-archive') ||
-                event.target.closest('.doc-action-delete') ||
-                event.target.closest('.doc-arrow')) {
+            if (event.target.closest('.doc-action-delete')) {
                 return;
             }
-            // Navigate if clicking anywhere else on the card (like the title area)
-            // The editor path is relative to the current /docs/ path, so no change needed here
             window.location.href = `editor.html?id=${doc.id}`;
         });
 
-        // Add listeners specifically to the buttons
-        const archiveBtn = docCard.querySelector('.doc-action-archive');
+        // Add listener to the delete button
         const deleteBtn = docCard.querySelector('.doc-action-delete');
-        // Add listener to the arrow for navigation (now it's inside doc-actions)
-        const arrowDiv = docCard.querySelector('.doc-arrow');
-
-        if (archiveBtn) {
-            archiveBtn.addEventListener('click', (event) => {
-                // event.stopPropagation(); // Not strictly needed if main listener checks target
-                handleArchive(doc.id, docCard);
-            });
-        }
-
         if (deleteBtn) {
             deleteBtn.addEventListener('click', (event) => {
-                // event.stopPropagation(); // Not strictly needed if main listener checks target
+                // Prevent card click from firing
+                event.stopPropagation();
                 handleDelete(doc.id, docCard);
-            });
-        }
-
-        if (arrowDiv) {
-            arrowDiv.addEventListener('click', (event) => {
-                // event.stopPropagation(); // Not strictly needed if main listener checks target
-                // The editor path is relative to the current /docs/ path, so no change needed here
-                window.location.href = `editor.html?id=${doc.id}`;
             });
         }
 

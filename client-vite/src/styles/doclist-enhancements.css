@@ -108,9 +108,7 @@
 }
 
 /* Action button styling */
-.doc-action-archive,
-.doc-action-delete,
-.doc-arrow {
+.doc-action-delete {
     /* Common button styles */
     background-color: rgba(42, 45, 62, 0.6); /* Match editor button style */
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -126,38 +124,12 @@
     font-size: 1rem;
 }
 
-/* Archive button hover state */
-.doc-action-archive:hover {
-    color: var(--color-accent);
-    border-color: var(--color-accent);
-    background-color: rgba(255, 215, 0, 0.15); /* More pronounced highlight */
-    transform: translateY(-2px);
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-}
-
 /* Delete button hover state */
 .doc-action-delete:hover {
     color: #ff6b6b;
     border-color: #ff6b6b;
     background-color: rgba(255, 107, 107, 0.15); /* More pronounced highlight */
     transform: translateY(-2px);
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Arrow button styling */
-.doc-arrow {
-    color: var(--color-accent);
-    background-color: rgba(255, 215, 0, 0.1); /* Gold tinted background */
-    border-color: rgba(255, 215, 0, 0.2); /* Gold tinted border */
-    width: 34px; /* Slightly wider */
-    height: 34px; /* Slightly taller */
-}
-
-.doc-arrow:hover {
-    color: var(--color-accent);
-    border-color: var(--color-accent);
-    background-color: rgba(255, 215, 0, 0.2); /* More pronounced highlight */
-    transform: translateX(3px) translateY(-2px); /* Combined movement */
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
