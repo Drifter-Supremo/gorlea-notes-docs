@@ -119,6 +119,19 @@ Production Testing & Refinement (Railway) - Mostly Complete
 
 ## Recent Changes
 
+- **(April 24, 2025)** Implemented Document List Search Feature & Fixes:
+    - **Goal:** Implement dynamic search for the desktop docs list and fix related issues.
+    - **Implementation:**
+        - Added search icon, input field, and client-side filtering logic to `client-vite/src/docs/docList.js`.
+        - Created new CSS file `client-vite/src/styles/doclist-enhancements.css` for search bar styling and icon reveal animation.
+        - Modified `client-vite/docs/index.html` to include the search icon and input elements.
+    - **Fixes:**
+        - Resolved `ReferenceError: renderDocuments is not defined` in `client-vite/src/docs/docList.js` by ensuring the function was correctly scoped.
+        - Reverted unintended design changes to document cards in `client-vite/src/styles/docs.css` by removing conflicting styles related to size, font, buttons, and metadata.
+        - Extended search functionality in `client-vite/src/docs/docList.js` to include searching within document content fetched from the backend by modifying the filtering logic.
+        - Updated `server/utils/firestore.js` to ensure document content is included when fetching documents for the list view.
+    - **Files Modified:** `client-vite/docs/index.html`, `client-vite/src/docs/docList.js`, `client-vite/src/styles/doclist-enhancements.css`, `client-vite/src/styles/docs.css`, `server/utils/firestore.js`.
+
 - **(April 20, 2025)** Replicated Mobile Header/Drawer & Fixed UI Issues:
     - **Goal:** Apply consistent mobile navigation (header/drawer) from Chat to Docs List and Editor pages.
     - **Implementation:**

@@ -123,6 +123,7 @@ PORT=3000
   - Chat message persistence via `localStorage`
   - "New Chat" button functionality
 - Document list view
+  - **Document Search:** Implemented a dynamic search feature for the desktop view, allowing filtering by document title and content with highlighting of search terms in titles.
 - Rich text editor (Tiptap)
   - Implemented paste sanitization (`transformPastedHTML`) to clean content from sources like Google Docs.
   - Adjusted CSS (`docs.css`) for consistent line spacing.
@@ -258,7 +259,7 @@ PORT=3000
 - **User:**
   - `GET /api/user/me`
 - **Documents:**
-  - `GET /api/docs`
+  - `GET /api/docs` - Now includes document `content` in the response for the list view to support client-side search.
   - `POST /api/docs`
   - `GET /api/docs/:id`
   - `PUT /api/docs/:id`

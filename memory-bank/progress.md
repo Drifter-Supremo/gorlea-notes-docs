@@ -290,6 +290,13 @@ To be implemented:
 - Critical Path: Auto-save → Delete → Tiptap Integration
 
 ## Recent Updates
+- **(April 24, 2025)** Implemented Document List Search Feature & Fixes:
+    - Implemented dynamic search (icon reveal, input, client-side filtering) for desktop docs list (`client-vite/docs/index.html`, `client-vite/src/docs/docList.js`, new `client-vite/src/styles/doclist-enhancements.css`).
+    - Fixed `ReferenceError: renderDocuments is not defined` in `client-vite/src/docs/docList.js`.
+    - Reverted unintended design changes to document cards (size, font, buttons, metadata) in `client-vite/src/styles/docs.css` to match original style.
+    - Extended search functionality to include document content by modifying `client-vite/src/docs/docList.js` and `server/utils/firestore.js`.
+    - Files: `client-vite/docs/index.html`, `client-vite/src/docs/docList.js`, `client-vite/src/styles/doclist-enhancements.css`, `client-vite/src/styles/docs.css`, `server/utils/firestore.js`.
+
 - **(April 20, 2025)** Replicated Mobile Header/Drawer & Fixed UI Issues:
     - Applied consistent mobile navigation (header/drawer) from Chat to Docs List and Editor pages.
     - Replicated HTML, added shared JS logic, and appended mobile CSS.

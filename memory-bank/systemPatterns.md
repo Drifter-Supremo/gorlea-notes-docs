@@ -113,7 +113,20 @@ flowchart TD
     - A side navigation panel (`#side-nav`) slides in from the right when the hamburger icon is clicked.
     - Contains key navigation links (e.g., New Document, Logout, User Email).
     - Shared JavaScript logic handles the toggle mechanism (`chat.js`, `docList.js`, `editor.js`).
-- **Implementation:** Requires specific HTML structure, CSS media queries (`main.css`, `docs.css`), and JavaScript event listeners.
+    - Implementation: Requires specific HTML structure, CSS media queries (`main.css`, `docs.css`), and JavaScript event listeners.
+
+### 8. Document List Search Pattern (Implemented April 24, 2025)
+- **Goal:** Enable users to quickly find documents within the desktop view of the document list.
+- **Implementation:**
+    - **UI:** A search icon and input field are added to the header (`client-vite/docs/index.html`).
+    - **Styling:** Search-specific styles are managed in a dedicated CSS file (`client-vite/src/styles/doclist-enhancements.css`).
+    - **Client-side Logic (`client-vite/src/docs/docList.js`):**
+        - Toggles the visibility of the search input field.
+        - Implements input debouncing to optimize filtering performance.
+        - Filters the displayed document list based on matching text in both the document `title` and `content`.
+        - Renders the filtered list dynamically.
+        - Highlights the matching text within the document titles in the displayed list.
+- **Backend Integration:** Requires the backend `/api/docs` endpoint to include the `content` field in the document list response.
 
 ## Core Design Patterns
 
