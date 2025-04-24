@@ -150,8 +150,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (response.ok) {
                     console.log('Login successful:', data.message || 'OK');
-                    // Successful login, redirect to chat page
-                    window.location.href = '/chat.html';
+                    // Determine where to redirect after login
+                    const params = new URLSearchParams(window.location.search);
+                    const redirect = params.get('redirect');
+                    if (redirect) {
+                        window.location.href = redirect;
+                    } else {
+                        // Check if the referrer was the docs list
+                        try {
+                            const ref = document.referrer || '';
+                            if (ref.includes('/docs/index.html')) {
+                                window.location.href = '/docs/index.html';
+                                return;
+                            }
+                        } catch {}
+                        window.location.href = '/chat.html';
+                    }
                 } else {
                     // Handle specific error statuses or use the message from the backend
                     console.error('Login failed:', data.message || `HTTP error ${response.status}`);
