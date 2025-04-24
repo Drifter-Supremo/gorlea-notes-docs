@@ -30,61 +30,107 @@
 /* Document List Layout Improvements */
 .docs-list {
     display: grid;
-    gap: 1rem; /* Original gap between cards */
-    padding: 0.5rem;
+    gap: 1.5rem; /* Increased gap between cards */
+    /* Remove padding - alignment is handled by .docs-main padding */
+    /* padding: 1rem; */
     animation: fadeIn 0.5s ease-out;
 }
 
-/* Document Card - Original Styling */
+/* Document Card Enhancements */
 .doc-card {
-    background-color: rgba(37, 37, 56, 0.8);
+    background-color: rgba(37, 37, 56, 0.8); /* Slightly darker than before */
     border-radius: 8px;
-    padding: 0.75rem 1rem; /* Original smaller padding */
+    padding: 1.25rem 1.5rem; /* Increased padding */
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.05); /* Original subtle border */
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Original shadow */
+    border: 1px solid rgba(255, 255, 255, 0.08); /* More visible border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* More pronounced shadow */
     position: relative;
+    overflow: hidden; /* For the shine effect */
 }
 
-/* Original hover effects */
+/* Enhanced hover effects */
 .doc-card:hover {
-    background-color: rgba(42, 45, 62, 0.6);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border-color: rgba(255, 215, 0, 0.15);
+    background-color: rgba(42, 45, 62, 0.9); /* More contrast on hover */
+    transform: translateY(-3px); /* More pronounced lift */
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2); /* Larger shadow on hover */
+    border-color: rgba(255, 215, 0, 0.25); /* Gold-tinted border on hover */
 }
 
-/* Document title styling - Original */
+/* Shine effect on hover */
+.doc-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.05),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.doc-card:hover::after {
+    left: 100%;
+}
+
+/* Document content structure */
+.doc-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* Increased gap between title and metadata */
+}
+
+/* Document title styling */
 .doc-title {
-    font-weight: 500; /* Original weight */
+    font-weight: 600; /* Bolder title */
     color: var(--color-text);
-    font-size: 1rem; /* Original size */
-    margin: 0;
+    font-size: 1.1rem; /* Slightly larger title */
+    letter-spacing: 0.01em; /* Subtle letter spacing for readability */
 }
 
-/* Action button styling - Original */
-.action-button {
-    background-color: transparent;
-    border: none;
-    border-radius: 4px;
+/* Document metadata styling - REMOVED */
+
+/* Document actions container */
+.doc-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* Consistent spacing */
+    flex-shrink: 0;
+}
+
+/* Action button styling */
+.doc-action-delete {
+    /* Common button styles */
+    background-color: rgba(42, 45, 62, 0.6); /* Match editor button style */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px; /* Match editor button radius */
     cursor: pointer;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.8); /* Brighter text for better visibility */
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px; /* Original size */
-    height: 28px; /* Original size */
-    padding: 0;
+    width: 32px; /* Larger buttons */
+    height: 32px; /* Larger buttons */
+    font-size: 1rem;
 }
 
 /* Delete button hover state */
-.delete-button:hover {
+.doc-action-delete:hover {
     color: #ff6b6b;
+    border-color: #ff6b6b;
+    background-color: rgba(255, 107, 107, 0.15); /* More pronounced highlight */
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Enhanced New Document Button */
@@ -151,86 +197,23 @@
 
 /* Media queries for responsiveness */
 @media (max-width: 768px) {
+    .doc-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
     .doc-card {
-        padding: 0.75rem 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .doc-actions {
+        margin-top: 1rem;
+        width: 100%;
+        justify-content: flex-end;
     }
     
     .new-doc-button {
         width: 100%;
     }
-}
-
-/* === Document List Search Enhancements (Desktop Only) === */
-#search-icon,
-#doc-search-input,
-#no-results-message {
-    display: none;
-}
-
-@media (min-width: 768px) {
-    #search-icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin-left: 1rem;
-        color: #bbb;
-        cursor: pointer;
-        font-size: 1.2rem;
-        transition: color 0.2s;
-        outline: none;
-        background: none;
-        border: none;
-        padding: 0 0.25rem;
-        height: 2.2rem;
-        width: 2.2rem;
-    }
-    #search-icon:focus,
-    #search-icon:hover {
-        color: var(--color-accent, #ffd700);
-    }
-    #doc-search-input {
-        display: none;
-        margin-left: 0.5rem;
-        padding: 0.4rem 0.8rem;
-        font-size: 1rem;
-        border: 1.5px solid #bbb;
-        border-radius: 6px;
-        background: #23233a;
-        color: #fff;
-        min-width: 220px;
-        max-width: 320px;
-        transition: border-color 0.2s, box-shadow 0.2s;
-        outline: none;
-    }
-    #doc-search-input.search-active {
-        display: inline-block;
-        border-color: var(--color-accent, #ffd700);
-        box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.15);
-    }
-    #no-results-message {
-        display: block;
-        color: #ff6b6b;
-        font-size: 1.1rem;
-        font-weight: 500;
-        margin: 2rem 0 0 0;
-        text-align: center;
-        background: rgba(37, 37, 56, 0.7);
-        border-radius: 8px;
-        padding: 2rem;
-        border: 1px dashed #ff6b6b33;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        animation: fadeIn 0.4s;
-    }
-    #no-results-message[style*="display: none"] {
-        display: none !important;
-    }
-}
-
-/* Highlighted search match */
-.highlight {
-    background: #ffd700;
-    color: #23233a !important;
-    border-radius: 3px;
-    padding: 0 2px;
-    font-weight: 700;
 }

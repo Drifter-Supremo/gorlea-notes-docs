@@ -15,6 +15,15 @@
             <div class="header-content">
                 <!-- Logo -->
                 <img src="/gorlea-logo.png" alt="Gorlea Logo" class="logo" style="width: 40px; height: 40px;"> <!-- Kept existing logo -->
+                <!-- Search Icon and Input (Desktop Only) -->
+                <span id="search-icon" class="desktop-only" title="Search documents" tabindex="0" aria-label="Search">
+                    <!-- Simple SVG search icon -->
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" style="vertical-align: middle;">
+                        <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="2"/>
+                        <line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </span>
+                <input type="search" id="doc-search-input" class="desktop-only" placeholder="Search documents..." autocomplete="off" style="display: none;" aria-label="Search documents">
                 <!-- Desktop Navigation Buttons (Desktop Only) -->
                 <div class="desktop-nav desktop-only">
                     <a href="/chat.html" class="button button-accent">Gorlea Notes</a> <!-- Open in same tab -->
@@ -48,6 +57,11 @@
             <!-- Container for the actual list -->
             <div id="doc-list" class="docs-list">
                 <!-- Document cards will be rendered here by JS -->
+            </div>
+
+            <!-- No results message for search (desktop only) -->
+            <div id="no-results-message" class="desktop-only" style="display: none; text-align: center; padding: 2rem;">
+                No documents match your search.
             </div>
 
             <!-- Message shown when no documents are found -->

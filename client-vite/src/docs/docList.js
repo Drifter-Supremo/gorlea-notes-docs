@@ -10,6 +10,12 @@ import '../styles/doclist-enhancements.css'; // Import document list enhancement
 const docList = document.getElementById('doc-list');
 const noDocsMessage = document.getElementById('no-docs-message');
 const newDocButton = document.querySelector('.new-doc-button');
+const searchIcon = document.getElementById('search-icon');
+const searchInput = document.getElementById('doc-search-input');
+const noResultsMessage = document.getElementById('no-results-message');
+
+let allDocuments = [];
+let debounceTimer;
 
 const hamburgerMenu = document.getElementById('hamburger-menu');
 const mobileNav     = document.getElementById('mobile-nav');
@@ -100,52 +106,102 @@ async function createNewDocument() {
 }
 
 // Render document list
-function renderDocumentList(documents, docListElement) { // Accept docListElement
-    // Removed guard clauses for global elements
-    if (!docListElement) {
-        console.error("renderDocumentList called without docListElement");
-        return;
-    }
-    // Removed empty state logic from here, handled in init
+// (Old renderDocumentList function removed; replaced by renderDocuments)
 
-    docListElement.innerHTML = ''; // Clear previous content
-    documents.forEach(doc => {
-        const docCard = document.createElement('div');
-        docCard.className = 'doc-card';
+/**
+ * Highlight search matches in the given text.
+ * @param {string} text
+ * @param {string} query
+ * @returns {string} HTML string with <span class="highlight">...</span> around matches
+ */
+function highlightMatches(text, query) {
+    if (!query || !query.trim()) return text;
+    // Escape regex special characters in query
+    const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(escaped, 'gi');
+    return text.replace(regex, match => `<span class="highlight">${match}</span>`);
+}
 
-        // Simplified Structure: doc-main for title, doc-actions for buttons + arrow
-        docCard.innerHTML = `
-            <div class="doc-main">
-                <div class="doc-title">${doc.title || 'Untitled Document'}</div>
-                <!-- Removed doc-meta div -->
-            </div>
-            <div class="doc-actions">
-                <button class="doc-action-delete" data-id="${doc.id}" title="Delete Document">🗑️</button>
-            </div>
-        `;
-
-        // Navigate to editor when clicking the main card area (excluding delete button)
-        docCard.addEventListener('click', (event) => {
-            if (event.target.closest('.doc-action-delete')) {
-                return;
-            }
-            window.location.href = `editor.html?id=${doc.id}`;
-        });
-
-        // Add listener to the delete button
-        const deleteBtn = docCard.querySelector('.doc-action-delete');
-        if (deleteBtn) {
-            deleteBtn.addEventListener('click', (event) => {
-                // Prevent card click from firing
-                event.stopPropagation();
-                handleDelete(doc.id, docCard);
-            });
-        }
-
-        docListElement.appendChild(docCard); // Use the passed element
+/**
+ * Filter allDocuments by query (case-insensitive, matches in title).
+ * @param {string} query
+ * @returns {Array}
+ */
+function filterDocuments(query) {
+    if (!query || !query.trim()) return allDocuments;
+    const q = query.trim().toLowerCase();
+    return allDocuments.filter(doc => {
+        const titleMatch = (doc.title || '').toLowerCase().includes(q);
+        // Assuming doc.content exists and is a string. If not, this needs adjustment
+        // based on how content is fetched/stored.
+        const contentMatch = (doc.content || '').toLowerCase().includes(q);
+        return titleMatch || contentMatch;
     });
 }
 
+/**
+ * Renders the list of documents or a 'no results' message.
+ * @param {Array} documents - The array of document objects to render.
+ * @param {string} query - The current search query for highlighting.
+ */
+function renderDocuments(documents, query) {
+    // Ensure DOM elements are accessible (might be better to pass them or ensure they are global)
+    const docList = document.getElementById('doc-list');
+    const noResultsMessage = document.getElementById('no-results-message');
+
+    if (!docList || !noResultsMessage) {
+        console.error("Required elements for rendering not found (#doc-list, #no-results-message).");
+        return;
+    }
+
+    // Clear previous list content
+    docList.innerHTML = '';
+
+    if (documents.length === 0) {
+        docList.style.display = 'none'; // Hide the list container
+        if (query && query.trim()) {
+            noResultsMessage.textContent = `No documents found matching "${query}".`;
+            noResultsMessage.style.display = 'block'; // Show no results message
+        } else {
+            // If no query and no documents, the main 'noDocsMessage' should be shown by init()
+            // We just ensure the 'no results' specific message is hidden here.
+            noResultsMessage.style.display = 'none';
+        }
+    } else {
+        docList.style.display = 'grid'; // Show the list container (using grid as per init)
+        noResultsMessage.style.display = 'none'; // Hide no results message
+
+        documents.forEach(doc => {
+            const card = document.createElement('div');
+            card.classList.add('doc-card');
+            card.dataset.docId = doc.id; // Store doc ID for actions
+
+            // Title with highlighting
+            const titleHtml = highlightMatches(doc.title || 'Untitled Document', query);
+
+            card.innerHTML = `
+                <h3 class="doc-title">${titleHtml}</h3>
+                <button class="action-button delete-button" title="Delete Permanently">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                </button>
+            `;
+
+            // Add event listener for delete button
+            card.querySelector('.delete-button').addEventListener('click', (e) => {
+                e.stopPropagation();
+                handleDelete(doc.id, card);
+            });
+
+            // Make the whole card clickable to edit (optional, can be removed if only buttons are desired)
+            card.addEventListener('click', () => {
+                 window.location.href = `editor.html?id=${doc.id}`;
+            });
+
+
+            docList.appendChild(card);
+        });
+    }
+}
 // Handle archiving a document
 async function handleArchive(docId, cardElement) {
     console.log(`Archive clicked for doc: ${docId}`);
@@ -237,9 +293,6 @@ async function handleDelete(docId, cardElement) {
 
 // Initialize
 async function init() {
-    // Select elements within init
-    // DOM elements now defined at top level
-
     // Guard clause if essential elements aren't found
     if (!docList || !noDocsMessage || !newDocButton) {
         console.error("Essential DOM elements (#doc-list, #no-docs-message, .new-doc-button) not found.");
@@ -252,26 +305,66 @@ async function init() {
     // Initial state: hide list and message
     docList.style.display = 'none';
     noDocsMessage.style.display = 'none';
+    if (noResultsMessage) noResultsMessage.style.display = 'none';
 
     try {
         const documents = await fetchDocuments();
+        allDocuments = Array.isArray(documents) ? documents : [];
 
-        if (documents.length === 0) {
-            // No documents: show message, hide list
+        if (allDocuments.length === 0) {
+            // No documents: show message, hide list and search
             noDocsMessage.style.display = 'block';
             docList.style.display = 'none';
+            if (noResultsMessage) noResultsMessage.style.display = 'none';
+            if (searchIcon) searchIcon.style.display = 'none';
+            if (searchInput) searchInput.style.display = 'none';
         } else {
-            // Documents exist: hide message, show list, render docs
+            // Documents exist: hide message, show list, render docs, show search
             noDocsMessage.style.display = 'none';
-            docList.style.display = 'grid'; // Or 'block' based on your CSS
-            renderDocumentList(documents, docList); // Pass the list element
+            docList.style.display = 'grid';
+            if (searchIcon) searchIcon.style.display = '';
+            if (searchInput) searchInput.style.display = '';
+            renderDocuments(allDocuments, '');
         }
     } catch (error) {
         // Error fetching: log error, hide both list and message
         console.error("Initialization failed:", error);
         docList.style.display = 'none';
         noDocsMessage.style.display = 'none';
-        // Optionally show a generic error message here if needed in the future
+        if (noResultsMessage) noResultsMessage.style.display = 'none';
+    }
+
+    // --- Search UI logic (desktop only) ---
+    if (searchIcon && searchInput) {
+        searchIcon.addEventListener('click', () => {
+            searchInput.classList.toggle('search-active');
+            if (searchInput.classList.contains('search-active')) {
+                searchInput.style.display = 'inline-block';
+                searchInput.focus();
+            } else {
+                searchInput.value = '';
+                searchInput.style.display = 'none';
+                renderDocuments(allDocuments, '');
+            }
+        });
+        // Also allow keyboard activation for accessibility
+        searchIcon.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                searchIcon.click();
+            }
+        });
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                const query = searchInput.value;
+                const filtered = filterDocuments(query);
+                renderDocuments(filtered, query);
+            }, 300);
+        });
     }
 }
 

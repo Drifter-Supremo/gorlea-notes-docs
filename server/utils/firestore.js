@@ -65,7 +65,8 @@ const firestoreUtils = {
                     id: doc.id,
                     title: data.title || 'Untitled Document', // Provide default title if missing
                     createdAt: data.createdAt || null, // Include createdAt timestamp
-                    lastOpenedAt: data.lastOpenedAt || data.createdAt || null // Include lastOpenedAt, fallback to createdAt
+                    lastOpenedAt: data.lastOpenedAt || data.createdAt || null, // Include lastOpenedAt, fallback to createdAt
+                    content: data.content || '' // Include content, default to empty string if missing
                 };
             });
         } catch (error) {

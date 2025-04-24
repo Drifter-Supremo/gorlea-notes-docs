@@ -1,0 +1,701 @@
+/* Timestamp separator styling */
+.timestamp-separator {
+  margin-top: 1em;        /* subtle space above timestamp */
+  margin-bottom: 0.2em;   /* minimal space below timestamp */
+  font-style: italic;
+    display: flex;
+    flex-direction: column;
+}
+
+.docs-header {
+    /* Revert to original padding */
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 10;
+}
+/* Re-use header-content style from main.css if needed, or define here */
+.docs-header .header-content {
+    max-width: var(--max-width);
+    /* Revert to original margin: auto */
+    margin: 0 auto;
+    /* Remove horizontal padding added previously */
+    /* padding: 0 1.5rem; */
+    display: flex;
+    align-items: center;
+    /* Revert gap change */
+    gap: 0.5rem; /* Further reduced gap between items */
+    height: 2.5rem; /* Consistent height for header content */
+}
+.docs-header .logo {
+    width: 36px; /* Slightly smaller logo */
+    height: 36px;
+    transition: transform 0.3s ease;
+}
+
+.docs-header .logo:hover {
+    transform: scale(1.05);
+}
+
+/* Header specific button styling */
+.docs-header .button-accent,
+.docs-header .button {
+    height: 2rem; /* Smaller height for header buttons */
+    font-size: 0.85rem; /* Smaller font for header buttons */
+    padding: 0 0.85rem; /* Reduced horizontal padding */
+}
+
+/* Specific styling for the home button */
+.docs-header .docs-home-button {
+    margin-left: auto; /* Push to right if there's space */
+}
+
+.docs-main {
+    flex: 1;
+    max-width: var(--max-width);
+    margin: 2.5rem auto;
+    /* padding: 0 1.5rem; */ /* Removed horizontal padding */
+    width: 100%;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Subtle background pattern */
+body {
+    background-image: linear-gradient(rgba(30, 30, 46, 0.97) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(30, 30, 46, 0.97) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: center;
+    background-attachment: fixed;
+}
+.docs-actions {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: flex-start; /* Align button to the start */
+    align-items: center;
+}
+
+/* Shared Accent Button Style */
+.button-accent {
+    background-color: var(--color-accent); /* Gold */
+    color: var(--color-secondary); /* Deep blue */
+    border: none;
+    border-radius: 6px; /* Smaller, more consistent corner radius */
+    padding: 0.5rem 1rem; /* Reduced padding for smaller button size */
+    font-size: 0.9rem; /* Smaller font size */
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none; /* For <a> tags used as buttons */
+    display: inline-flex; /* Better for alignment */
+    align-items: center; /* Center text vertically */
+    justify-content: center; /* Center text horizontally */
+    height: 2.2rem; /* Consistent height */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* More subtle shadow */
+    line-height: 1; /* Ensure even text placement */
+}
+
+.button-accent:hover {
+    background-color: color-mix(in srgb, var(--color-accent) 90%, white 10%); /* Slightly lighter on hover */
+    transform: translateY(-1px); /* Subtle lift effect */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.button-accent:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    background-color: color-mix(in srgb, var(--color-accent) 80%, black 20%); /* Darker when clicked */
+}
+
+/* Focus state for accessibility */
+.button-accent:focus {
+    outline: 2px solid rgba(255, 215, 0, 0.5);
+    outline-offset: 2px;
+}
+
+/* Specific Styles for the New Document Button */
+.new-doc-button {
+    /* Inherits from .button-accent */
+    display: inline-flex; /* Align icon and text */
+    align-items: center;
+    gap: 0.5rem; /* Space between icon and text */
+    width: fit-content; /* Adjust width to content */
+    /* Remove font-size override, inherit from .button-accent */
+    /* font-size: 1.1rem; */
+    /* Remove padding override, inherit from .button-accent */
+    /* padding: 0.85rem 1.75rem; */
+    position: relative;
+    overflow: hidden;
+}
+
+.new-doc-button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(255,255,255,0), rgba(255,255,255,0.1), rgba(255,255,255,0));
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+}
+
+.new-doc-button:hover::after {
+    transform: translateX(100%);
+}
+
+.new-doc-button span {
+    font-size: 1.4rem; /* Make '+' slightly larger */
+    line-height: 1;
+    margin-right: 0.25rem;
+}
+
+/* Document List Styles */
+.docs-list {
+    display: grid;
+    gap: 1.25rem;
+    padding: 0.5rem;
+}
+.doc-card {
+    background-color: var(--color-input-bg); /* Use input background */
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between; /* Keep this */
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05); /* More subtle border */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.doc-card:hover {
+    background-color: rgba(42, 45, 62, 0.6); /* Slightly brighter on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-color: rgba(255, 215, 0, 0.15);
+}
+
+/* Renamed from .doc-content to match HTML */
+.doc-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.doc-title {
+    font-weight: 500;
+    color: var(--color-text);
+    font-size: 1rem;
+}
+
+/* Document arrow styling */
+/* This is automatically taken care of by the updated styles above */
+
+/* Action buttons container */
+.doc-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+/* Individual Action Buttons - much cleaner design */
+.doc-action-archive,
+.doc-action-delete,
+.doc-arrow {
+    /* Common button styles */
+    background-color: rgba(37, 37, 56, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+}
+
+/* Button hover states */
+.doc-action-archive:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    background-color: rgba(255, 215, 0, 0.1);
+}
+
+.doc-action-delete:hover {
+    color: #ff6b6b;
+    border-color: #ff6b6b;
+    background-color: rgba(255, 107, 107, 0.1);
+}
+
+.doc-arrow {
+    color: var(--color-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.doc-arrow:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    background-color: rgba(255, 215, 0, 0.1);
+    transform: translateX(2px);
+}
+
+.empty-state {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 3rem;
+    background-color: rgba(42, 45, 62, 0.3);
+    border-radius: 12px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    margin-top: 1rem;
+}
+
+
+/* Editor Page Specific Styles */
+/* Restore original .editor-container styles */
+.editor-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: rgba(30, 30, 46, 0.7);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    animation: fadeIn 0.5s ease-out;
+}
+
+.editor-header {
+    display: flex;
+    margin-bottom: 2rem;
+    gap: 1rem;
+    align-items: center;
+}
+
+#doc-title {
+    flex: 1;
+    padding: 1rem 1.25rem; /* Increased padding */
+    font-size: 1.4rem;
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Use subtle border */
+    border-radius: 8px;
+    background: var(--color-input-bg); /* Use correct variable */
+    color: var(--color-text); /* Use correct variable */
+    outline: none; /* Remove default outline */
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) inset;
+    font-weight: 500;
+}
+
+#doc-title:focus {
+    border-color: var(--color-primary); /* Highlight on focus */
+    box-shadow: 0 0 0 3px rgba(150, 131, 236, 0.25), 0 4px 12px rgba(0, 0, 0, 0.1) inset;
+}
+
+
+#save-btn {
+    padding: 0.75rem 1.5rem;
+    background: var(--color-primary); /* Use correct variable */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+#save-btn:hover {
+    background: #8673DC; /* Use specific darker shade from main.css */
+}
+
+/* Autosave Status Styling */
+.autosave-status {
+    margin-left: 1rem; /* Space from save button */
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6); /* Muted color */
+    font-style: italic;
+}
+
+/* Remove old textarea styles */
+/* #doc-content { ... } */
+/* #doc-content:focus { ... } */
+
+/* Add Tiptap Editor Styles */
+#editor .ProseMirror {
+  width: 100%;
+  min-height: 60vh; /* Match old textarea height */
+  padding: 1.5rem; /* Increased padding */
+  border: 1px solid rgba(255, 255, 255, 0.15); /* Slightly more visible border */
+  border-radius: 8px; /* Increased border radius */
+  font-size: 1.05rem; /* Slightly larger font */
+  line-height: 1.7; /* Increased line height for readability */
+  background: var(--color-input-bg); /* Match old textarea background */
+  color: var(--color-text); /* Match old textarea color */
+  font-family: inherit; /* Match old textarea font-family */
+  outline: none; /* Match old textarea outline */
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) inset;
+}
+
+#editor .ProseMirror:focus {
+  border-color: var(--color-primary); /* Match old textarea focus */
+  outline: none; /* Ensure no extra browser outline */
+  box-shadow: 0 0 0 3px rgba(150, 131, 236, 0.2), 0 4px 12px rgba(0, 0, 0, 0.1) inset;
+}
+
+/* --- Toolbar Styles --- */
+#editor-toolbar {
+    display: flex;
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    gap: 0.5rem; /* Space between buttons */
+    padding: 0.75rem 1rem; /* Increased padding around the toolbar */
+    margin-bottom: 1.5rem; /* Increased space below toolbar */
+    border: 1px solid rgba(255, 255, 255, 0.15); /* Match editor border */
+    border-radius: 8px; /* Match editor border-radius */
+    background-color: rgba(30, 30, 46, 0.95); /* Slightly transparent */
+    position: sticky; /* Make sticky position */
+    top: 10px; /* Stick to top with spacing */
+    z-index: 1000; /* Ensure it's above content */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+}
+
+/* Floating toolbar styles */
+#editor-toolbar.floating {
+    border-color: rgba(255, 215, 0, 0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.toolbar-button {
+    background: none;
+    border: 1px solid transparent; /* Transparent border for consistent size */
+    color: var(--color-text);
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    line-height: 1;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.toolbar-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.toolbar-button:active,
+.toolbar-button.button-clicked {
+    transform: translateY(1px);
+}
+
+/* Add ripple effect for buttons */
+.button-ripple {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: ripple 0.5s linear;
+}
+
+@keyframes ripple {
+    to {
+        width: 100px;
+        height: 100px;
+        opacity: 0;
+    }
+}
+
+.toolbar-button.is-active {
+    background-color: var(--color-primary); /* Use primary color for active state */
+    color: white; /* Ensure text is readable on primary bg */
+    box-shadow: 0 2px 6px rgba(150, 131, 236, 0.3);
+}
+
+.toolbar-button:disabled {
+    color: rgba(255, 255, 255, 0.3); /* Muted color for disabled */
+    cursor: not-allowed;
+    background-color: transparent; /* Ensure no hover effect */
+}
+
+/* Style SVGs within toolbar buttons */
+.toolbar-button svg {
+    width: 20px; /* Increased size */
+    height: 20px;
+    fill: currentColor; /* Make SVG inherit button text color */
+    vertical-align: middle; /* Align icon nicely if it ever sits beside text */
+    display: block; /* Ensure SVG takes block space for sizing */
+    transition: transform 0.2s ease;
+}
+
+.toolbar-button:hover svg {
+    transform: scale(1.1);
+}
+
+/* --- End Toolbar Styles --- */
+
+/* Optional: Basic styling for Tiptap content */
+/* Reset top margin for pasted content consistency */
+.ProseMirror * {
+  margin-top: 0;
+}
+
+#editor .ProseMirror p {
+    line-height: 1.5; /* Consistent line height */
+    margin-bottom: 12px; /* Consistent space between paragraphs */
+}
+#editor .ProseMirror h1,
+#editor .ProseMirror h2,
+#editor .ProseMirror h3,
+#editor .ProseMirror h4,
+#editor .ProseMirror h5,
+#editor .ProseMirror h6 {
+    margin-top: 1.5em; /* Adjusted top margin */
+    margin-bottom: 12px; /* Consistent bottom margin */
+    line-height: 1.3; /* Keep header line height tighter */
+    color: var(--color-text);
+}
+
+#editor .ProseMirror h1 {
+    font-size: 1.8em;
+    color: var(--color-accent);
+    border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+    padding-bottom: 0.25em;
+}
+
+#editor .ProseMirror h2 {
+    font-size: 1.5em;
+    color: var(--color-primary);
+}
+
+#editor .ProseMirror h3 {
+    font-size: 1.25em;
+}
+
+#editor .ProseMirror ul,
+#editor .ProseMirror ol {
+    padding-left: 1.75rem;
+    margin-bottom: 1.25em;
+}
+
+#editor .ProseMirror li {
+    line-height: 1.5; /* Consistent line height */
+    margin-bottom: 6px; /* Consistent, slightly tighter space for list items */
+}
+
+#editor .ProseMirror blockquote {
+    border-left: 4px solid var(--color-primary);
+    margin-left: 1rem;
+    padding: 0.5rem 0 0.5rem 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(150, 131, 236, 0.05);
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 1.25em;
+}
+
+#editor .ProseMirror pre {
+    background: rgba(0, 0, 0, 0.3);
+    color: #f1f1f1;
+    font-family: 'JetBrainsMono', monospace;
+    padding: 1rem 1.25rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.25em;
+    white-space: pre-wrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) inset;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+#editor .ProseMirror code {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 0.25em;
+    padding: 0.2em 0.4em;
+    font-size: 0.9em;
+    font-family: 'JetBrainsMono', monospace;
+    color: var(--color-accent);
+}
+
+
+#loading-message {
+    padding: 2rem;
+    background: var(--color-input-bg);
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+#loading-message::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 30%;
+    background: linear-gradient(90deg,
+        var(--color-accent),
+        var(--color-primary),
+        var(--color-accent));
+    animation: loadingBar 2s infinite;
+    background-size: 200% 100%;
+}
+
+@keyframes loadingBar {
+    0% { width: 0%; left: 0; }
+    50% { width: 30%; left: 35%; }
+    100% { width: 0%; left: 100%; }
+}
+
+#error-message {
+    padding: 1.25rem;
+    background: rgba(255, 68, 68, 0.1); /* Use a subtle error background */
+    color: #ff6b6b; /* Use a distinct error color */
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    border-left: 4px solid #ff6b6b; /* Use error color for border */
+    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.1);
+    font-weight: 500;
+}
+
+/* Add animations for better visual feedback */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+    .docs-header .header-content {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .docs-header .logo {
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+    
+    .docs-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .new-doc-button {
+        width: 100%;
+        justify-content: center;
+      /* --- Enhanced mobile fixes for docs/editor layout --- */
+      .header-content {
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 0.5rem;
+      }
+      .gorlea-button,
+      .docs-home-button,
+      .button-accent {
+        width: 100%;
+        margin-bottom: 0.5rem;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+      .user-email-indicator {
+        font-size: 0.95rem;
+        word-break: break-all;
+        margin-bottom: 0.5rem;
+      }
+      .docs-header {
+        padding: 0.5rem 0.5rem 0 0.5rem;
+      }
+      .docs-app, .docs-main, .editor-container {
+        padding: 0.5rem 0.25rem 5.5rem 0.25rem;
+        min-height: 100vh;
+        box-sizing: border-box;
+      }
+      .doc-card {
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+      #editor, .ProseMirror {
+        font-size: 1rem;
+        padding: 0.5rem;
+        min-height: 300px;
+        box-sizing: border-box;
+        overflow-y: auto;
+        max-height: calc(100vh - 12rem);
+      }
+      .editor-toolbar {
+        flex-wrap: wrap;
+        overflow-x: auto;
+        gap: 0.5rem;
+      }
+    }
+    
+    #editor-toolbar {
+        justify-content: center;
+    }
+  /* Additional mobile toolbar/editor layout overrides */
+  .editor-toolbar {
+    flex-wrap: wrap;
+    overflow-x: auto;
+  }
+  .editor-toolbar button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Remove opacity change on error, hiding wrapper is enough */
+/* #error-message:not(.hidden) + #doc-content,
+#error-message:not(.hidden) ~ .editor-header {
+    opacity: 0.5;
+    pointer-events: none;
+} */
+
+/* Keep .hidden rule for error message logic */
+.hidden {
+    display: none;
+}
+
+/* Remove redundant dark mode query */
+/* @media (prefers-color-scheme: dark) {
+    .editor-container {
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+} */
+
+/* === Mobile header & drawer cloned from chat === */
+@media (max-width:768px){
+  header.docs-header{position:fixed;top:0;left:0;right:0;
+    height:var(--header-height);background:var(--color-background);
+    z-index:950;border-bottom:1px solid rgba(255,255,255,.1);
+    padding:0.5rem 0.5rem 0 0.5rem}
+  .docs-header .header-content{display:flex;justify-content:space-between;
+    align-items:center;height:100%;padding:0 .75rem}
+  #hamburger-menu.mobile-only{display:flex;width:44px;height:44px;
+    border-radius:50%;font-size:1.6rem;
+    background:var(--color-accent);color:var(--color-secondary)}
+  .docs-header .logo{margin-left:0}
+  .desktop-nav.desktop-only{display:none!important}
+  .desktop-only{display:none!important}
+  #mobile-nav.mobile-nav{position:fixed;top:0;right:-100%;width:80%;
+    max-width:300px;height:100%;background:var(--color-secondary);
+    padding:70px 1rem 1rem;transition:right .3s ease;z-index:1000;
+    overflow-y:auto}
+  body.mobile-menu-open #mobile-nav{right:0}
+  /* push content below fixed header */
+  .docs-main,.editor-container{padding-top:70px}
+}
