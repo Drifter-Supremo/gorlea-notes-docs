@@ -131,6 +131,7 @@ Production Testing & Refinement (Railway) - Mostly Complete
         - Extended search functionality in `client-vite/src/docs/docList.js` to include searching within document content fetched from the backend by modifying the filtering logic.
         - Updated `server/utils/firestore.js` to ensure document content is included when fetching documents for the list view.
     - **Files Modified:** `client-vite/docs/index.html`, `client-vite/src/docs/docList.js`, `client-vite/src/styles/doclist-enhancements.css`, `client-vite/src/styles/docs.css`, `server/utils/firestore.js`.
+    - Fixed search input autofocus issue by adjusting `setTimeout` delay in `client-vite/src/docs/docList.js`.
 
 - **(April 20, 2025)** Replicated Mobile Header/Drawer & Fixed UI Issues:
     - **Goal:** Apply consistent mobile navigation (header/drawer) from Chat to Docs List and Editor pages.

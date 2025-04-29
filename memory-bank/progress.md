@@ -296,6 +296,7 @@ To be implemented:
     - Reverted unintended design changes to document cards (size, font, buttons, metadata) in `client-vite/src/styles/docs.css` to match original style.
     - Extended search functionality to include document content by modifying `client-vite/src/docs/docList.js` and `server/utils/firestore.js`.
     - Files: `client-vite/docs/index.html`, `client-vite/src/docs/docList.js`, `client-vite/src/styles/doclist-enhancements.css`, `client-vite/src/styles/docs.css`, `server/utils/firestore.js`.
+    - Fixed search input autofocus issue by adjusting `setTimeout` delay in `client-vite/src/docs/docList.js`.
 
 - **(April 20, 2025)** Replicated Mobile Header/Drawer & Fixed UI Issues:
     - Applied consistent mobile navigation (header/drawer) from Chat to Docs List and Editor pages.

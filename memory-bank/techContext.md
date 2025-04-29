@@ -124,6 +124,7 @@ PORT=3000
   - "New Chat" button functionality
 - Document list view
   - **Document Search:** Implemented a dynamic search feature for the desktop view, allowing filtering by document title and content with highlighting of search terms in titles.
+    - Fixed autofocus issue by adjusting `setTimeout` delay in `client-vite/src/docs/docList.js`.
 - Rich text editor (Tiptap)
   - Implemented paste sanitization (`transformPastedHTML`) to clean content from sources like Google Docs.
   - Adjusted CSS (`docs.css`) for consistent line spacing.
