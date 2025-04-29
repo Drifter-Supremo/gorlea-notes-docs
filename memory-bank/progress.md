@@ -76,6 +76,12 @@
 - ✅ Implemented Email/Password Authentication (Register, Login, Logout)
 - ✅ Configured Persistent Session Store (Firestore using `@google-cloud/connect-firestore`)
 - ✅ Fixed User Email Display in Headers (Chat, Docs List, Docs Editor)
+- ✅ Mobile Docs List Search (April 29, 2025)
+  - Exposed and centered the search icon between logo and hamburger on mobile.
+  - Slide-out input with tap-outside-to-close, matching desktop behavior.
+  - Mobile-specific CSS and JS logic for placement, animation, and interaction.
+  - Desktop search remains unchanged.
+  - Files: `client-vite/src/styles/doclist-enhancements.css`, `client-vite/src/styles/docs.css`, `client-vite/src/docs/docList.js`.
 - ✅ Refactored API Base URL Handling (April 6, 2025)
   - Removed `apiBaseUrl` definitions and `VITE_API_BASE_URL` dependency from frontend JS (`auth.js`, `chat.js`, `docs/docList.js`, `docs/editor.js`).
   - Updated all `fetch` calls in frontend JS to use relative paths (e.g., `/api/docs`).

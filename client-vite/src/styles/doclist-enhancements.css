@@ -180,6 +180,30 @@
     display: none;
 }
 
+/* === Mobile search icon overrides === */
+@media (max-width:768px){
+  /* show the icon that was hidden by the base rule */
+  #search-icon{
+    display:flex;          /* overrides base display:none */
+    margin:0 auto;         /* centres between flex items */
+    order:1;               /* keeps desktop order intact */
+  }
+
+  /* make input actually visible when it becomes .search-active */
+  #doc-search-input{
+    display:block;            /* overrides the base display:none */
+  }
+
+  .docs-header .logo   { order:0; }
+  #search-icon         { order:1; margin:0 auto; }
+  #hamburger-menu      { order:2; }
+
+  /* Let flexbox centre the search icon cleanly */
+  .docs-header .header-content{
+    justify-content:space-between;
+  }
+}
+
 @media (min-width: 768px) {
     #search-icon {
         display: inline-flex;

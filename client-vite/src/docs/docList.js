@@ -367,8 +367,8 @@ async function init() {
 
 // Handle click outside search input/icon to hide
 document.addEventListener('click', (event) => {
-    // Check if the search input is active and it's a desktop view
-    if (searchInput && searchInput.classList.contains('search-active') && window.innerWidth >= 768) {
+    // Check if the search input is active (runs on mobile and desktop)
+    if (searchInput && searchInput.classList.contains('search-active')) {
         const isClickInsideSearchInput = searchInput.contains(event.target);
         const isClickInsideSearchIcon = searchIcon.contains(event.target);
 

@@ -119,19 +119,15 @@ Production Testing & Refinement (Railway) - Mostly Complete
 
 ## Recent Changes
 
-- **(April 24, 2025)** Implemented Document List Search Feature & Fixes:
-    - **Goal:** Implement dynamic search for the desktop docs list and fix related issues.
+- **(April 29, 2025)** Mobile Docs List Search Feature:
+    - **Goal:** Bring the document search experience to mobile, matching desktop functionality and style.
     - **Implementation:**
-        - Added search icon, input field, and client-side filtering logic to `client-vite/src/docs/docList.js`.
-        - Created new CSS file `client-vite/src/styles/doclist-enhancements.css` for search bar styling and icon reveal animation.
-        - Modified `client-vite/docs/index.html` to include the search icon and input elements.
-    - **Fixes:**
-        - Resolved `ReferenceError: renderDocuments is not defined` in `client-vite/src/docs/docList.js` by ensuring the function was correctly scoped.
-        - Reverted unintended design changes to document cards in `client-vite/src/styles/docs.css` by removing conflicting styles related to size, font, buttons, and metadata.
-        - Extended search functionality in `client-vite/src/docs/docList.js` to include searching within document content fetched from the backend by modifying the filtering logic.
-        - Updated `server/utils/firestore.js` to ensure document content is included when fetching documents for the list view.
-    - **Files Modified:** `client-vite/docs/index.html`, `client-vite/src/docs/docList.js`, `client-vite/src/styles/doclist-enhancements.css`, `client-vite/src/styles/docs.css`, `server/utils/firestore.js`.
-    - Fixed search input autofocus issue by adjusting `setTimeout` delay in `client-vite/src/docs/docList.js`.
+        - Exposed the search icon and input on mobile by removing `desktop-only` classes in `docs/index.html`.
+        - Appended mobile-specific display, order, and spacing rules in `doclist-enhancements.css` to center the search icon between the logo and hamburger.
+        - Replaced the mobile search input CSS in `docs.css` for slide-out animation, full-width expansion, and proper positioning.
+        - Updated the click-outside handler in `docList.js` to enable tap-outside-to-close on mobile as well as desktop.
+    - **Result:** Mobile users can now tap the centered search icon to expand the input, search documents with the same filtering/highlighting as desktop, and tap outside to collapse. Desktop behavior and styling remain unchanged.
+    - **Files Modified:** `client-vite/src/styles/doclist-enhancements.css`, `client-vite/src/styles/docs.css`, `client-vite/src/docs/docList.js`.
 
 - **(April 20, 2025)** Replicated Mobile Header/Drawer & Fixed UI Issues:
     - **Goal:** Apply consistent mobile navigation (header/drawer) from Chat to Docs List and Editor pages.
